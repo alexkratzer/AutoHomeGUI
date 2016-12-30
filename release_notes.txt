@@ -1,0 +1,38 @@
+
+############################### AutoHome V0.0.2 ###############################
+# Datum:				16xxxx
+# Path:					\\SYN\homes\git_rrepos\AutoHome_V0.0.2
+# Project_Data:			AutoHome_2016-x-xx.zip
+# AutoHome_PLC:			PLC_AutoHome-16xxxx
+# AutoHome_PLC_archiv:	AutoHome_PLC_16xxxx.zap13
+# DataLogger:			DataLogger_AutoHome_16xxxx
+# WebServer:			nicht lauffähig
+# DotNet AutoHome:		AutoHome_16xxxx
+# DotNet AH_DataLogger:	xxxx
+#
+## DotNet AutoHome ## 
+# Auslagern des Datenbank View DataLogger in eigenen DLL (AH_DataLogger)
+#
+## AH_DataLogger ##
+# FrmDataLogger.cs: Für anzuzeigenden Zeitraum kann jetzt auch ende Datum gewählt werden
+# FrmTables.cs: Tabellen sind nicht mehr hardcodiert sondern werden dynamisch ausgelesen
+#	statische DB Zugangsdaten aus quellcode in variablen verschoben
+
+
+
+
+
+
+############################### AutoHome V0.0.1 ###############################
+# Datum:				160710
+# Path:					\\SYN\homes\git_repos\AutoHome_V0.0.1
+# Project_Data:			AutoHome_2016-7-10.zip
+# AutoHome_PLC:			PLC_AutoHome-160710
+# AutoHome_PLC_archiv:	AutoHome_PLC_160710.zap13
+# DataLogger:			DataLogger_AutoHome_160710
+# WebServer:			nicht lauffähig
+# DotNet:				AutoHome_160710
+#
+# Description: erster Entwurf
+#
+#
