@@ -39,8 +39,6 @@ namespace AutoHome
         private string mapped_plc_hash = "";
         private string aktuator_hash = "";
 
-        [NonSerialized]
-        public object user_control;
         [NonSerialized]//nicht serialisieren da sonst keine referenz auf das aktuelle objekt vorhanden ist sondern mit alten kopien gearbeitet wird
         public plc _plc;
 
@@ -82,20 +80,9 @@ namespace AutoHome
             _name = name;
             _plc = plc;
             _type = type;
-            set_uc();
         }
 
-        public void set_uc()
-        {
-            if (_type == aktor_type.light)
-                user_control = new UC_light(this);
-            else if (_type == aktor_type.jalousie)
-                user_control = new UC_jalousie(this);
-            else if (_type == aktor_type.heater)
-                user_control = new UC_heater(this);
-            else
-                user_control = null;
-        }
+
 
         public void change_plc(plc plc_new)
         {
@@ -117,10 +104,7 @@ namespace AutoHome
             else
                 return false;
         }
-        public void interprete(Frame f) {
-            dynamic d = user_control;
-            d.interprete(f); 
-        }
+
         public bool isPlc(plc name) {
             if (name == _plc)
                 return true;

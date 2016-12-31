@@ -959,7 +959,7 @@
             this.panel_aktors.AutoScroll = true;
             this.panel_aktors.Location = new System.Drawing.Point(3, 30);
             this.panel_aktors.Name = "panel_aktors";
-            this.panel_aktors.Size = new System.Drawing.Size(850, 703);
+            this.panel_aktors.Size = new System.Drawing.Size(850, 647);
             this.panel_aktors.TabIndex = 0;
             // 
             // statusStrip_bottom
@@ -1038,7 +1038,7 @@
             this.panel_controls.Controls.Add(this.panel_aktors);
             this.panel_controls.Location = new System.Drawing.Point(24, 54);
             this.panel_controls.Name = "panel_controls";
-            this.panel_controls.Size = new System.Drawing.Size(864, 736);
+            this.panel_controls.Size = new System.Drawing.Size(864, 695);
             this.panel_controls.TabIndex = 37;
             this.panel_controls.Visible = false;
             // 

@@ -8,8 +8,8 @@ namespace AutoHome
     [Serializable]
     class platform_label
     {
-        public int _pos_x;
-        public int _pos_y;
+        //public int _pos_x;
+        //public int _pos_y;
         public aktor_type _type;
         
         //private string aktuator_name = null;

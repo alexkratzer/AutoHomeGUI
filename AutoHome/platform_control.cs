@@ -11,8 +11,6 @@ namespace AutoHome
         public int _pos_x;
         public int _pos_y;
         public aktor_type _type;
-        
-        //private string aktuator_name = null;
 
         [NonSerialized]//nicht serialisieren da sonst keine referenz auf das aktuelle objekt vorhanden ist sondern mit alten kopien gearbeitet wird
         public aktuator _aktuator;

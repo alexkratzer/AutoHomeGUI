@@ -24,6 +24,7 @@ namespace AutoHome
         public static string file_plc_log_msg = "plc.log";
         public static string file_startup_config = "startup_config.ah";
         public static string file_floor_plan = "data_floor_plan.ah";
+        public static string file_aktuator_control = "data_control.ah";
 
         //IBS vars
         public static Int32 PLCport = 8810;
@@ -180,7 +181,6 @@ namespace AutoHome
             {
                 foreach (aktuator a in list)
                 {
-                    a.user_control = null; //alle user_controlls löschen da nicht serialisierbar
                     a.serialize_init(); //mapped_hash der zugehörigen PLC speichern
                     a.set_aktor_hash(); //eigenen hash erzeugen
                 }
@@ -236,13 +236,13 @@ namespace AutoHome
 
                 formatter.Serialize(stream, list);
                 stream.Close();
-                //log.msg("var", "serialize_floor_plan() DONE");
             }
             catch (Exception e)
             {
                 log.exception("var", "serialize_floor_plan()", e);
             }
         }
+
         #endregion
 
         #region deserialize
@@ -370,6 +370,7 @@ namespace AutoHome
             }
             return list;
         }
+
         #endregion
 
         #region archiv

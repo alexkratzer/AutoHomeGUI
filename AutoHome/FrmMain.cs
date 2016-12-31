@@ -25,6 +25,7 @@ namespace AutoHome
         List<plc> list_plc = new List<plc>();
         List<platform> list_platform = new List<platform>();
         List<floor_plan> list_floor_plan = new List<floor_plan>();
+        List<aktuator_control> list_aktuator_controls = new List<aktuator_control>();
 
         cpsLIB.CpsNet CpsNet;
 
@@ -62,6 +63,7 @@ namespace AutoHome
         private void safe_projekt_data() {
             var.write_ini_file();
             var.serialize_platform(list_platform);
+            //var.serialize_aktuator_control(list_aktuator_controls);
             var.serialize_aktor(list_aktuator);
             var.serialize_plc(list_plc);
         }
@@ -687,7 +689,8 @@ namespace AutoHome
         #region userControl
         private void comboBox_aktor_type_SelectedIndexChanged(object sender, EventArgs e)
         {
-            make_uc_list((aktor_type)comboBox_aktor_type.SelectedItem);
+            if(panel_controls.Visible)
+                make_uc_list();
         }
         private void comboBox_aktor_cpu_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -696,40 +699,40 @@ namespace AutoHome
 
         List<UserControl> list_UC = new List<UserControl>();
         //private void make_uc_list(plc p, type t)
-        private void make_uc_list(aktor_type t)
+        private void make_uc_list()
         {
             int counter = 0;
             list_UC.Clear();
             panel_aktors.Controls.Clear();
 
-            foreach (aktuator a in list_aktuator)
-            {
-                a.set_uc();
-                //if (a.GetAktType() == t && a._plc == p)
-                if (a.GetAktType() == t)
+            foreach (aktuator a in list_aktuator) {
+                if (a.GetAktType() == (aktor_type)comboBox_aktor_type.SelectedItem)
                 {
-                    switch (t)
+                    aktuator_control ac = new aktuator_control(a);
+                    list_aktuator_controls.Add(ac); 
+
+                    switch (ac._aktor_type)
                     {
                         case aktor_type.jalousie:
-                            list_UC.Add((UC_jalousie)a.user_control);
+                            list_UC.Add((UC_jalousie)ac.user_control);
                             list_UC[counter].Location = new Point(0, counter * 41);
                             panel_aktors.Controls.Add(list_UC[counter]);
                             counter++;
-                            a.plc_send_IO(DataIOType.GetState);
+                            ac.aktuator.plc_send_IO(DataIOType.GetState);
                             break;
                         case aktor_type.heater:
-                            list_UC.Add((UC_heater)a.user_control);
+                            list_UC.Add((UC_heater)ac.user_control);
                             list_UC[counter].Location = new Point(0, counter * 32);
                             panel_aktors.Controls.Add(list_UC[counter]);
                             counter++;
-                            a.plc_send_IO(DataIOType.GetParam);
+                            ac.aktuator.plc_send_IO(DataIOType.GetParam);
                             break;
                         case aktor_type.light:
-                            list_UC.Add((UC_light)a.user_control);
+                            list_UC.Add((UC_light)ac.user_control);
                             list_UC[counter].Location = new Point(0, counter * 23);
                             panel_aktors.Controls.Add(list_UC[counter]);
                             counter++;
-                            a.plc_send_IO(DataIOType.GetParam);
+                            ac.aktuator.plc_send_IO(DataIOType.GetParam);
                             break;
                         case aktor_type.undef:
 
@@ -1062,10 +1065,10 @@ namespace AutoHome
             }
             else if (panel_controls.Visible)
             {
-                foreach (aktuator a in list_aktuator)
+                foreach (aktuator_control ac in list_aktuator_controls)
                 {
-                    if (f.isIOIndex(a.Index))
-                        a.interprete(f);
+                    if (f.isIOIndex(ac.aktuatorIndex))
+                        ac.interprete(f);
                 }
             }
             else { } //TODO:globale log funktion einbauen

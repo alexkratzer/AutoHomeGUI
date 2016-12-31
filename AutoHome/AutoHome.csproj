@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="aktuator.cs" />
+    <Compile Include="aktuator_control.cs" />
     <Compile Include="floor_plan.cs" />
     <Compile Include="FrmConfigPlatform.cs">
       <SubType>Form</SubType>
