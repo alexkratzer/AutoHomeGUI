@@ -37,10 +37,12 @@ namespace AutoHome
         {
             //für jeden aktor typ wird ein default control zum späteren anklicken dargestellt
             List<Control> default_controls = new List<Control>();
-            default_controls.Add(new PBdefaultControl(aktor_type.light));
-            default_controls.Add(new PBdefaultControl(aktor_type.jalousie));
-            default_controls.Add(new PBdefaultControl(aktor_type.heater));
-            default_controls.Add(new PBdefaultControl(aktor_type.undef));
+            foreach (aktor_type at in Enum.GetValues(typeof(aktor_type)))
+                default_controls.Add(new PBdefaultControl(at));
+            //default_controls.Add(new PBdefaultControl(aktor_type.light));
+            //default_controls.Add(new PBdefaultControl(aktor_type.jalousie));
+            //default_controls.Add(new PBdefaultControl(aktor_type.heater));
+            //default_controls.Add(new PBdefaultControl(aktor_type.undef));
 
             foreach (PBdefaultControl c in default_controls)
             {
@@ -345,28 +347,31 @@ namespace AutoHome
             Size = new Size(60, 60);
             this.BackColor = Color.Transparent;
             this.BringToFront();
+            Image = GetPicByType(t);
 
-            try{
+        }
+        public static Bitmap GetPicByType(aktor_type t) {
+            try
+            {
                 switch (t)
                 {
                     case aktor_type.light:
-                        Image = new Bitmap(AutoHome.Properties.Resources.img_candle_default);
-                        break;
+                        return new Bitmap(AutoHome.Properties.Resources.img_candle_default);
                     case aktor_type.jalousie:
-                        Image = new Bitmap(AutoHome.Properties.Resources.img_jalousie_default);
-                        break;
+                        return new Bitmap(AutoHome.Properties.Resources.img_jalousie_default);
                     case aktor_type.heater:
-                        Image = new Bitmap(AutoHome.Properties.Resources.img_heater_default);
-                        break;
+                        return new Bitmap(AutoHome.Properties.Resources.img_heater_default);                        
                     case aktor_type.undef:
-                        Image = new Bitmap(AutoHome.Properties.Resources.img_undef_default);
-                        break;
+                        return new Bitmap(AutoHome.Properties.Resources.img_undef_default);
+                    case aktor_type.sensor:
+                        return new Bitmap(AutoHome.Properties.Resources.img_sensor_default);   
                 }
             }
             catch (Exception e)
             {
-                log.exception(this, "error loading png from file ", e);
+                log.exception("FrmConfigPlatform", "error loading png from file ", e);
             }
+            return null;
         }
 
         private Point default_location(aktor_type t)
@@ -384,6 +389,9 @@ namespace AutoHome
                     break;
                 case aktor_type.undef:
                     Location = new Point(81, 209);
+                    break;
+                case aktor_type.sensor:
+                    Location = new Point(12, 275);
                     break;
             }
             return Location;
@@ -442,29 +450,7 @@ namespace AutoHome
             Size = new Size(60, 60);
             this.BackColor = Color.Transparent;
             this.BringToFront();
-
-            try
-            {
-                switch (t)
-                {
-                    case aktor_type.light:
-                        Image = new Bitmap(AutoHome.Properties.Resources.img_candle_default);
-                        //Image = System.Drawing.Bitmap.FromFile(var.img_candle);
-                        break;
-                    case aktor_type.jalousie:
-                        Image = new Bitmap(AutoHome.Properties.Resources.img_jalousie_default);
-                        break;
-                    case aktor_type.heater:
-                        Image = new Bitmap(AutoHome.Properties.Resources.img_heater_default);
-                        break;
-                    case aktor_type.undef:
-                        Image = new Bitmap(AutoHome.Properties.Resources.img_undef_default);
-                        break;
-                }
-            }
-            catch (Exception e) {
-                log.exception(this, "error loading png from file ", e);
-            }
+            Image = PBdefaultControl.GetPicByType(t);
         }
 
         /// <summary>

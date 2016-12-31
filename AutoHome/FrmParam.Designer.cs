@@ -69,6 +69,8 @@
             this.textBox_akt_id = new System.Windows.Forms.TextBox();
             this.checkBox_add_new_aktuator = new System.Windows.Forms.CheckBox();
             this.groupBox_aktors = new System.Windows.Forms.GroupBox();
+            this.comboBox_aktorType = new System.Windows.Forms.ComboBox();
+            this.ListBoxCheck_plc = new System.Windows.Forms.CheckedListBox();
             this.groupBox_plc = new System.Windows.Forms.GroupBox();
             this.checkBox_add_new_plc = new System.Windows.Forms.CheckBox();
             this.listBox_plc = new System.Windows.Forms.ListBox();
@@ -87,6 +89,7 @@
             this.label_MngData_AcceptedClockDelay = new System.Windows.Forms.Label();
             this.label_cps_server_port = new System.Windows.Forms.Label();
             this.textBox_cpsServerPort = new System.Windows.Forms.TextBox();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.panel_edit_plc.SuspendLayout();
             this.panel_expert.SuspendLayout();
             this.panel_edit_aktuator.SuspendLayout();
@@ -95,6 +98,7 @@
             this.panel_edit.SuspendLayout();
             this.groupBox_DB.SuspendLayout();
             this.groupBox_cps_settings.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel_edit_plc
@@ -414,10 +418,10 @@
             // listBox_aktors
             // 
             this.listBox_aktors.FormattingEnabled = true;
-            this.listBox_aktors.Location = new System.Drawing.Point(14, 100);
+            this.listBox_aktors.Location = new System.Drawing.Point(6, 148);
             this.listBox_aktors.Name = "listBox_aktors";
             this.listBox_aktors.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.listBox_aktors.Size = new System.Drawing.Size(357, 381);
+            this.listBox_aktors.Size = new System.Drawing.Size(494, 420);
             this.listBox_aktors.TabIndex = 19;
             this.listBox_aktors.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listBox_aktors_MouseClick);
             this.listBox_aktors.SelectedIndexChanged += new System.EventHandler(this.listBox_aktors_SelectedIndexChanged);
@@ -430,7 +434,7 @@
             this.panel_edit_aktuator.Controls.Add(this.comboBox_edit_type);
             this.panel_edit_aktuator.Controls.Add(this.textBox_edit_name);
             this.panel_edit_aktuator.Controls.Add(this.textBox_akt_id);
-            this.panel_edit_aktuator.Location = new System.Drawing.Point(14, 32);
+            this.panel_edit_aktuator.Location = new System.Drawing.Point(147, 29);
             this.panel_edit_aktuator.Name = "panel_edit_aktuator";
             this.panel_edit_aktuator.Size = new System.Drawing.Size(356, 56);
             this.panel_edit_aktuator.TabIndex = 20;
@@ -489,32 +493,52 @@
             // checkBox_add_new_aktuator
             // 
             this.checkBox_add_new_aktuator.AutoSize = true;
-            this.checkBox_add_new_aktuator.Location = new System.Drawing.Point(14, 13);
+            this.checkBox_add_new_aktuator.Location = new System.Drawing.Point(147, 10);
             this.checkBox_add_new_aktuator.Name = "checkBox_add_new_aktuator";
-            this.checkBox_add_new_aktuator.Size = new System.Drawing.Size(117, 17);
+            this.checkBox_add_new_aktuator.Size = new System.Drawing.Size(110, 17);
             this.checkBox_add_new_aktuator.TabIndex = 21;
-            this.checkBox_add_new_aktuator.Text = "make new actuator";
+            this.checkBox_add_new_aktuator.Text = "make new device";
             this.checkBox_add_new_aktuator.UseVisualStyleBackColor = true;
             this.checkBox_add_new_aktuator.CheckedChanged += new System.EventHandler(this.checkBox_add_new_aktuator_CheckedChanged);
             // 
             // groupBox_aktors
             // 
+            this.groupBox_aktors.Controls.Add(this.comboBox_aktorType);
+            this.groupBox_aktors.Controls.Add(this.ListBoxCheck_plc);
             this.groupBox_aktors.Controls.Add(this.listBox_aktors);
             this.groupBox_aktors.Controls.Add(this.checkBox_add_new_aktuator);
             this.groupBox_aktors.Controls.Add(this.panel_edit_aktuator);
             this.groupBox_aktors.Location = new System.Drawing.Point(12, 18);
             this.groupBox_aktors.Name = "groupBox_aktors";
-            this.groupBox_aktors.Size = new System.Drawing.Size(398, 495);
+            this.groupBox_aktors.Size = new System.Drawing.Size(510, 583);
             this.groupBox_aktors.TabIndex = 23;
             this.groupBox_aktors.TabStop = false;
-            this.groupBox_aktors.Text = "actuator";
+            this.groupBox_aktors.Text = "device";
+            // 
+            // comboBox_aktorType
+            // 
+            this.comboBox_aktorType.FormattingEnabled = true;
+            this.comboBox_aktorType.Location = new System.Drawing.Point(6, 16);
+            this.comboBox_aktorType.Name = "comboBox_aktorType";
+            this.comboBox_aktorType.Size = new System.Drawing.Size(121, 21);
+            this.comboBox_aktorType.TabIndex = 27;
+            this.comboBox_aktorType.SelectedIndexChanged += new System.EventHandler(this.comboBox_aktorType_SelectedIndexChanged);
+            // 
+            // ListBoxCheck_plc
+            // 
+            this.ListBoxCheck_plc.FormattingEnabled = true;
+            this.ListBoxCheck_plc.Location = new System.Drawing.Point(6, 43);
+            this.ListBoxCheck_plc.Name = "ListBoxCheck_plc";
+            this.ListBoxCheck_plc.Size = new System.Drawing.Size(121, 94);
+            this.ListBoxCheck_plc.TabIndex = 0;
+            this.ListBoxCheck_plc.SelectedValueChanged += new System.EventHandler(this.ListBoxCheck_plc_SelectedValueChanged);
             // 
             // groupBox_plc
             // 
             this.groupBox_plc.Controls.Add(this.checkBox_add_new_plc);
             this.groupBox_plc.Controls.Add(this.listBox_plc);
             this.groupBox_plc.Controls.Add(this.panel_edit_plc);
-            this.groupBox_plc.Location = new System.Drawing.Point(769, 18);
+            this.groupBox_plc.Location = new System.Drawing.Point(1, 1);
             this.groupBox_plc.Name = "groupBox_plc";
             this.groupBox_plc.Size = new System.Drawing.Size(354, 143);
             this.groupBox_plc.TabIndex = 24;
@@ -546,7 +570,7 @@
             this.panel_edit.Controls.Add(this.checkBox_connect_at_start);
             this.panel_edit.Controls.Add(this.checkBox_expert_mode);
             this.panel_edit.Controls.Add(this.panel_expert);
-            this.panel_edit.Location = new System.Drawing.Point(769, 176);
+            this.panel_edit.Location = new System.Drawing.Point(1, 159);
             this.panel_edit.Name = "panel_edit";
             this.panel_edit.Size = new System.Drawing.Size(354, 292);
             this.panel_edit.TabIndex = 25;
@@ -561,7 +585,7 @@
             this.groupBox_DB.Controls.Add(this.label_DBUid);
             this.groupBox_DB.Controls.Add(this.label_DBName);
             this.groupBox_DB.Controls.Add(this.label_DBServerIP);
-            this.groupBox_DB.Location = new System.Drawing.Point(936, 474);
+            this.groupBox_DB.Location = new System.Drawing.Point(168, 457);
             this.groupBox_DB.Name = "groupBox_DB";
             this.groupBox_DB.Size = new System.Drawing.Size(193, 118);
             this.groupBox_DB.TabIndex = 17;
@@ -642,7 +666,7 @@
             this.groupBox_cps_settings.Controls.Add(this.label_MngData_AcceptedClockDelay);
             this.groupBox_cps_settings.Controls.Add(this.label_cps_server_port);
             this.groupBox_cps_settings.Controls.Add(this.textBox_cpsServerPort);
-            this.groupBox_cps_settings.Location = new System.Drawing.Point(769, 474);
+            this.groupBox_cps_settings.Location = new System.Drawing.Point(1, 457);
             this.groupBox_cps_settings.Name = "groupBox_cps_settings";
             this.groupBox_cps_settings.Size = new System.Drawing.Size(160, 94);
             this.groupBox_cps_settings.TabIndex = 26;
@@ -684,15 +708,23 @@
             this.textBox_cpsServerPort.Text = "50000";
             this.textBox_cpsServerPort.TextChanged += new System.EventHandler(this.textBox_cpsServerPort_TextChanged);
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.groupBox_DB);
+            this.panel1.Controls.Add(this.groupBox_cps_settings);
+            this.panel1.Controls.Add(this.panel_edit);
+            this.panel1.Controls.Add(this.groupBox_plc);
+            this.panel1.Location = new System.Drawing.Point(550, 18);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(368, 583);
+            this.panel1.TabIndex = 27;
+            // 
             // FrmParam
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1135, 655);
-            this.Controls.Add(this.groupBox_DB);
-            this.Controls.Add(this.groupBox_cps_settings);
-            this.Controls.Add(this.panel_edit);
-            this.Controls.Add(this.groupBox_plc);
+            this.ClientSize = new System.Drawing.Size(923, 611);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.groupBox_aktors);
             this.Name = "FrmParam";
             this.ShowInTaskbar = false;
@@ -714,6 +746,7 @@
             this.groupBox_DB.PerformLayout();
             this.groupBox_cps_settings.ResumeLayout(false);
             this.groupBox_cps_settings.PerformLayout();
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -779,5 +812,8 @@
         private System.Windows.Forms.Label label_MngData_AcceptedClockDelay;
         private System.Windows.Forms.TextBox textBox_MngData_AcceptedClockDelay;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.CheckedListBox ListBoxCheck_plc;
+        private System.Windows.Forms.ComboBox comboBox_aktorType;
+        private System.Windows.Forms.Panel panel1;
     }
 }

@@ -29,6 +29,18 @@ namespace AutoHome
             _list_platform = (List<platform>)list_platform;
             _FrmMain = FrmMain;
             init_controlls();
+
+            comboBox_aktorType.DataSource = Enum.GetValues(typeof(aktor_type));
+            comboBox_aktorType.SelectedIndex = 0;
+            //foreach (aktor_type at in Enum.GetValues(typeof(aktor_type)))
+            //    checkedListBox1.Items.Add(at);
+            foreach (plc p in _list_plc)
+            {
+                ListBoxCheck_plc.Items.Add(p,true);
+            }
+
+            listBox_aktors_refresh();
+            listBox_plc_refresh();
         }
 
         private void init_controlls() {
@@ -49,9 +61,6 @@ namespace AutoHome
             comboBox_edit_type.DataSource = Enum.GetValues(typeof(aktor_type));
             comboBox_edit_plc.DataSource = _list_plc;
 
-            listBox_aktors_refresh();
-            listBox_plc_refresh();
-
             textBox_DBServerIP.Text = var.DBServerIP;
             textBox_DBName.Text = var.DBName;
             textBox_DBUid.Text = var.DBUid;
@@ -59,7 +68,6 @@ namespace AutoHome
 
             textBox_cpsServerPort.Text = var.CpsServerPort.ToString();
             textBox_MngData_AcceptedClockDelay.Text = var.MngData_AcceptedClockDelay.ToString();
-
         }
 
         private void FrmParam_FormClosing(object sender, FormClosingEventArgs e)
@@ -213,10 +221,23 @@ namespace AutoHome
 
         private void listBox_aktors_refresh()
         {
+            List<aktuator> tmp_list_aktor = new List<aktuator>();
             _list_aktuator.Sort((x, y) => x.Index.CompareTo(y.Index));
+
+            //copy aktuator in display list depending on filter settings
+            aktor_type at = (aktor_type)comboBox_aktorType.SelectedItem;
+            foreach (aktuator a in _list_aktuator) {
+                if (a.GetAktType() == at) {
+                    for(int x = 0; x <= ListBoxCheck_plc.CheckedItems.Count -1; x++)
+                        if( a.isPlc((plc)ListBoxCheck_plc.CheckedItems[x]))
+                            tmp_list_aktor.Add(a);
+                }
+
+            }
+
             listBox_aktors.DataSource = null;
             listBox_aktors.Items.Clear();
-            listBox_aktors.DataSource = _list_aktuator;
+            listBox_aktors.DataSource = tmp_list_aktor;
         }
 
         private void listBox_aktors_MouseClick(object sender, MouseEventArgs e)
@@ -434,10 +455,14 @@ namespace AutoHome
                 var.MngData_AcceptedClockDelay = Convert.ToInt32(textBox_MngData_AcceptedClockDelay.Text);
         }
 
-    
+        private void ListBoxCheck_plc_SelectedValueChanged(object sender, EventArgs e)
+        {
+            listBox_aktors_refresh();
+        }
 
-
-
-    
+        private void comboBox_aktorType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            listBox_aktors_refresh();
+        }
     }
 }

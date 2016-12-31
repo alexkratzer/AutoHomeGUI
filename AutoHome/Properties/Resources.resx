@@ -154,6 +154,9 @@
   <data name="img_jalousie_up" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\img_jalousie_up.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="img_sensor_default" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\img_sensor_default.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="img_undef_default" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\img_undef_default.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
