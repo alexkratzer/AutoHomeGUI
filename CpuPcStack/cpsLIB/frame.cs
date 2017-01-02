@@ -20,7 +20,7 @@ namespace cpsLIB
     //order of the flags must match with the Remote FrameHeaderFlag 
     public enum FrameHeaderFlag { containering = 0, SYNC, LogMessage, ACKN, PdataIO, PdataParam, MngData }
     //public enum HeaderFlagManagementData { GetTime = 1, SetTime = 2,  }
-    public enum DataIOType { GetState=1, SetState=2, GetParam=3, SetParam=4,
+    public enum DataIOType {ignore=0, GetState=1, SetState=2, GetParam=3, SetParam=4,
         SetParamJalousieEvent = 5, GetParamJalousieEvent = 6,
         GET_CPU_TIME =10,
         GET_WEATHER = 11,

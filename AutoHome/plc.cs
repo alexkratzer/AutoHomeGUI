@@ -117,6 +117,15 @@ namespace AutoHome
                 return false;
             return cpsNet.send(f);
         }
+        public void send(FrameHeaderFlag hf, Int16[] data )
+        {
+            if (client_udp != null)
+            {
+                Frame f = new Frame(client_udp, data);
+                f.SetHeaderFlag(hf);
+                cpsNet.send(f);
+            }
+        }
 
         /*
         public void newlog(string msg)

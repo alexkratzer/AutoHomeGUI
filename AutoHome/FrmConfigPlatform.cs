@@ -502,10 +502,13 @@ namespace AutoHome
                             Image = new Bitmap(Properties.Resources.img_heater_off_manual);
                     }
                     break;
+                case aktor_type.sensor:
+                    //TODO
+                    break;
 
-                //case aktor_type.undef:
-                //    Image = System.Drawing.Bitmap.FromFile(var.workingdir + "\\img_undef.png");
-                //    break;
+                    //case aktor_type.undef:
+                    //    Image = System.Drawing.Bitmap.FromFile(var.workingdir + "\\img_undef.png");
+                    //    break;
             }
 
             lastFrame = f;

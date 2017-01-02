@@ -919,10 +919,7 @@ namespace AutoHome
             if (list_plc.Count > 0)
                 foreach (plc p in list_plc)
                     if (p.getClient().state == udp_state.connected)
-                    {
                         p.send(Frame.MngData(p.getClient(), DataMngType.GetPlcTime));
-                        p.send(Frame.MngData(p.getClient(), DataMngType.GetPlcSensorValues));
-                    }
         }
 
         void footer_connection_status_Tick(object sender, EventArgs e)
@@ -932,14 +929,37 @@ namespace AutoHome
 
         void timer_refresh_control_Tick(object sender, EventArgs e)
         {
+            Dictionary<Int16, plc> sensor_dic = new Dictionary<short, plc>(); //enthält alle projektierten aktuatoren vom typ sensor
+            //List<Int16, plc> list_sensor = new List<short>();
             //############################### automatisches update der controlls #################################################
             if (pictureBox_platform.Visible)
-                if (list_platform.Any())//Notwendig bei kaputem serialise file
-                    if (comboBox_platform.SelectedItem!=null)
+                //bei kaputem serialise file keine elemente
+                if (list_platform.Any())
+                    if (comboBox_platform.SelectedItem != null)
                         foreach (platform_control pc in ((platform)comboBox_platform.SelectedItem)._list_platform_control)
-                                if (pc._aktuator != null && pc._aktuator._plc != null) //controlls denen kein aktor zugewiesen ist nicht beachten
+                            //controlls denen kein aktor zugewiesen ist nicht beachten
+                            if (pc._aktuator != null && pc._aktuator._plc != null) 
+                                //sensor controlls sammeln und in einzelnen management frame versenden
+                                if (pc._aktuator.GetAktType() == aktor_type.sensor) 
+                                    sensor_dic.Add(pc._aktuator.Index, pc._aktuator._plc);
+                                else
                                     pc._aktuator.plc_send_IO(DataIOType.GetState);
-                            //pc._aktuator.plc_send(new Frame(Frame.GET_STATE(pc._aktuator.Index)));      
+
+            //send sensor value request
+            foreach (plc p in list_plc) {
+                List<Int16> list_sensor = new List<short>();
+                foreach (KeyValuePair<Int16, plc> var in sensor_dic)
+                    if (p == var.Value)
+                        list_sensor.Add(var.Key);
+
+                //if (list_sensor.Any())
+                if (list_sensor.Count > 0)
+                {
+                    //sende frame an plc
+                    list_sensor.Insert(0, (Int16)DataMngType.GetPlcSensorValues);
+                    p.send(FrameHeaderFlag.MngData, list_sensor.ToArray());
+                }
+            }
         }
         #endregion
 
@@ -1018,7 +1038,15 @@ namespace AutoHome
                         }
                         else if (f.getPayloadInt(0) == (Int16)DataMngType.GetPlcSensorValues)
                         {
-
+                            if (pictureBox_platform.Visible)
+                            {
+                                platform p_selected = (platform)comboBox_platform.SelectedItem;
+                                if (p_selected != null)
+                                {
+                                    //komplettes frame durchgehen und auspacken. für jeden sensorwert entsprechendes controll befüllen
+                                    p_selected.update_control(f);
+                                }
+                            }
                         }
                     }
                     catch (Exception e) {
