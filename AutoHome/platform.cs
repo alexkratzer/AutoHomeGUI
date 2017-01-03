@@ -77,6 +77,14 @@ namespace AutoHome
                 if (pc._aktuator != null && f.isIOIndex(pc._aktuator.Index))
                     pc.update_control(f);
         }
+        public void update_SensorControl(Dictionary<short, float> dicSensorVal) {
+            foreach (KeyValuePair<Int16, float> kvp in dicSensorVal) {
+                foreach (platform_control pc in _list_platform_control)
+                    if (pc._aktuator != null && kvp.Key== pc._aktuator.Index)
+                        pc.update_SensorControl(kvp.Value);
+            }
+                //FrmLog.AddLog("SensorVal_dic: " + kvp.ToString());
+        }
     }
 
 

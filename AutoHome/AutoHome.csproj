@@ -149,6 +149,12 @@
     <Compile Include="UC_light.Designer.cs">
       <DependentUpon>UC_light.cs</DependentUpon>
     </Compile>
+    <Compile Include="UC_SensorValue.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UC_SensorValue.Designer.cs">
+      <DependentUpon>UC_SensorValue.cs</DependentUpon>
+    </Compile>
     <Compile Include="var.cs" />
     <EmbeddedResource Include="FrmConfigPlatform.resx">
       <DependentUpon>FrmConfigPlatform.cs</DependentUpon>
@@ -204,6 +210,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UC_light.resx">
       <DependentUpon>UC_light.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UC_SensorValue.resx">
+      <DependentUpon>UC_SensorValue.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\DataSources\aktuator.datasource" />
     <None Include="Properties\Settings.settings">

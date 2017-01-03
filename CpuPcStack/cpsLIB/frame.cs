@@ -171,14 +171,14 @@ namespace cpsLIB
         #endregion
 
         #region getter
-        public byte[] getPayload()
+        private byte[] getPayload()
         {
             return FramePayloadByte;
         }
-        public byte getPayload(int i)
-        {
-            return FramePayloadByte[i];
-        }
+        //private byte getPayloadByte(int i)
+        //{
+        //    return FramePayloadByte[i];
+        //}
         public Int16 getPayloadInt(int i)
         {
             int index = i * 2;
@@ -189,6 +189,9 @@ namespace cpsLIB
             //return (Int16)(256 * FramePayloadByte[index+1] + FramePayloadByte[index]);
             Int16 tmp = (Int16)(256 * FramePayloadByte[index] + FramePayloadByte[index+1]);
             return tmp;
+        }
+        public int getPaloadIntLengt() {
+            return FramePayloadByte.Length / 2;
         }
         public bool IsEqual(Frame f)
         {

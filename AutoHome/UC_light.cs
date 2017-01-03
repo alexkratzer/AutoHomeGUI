@@ -41,7 +41,7 @@ namespace AutoHome
         public void interprete(object _f)
         {
             Frame f = (Frame)_f;
-            show_state(Convert.ToBoolean(f.getPayload(0)));
+            show_state(Convert.ToBoolean(f.getPayloadInt(0)));
 
             if (f.isJob(DataIOType.GetParam) || f.isJob(DataIOType.SetParam))
             {

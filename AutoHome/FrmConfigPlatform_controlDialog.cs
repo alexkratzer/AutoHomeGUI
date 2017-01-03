@@ -69,7 +69,7 @@ namespace AutoHome
         private void fill_selectable() {
             comboBox_aktor_name.Items.Clear();
             foreach (aktuator akt in _list_a)
-                if (akt._type == _platform_control._type)
+                if (akt._type == _platform_control._aktuator.GetAktType())
                     if (comboBox_plc.SelectedItem != null)
                     {
                         if (comboBox_plc.SelectedItem == akt._plc)

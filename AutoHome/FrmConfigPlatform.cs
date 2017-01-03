@@ -369,6 +369,7 @@ namespace AutoHome
             }
             catch (Exception e)
             {
+                //MessageBox.Show()
                 log.exception("FrmConfigPlatform", "error loading png from file ", e);
             }
             return null;
@@ -419,7 +420,7 @@ namespace AutoHome
         {
             _platform_control = platform_control;
             Location = new Point(pos_x, pos_y);
-            pic_set_edit_pic(_platform_control._type);
+            pic_set_edit_pic(_platform_control._aktuator.GetAktType());
 
             update_label_text();
         }
@@ -464,7 +465,7 @@ namespace AutoHome
 
             this.BackColor = Color.Transparent;
             this.Controls.Remove(l);
-            switch (_platform_control._type)
+            switch (_platform_control._aktuator.GetAktType())
             {
                 case aktor_type.light:
                     if (Convert.ToBoolean(f.getPayloadInt(2)))
@@ -503,9 +504,8 @@ namespace AutoHome
                     }
                     break;
                 case aktor_type.sensor:
-                    //TODO
-                    break;
-
+                    throw new Exception("pic_update() in FrmConfigPlatform for aktor_type.sensor (should be handled at UC_SensorValue)");
+                    
                     //case aktor_type.undef:
                     //    Image = System.Drawing.Bitmap.FromFile(var.workingdir + "\\img_undef.png");
                     //    break;
@@ -516,4 +516,5 @@ namespace AutoHome
 
 
     }
+
 }

@@ -760,8 +760,11 @@ namespace AutoHome
             foreach (platform p in list_platform)
                 foreach (platform_control pc in p._list_platform_control)
                 {
-                    pictureBox_platform.Controls.Remove(pc._PictureBox);
-                    pc._PictureBox.MouseDown -= new MouseEventHandler(_PictureBox_MouseDown);
+                    if (pc._PictureBox != null) //platform_control mit sensor_value haben keine PictrueBox sondern UC_SensorValue
+                    {
+                        pictureBox_platform.Controls.Remove(pc._PictureBox);
+                        pc._PictureBox.MouseDown -= new MouseEventHandler(_PictureBox_MouseDown);
+                    }
                 }
 
             if (!clear)
@@ -769,11 +772,17 @@ namespace AutoHome
                 platform p_selected = (platform)comboBox_platform.SelectedItem;
                 if (p_selected != null)
                     foreach (platform_control pc in p_selected._list_platform_control)
-                        if (pc._aktuator != null) //controlls denen kein aktor zugewiesen ist nicht zeichnen
+                        if (pc._aktuator != null ) //controlls denen kein aktor zugewiesen ist nicht zeichnen
                         {
-                            pictureBox_platform.Controls.Add(pc._PictureBox);
-                            pictureBox_platform.Image = p_selected.get_background_pic();
-                            pc._PictureBox.MouseDown += new MouseEventHandler(_PictureBox_MouseDown);
+                            if (pc._PictureBox != null)//platform_control mit sensor_value haben keine PictrueBox sondern UC_SensorValue
+                            {
+                                pictureBox_platform.Controls.Add(pc._PictureBox);
+                                pictureBox_platform.Image = p_selected.get_background_pic();
+                                pc._PictureBox.MouseDown += new MouseEventHandler(_PictureBox_MouseDown);
+                            }
+                            else {
+                                pictureBox_platform.Controls.Add(pc._UCsensorValue);
+                            }
                         }
                 if (p_selected != null && p_selected._floor_plan != null)
                     pictureBox_platform.Size = new Size(p_selected._floor_plan._picture_width, p_selected._floor_plan._picture_heigth);
@@ -1043,14 +1052,34 @@ namespace AutoHome
                                 platform p_selected = (platform)comboBox_platform.SelectedItem;
                                 if (p_selected != null)
                                 {
+                                    FrmLog.AddLog("SensorVal: " + f.ShowPayloadInt());
+                                    Dictionary<Int16, float> dicSensorVal = new Dictionary<short, float>();
+                                    dicSensorVal.Clear();
                                     //komplettes frame durchgehen und auspacken. für jeden sensorwert entsprechendes controll befüllen
-                                    p_selected.update_control(f);
+                                    float SensorValue;
+                                    for (int i = 3; i < (f.getPaloadIntLengt()); i = i + 3)
+                                    {
+                                        if (f.getPayloadInt(i + 2) != 0)
+                                            SensorValue = (float) f.getPayloadInt(i + 1) / (float)f.getPayloadInt(i + 2);
+                                        else
+                                            SensorValue = f.getPayloadInt(i + 1);
+
+                                        dicSensorVal.Add(f.getPayloadInt(i), SensorValue);
+                                    }
+
+                                    p_selected.update_SensorControl(dicSensorVal);
+
+
+                                    //p_selected.update_control(f);
+                                    //FrmLog.AddLog("SensorVal_dic: " + f.ShowPayloadInt());
                                 }
                             }
                         }
                     }
                     catch (Exception e) {
                         //TODO: globalen error log mit notify in GUI einrichten
+                        //MessageBox.Show(e.Message, "exception")
+                            FrmLog.AddLog("Exception interprete_MngData: " + e.Message);
                         ;
                     }
 
