@@ -27,38 +27,38 @@ namespace AutoHome
             
             if (f.isJob(DataIOType.GetParam) || f.isJob(DataIOType.SetParam))
             {
-                if (Convert.ToBoolean(f.getPayloadInt(2)))
+                if (Convert.ToBoolean(f.getPayload(2)))
                     label_current_state.Text = "state: ON";
                 else
                     label_current_state.Text = "state: OFF";
-                checkBox_light_enable_lux.Checked = Convert.ToBoolean(f.getPayloadInt(3));              
-                textBox_light_lux_off.Text = f.getPayloadInt(4).ToString();
-                checkBox_light_enable_timer.Checked = Convert.ToBoolean(f.getPayloadInt(5));
+                checkBox_light_enable_lux.Checked = Convert.ToBoolean(f.getPayload(3));              
+                textBox_light_lux_off.Text = f.getPayload(4).ToString();
+                checkBox_light_enable_timer.Checked = Convert.ToBoolean(f.getPayload(5));
                 
-                textBox_light_time_h.Text = f.getPayloadInt(6).ToString();
-                textBox_light_time_m.Text = f.getPayloadInt(7).ToString();
-                textBox_light_time_s.Text = f.getPayloadInt(8).ToString();
+                textBox_light_time_h.Text = f.getPayload(6).ToString();
+                textBox_light_time_m.Text = f.getPayload(7).ToString();
+                textBox_light_time_s.Text = f.getPayload(8).ToString();
             }
             else if (f.isJob(DataIOType.SetState)) {
-                if (Convert.ToBoolean(f.getPayloadInt(2)))
+                if (Convert.ToBoolean(f.getPayload(2)))
                     label_current_state.Text = "state: ON";
                 else
                     label_current_state.Text = "state: OFF";
             }
             else if (f.isJob(DataIOType.GetState))
             {
-                if (Convert.ToBoolean(f.getPayloadInt(2)))
+                if (Convert.ToBoolean(f.getPayload(2)))
                     label_current_state.Text = "state: ON";
                 else
                     label_current_state.Text = "state: OFF";
 
                 label_remaining_on.Text =
-                    f.getPayloadInt(3).ToString("##") + ":" +
-                    f.getPayloadInt(4).ToString("##") + ":" +
-                    f.getPayloadInt(5).ToString("##");
+                    f.getPayload(3).ToString("##") + ":" +
+                    f.getPayload(4).ToString("##") + ":" +
+                    f.getPayload(5).ToString("##");
             }
             else
-                MessageBox.Show("rcv frame with unknown job: " + f.getPayloadInt(1) + " " + f.ToString());      
+                MessageBox.Show("rcv frame with unknown job: " + f.getPayload(1) + " " + f.ToString());      
         }
 
         private void button_switch_Click(object sender, EventArgs e)

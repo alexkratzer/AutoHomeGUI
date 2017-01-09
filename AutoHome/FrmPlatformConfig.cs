@@ -11,7 +11,7 @@ using cpsLIB; //frames
 
 namespace AutoHome
 {
-    public partial class FrmConfigPlatform : Form
+    public partial class FrmPlatformConfig : Form
     {
         List<platform> _list_platform;
         List<aktuator> _list_aktor;
@@ -20,7 +20,7 @@ namespace AutoHome
         FrmMain _frmMain; //wird benötigt um beim schließen der FrmConfigPlatform Main zu aktualisieren
         List<floor_plan> _list_floor_plan;
 
-        public FrmConfigPlatform(object list_platform, object list_aktor, object list_plc, FrmMain frmMain)
+        public FrmPlatformConfig(object list_platform, object list_aktor, object list_plc, FrmMain frmMain)
         {
             InitializeComponent();
             _list_platform = (List<platform>)list_platform;
@@ -212,10 +212,18 @@ namespace AutoHome
             foreach (platform p in _list_platform)
                 foreach (platform_control pc in p._list_platform_control)
                 {
-                    //if (pictureBox_platform.Controls.Contains(pc._PictureBox))
-                    pictureBox_platform.Controls.Remove(pc._PictureBox);
-                    pc._PictureBox.MouseDoubleClick -= new MouseEventHandler(_PictureBox_MouseDoubleClick);
-                    pc._PictureBox.MouseMove -= new MouseEventHandler(_PictureBox_MouseMove);  
+                    if (pictureBox_platform.Controls.Contains(pc._PictureBox))
+                    {
+                        pictureBox_platform.Controls.Remove(pc._PictureBox);
+                        pc._PictureBox.MouseDoubleClick -= new MouseEventHandler(_PictureBox_MouseDoubleClick);
+                        pc._PictureBox.MouseMove -= new MouseEventHandler(_PictureBox_MouseMove);
+                    }
+                    else if (pictureBox_platform.Controls.Contains(pc._UCsensorValue))
+                    {
+                        pictureBox_platform.Controls.Remove(pc._UCsensorValue);
+                        pc._UCsensorValue.MouseDoubleClick -= new MouseEventHandler(_UCSensorControl_MouseDoubleClick);
+                        pc._UCsensorValue.MouseMove -= new MouseEventHandler(_PictureBox_MouseMove);
+                    }
                 }
 
             if (!clear)
@@ -229,10 +237,24 @@ namespace AutoHome
                     //controls zeichnen
                     foreach (platform_control pc in platform_selected._list_platform_control)
                     {
-                        pictureBox_platform.Controls.Add(pc._PictureBox);
-                        pictureBox_platform.Image = platform_selected.get_background_pic();
-                        pc._PictureBox.MouseMove += new MouseEventHandler(_PictureBox_MouseMove);
-                        pc._PictureBox.MouseDoubleClick += new MouseEventHandler(_PictureBox_MouseDoubleClick);
+                        if (pc._PictureBox != null)
+                        {
+                            pictureBox_platform.Controls.Add(pc._PictureBox);
+                            //pictureBox_platform.Image = platform_selected.get_background_pic();
+                            pc._PictureBox.MouseMove += new MouseEventHandler(_PictureBox_MouseMove);
+                            pc._PictureBox.MouseDoubleClick += new MouseEventHandler(_PictureBox_MouseDoubleClick);
+                        }
+                        else if (pc._UCsensorValue != null) {
+                            pictureBox_platform.Controls.Add(pc._UCsensorValue);
+                            pc._UCsensorValue.MouseMove += new MouseEventHandler(_PictureBox_MouseMove);
+                            pc._UCsensorValue.MouseDoubleClick += new MouseEventHandler(_UCSensorControl_MouseDoubleClick);
+
+                            //foreach (Control c in this.Controls)
+                            //{
+                            //    c.MouseMove += new MouseEventHandler(_UCSensorControl_MouseMove);
+                            //    c.MouseDoubleClick += new MouseEventHandler(_UCSensorControl_MouseDoubleClick);
+                            //}
+                        }
                     }
                     this.Text = var.tool_text + " Platform: [" + platform_selected._platform_name + "]";
                 }
@@ -240,9 +262,30 @@ namespace AutoHome
                     this.Text = var.tool_text + " Platform: [ choose platform ]";
             }
         }
+
         #endregion
 
         #region event handler
+        //public new event MouseEventHandler MouseDoubleClick //Click
+        //{
+        //    add
+        //    {
+        //        base.MouseDoubleClick += value;
+        //        foreach (Control control in Controls)
+        //        {
+        //            control.MouseDoubleClick += value;
+        //        }
+        //    }
+        //    remove
+        //    {
+        //        base.MouseDoubleClick -= value;
+        //        foreach (Control control in Controls)
+        //        {
+        //            control.MouseDoubleClick -= value;
+        //        }
+        //    }
+        //}
+
         //default control wird angeklickt, damit wird ein neues control zum definieren erstellt
         void c_MouseClick_new_platform(object sender, MouseEventArgs e)
         {
@@ -266,7 +309,7 @@ namespace AutoHome
         void _PictureBox_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             PBplatformControl c = (PBplatformControl)sender;
-            FrmConfigPlatform_controlDialog d = new FrmConfigPlatform_controlDialog(_list_aktor, c._platform_control, _list_plc, selected_plc);
+            FrmPlatformConfig_EditControlDialog d = new FrmPlatformConfig_EditControlDialog(_list_aktor, c._platform_control, _list_plc, selected_plc);
             
             DialogResult dr = d.ShowDialog();
             if (dr == DialogResult.OK)
@@ -281,20 +324,77 @@ namespace AutoHome
             }
         }
 
+        void _UCSensorControl_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (sender is Label) 
+                MessageBox.Show("label");
+
+
+            UC_SensorValue c = (UC_SensorValue)sender;
+            FrmPlatformConfig_EditControlDialog d = new FrmPlatformConfig_EditControlDialog(_list_aktor, c._platform_control, _list_plc, selected_plc);
+
+            DialogResult dr = d.ShowDialog();
+            if (dr == DialogResult.OK)
+            { //aktuator zuweisen oder ändern
+                c._platform_control.change_aktuator((aktuator)d.get_aktuator());
+                selected_plc = d.get_selected_plc();
+            }
+            else if (dr == DialogResult.Abort) //controll wird komplett gelöscht
+            {
+                pictureBox_platform.Controls.Remove(c._platform_control._UCsensorValue);
+                platform_selected._list_platform_control.Remove(c._platform_control);
+            }
+        }
+
         //control wird verschoben
         void _PictureBox_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
-                PBplatformControl mc = (PBplatformControl)sender;
-                mc.BringToFront();
-                mc.Location = new Point(mc.Location.X + e.Location.X - 30, mc.Location.Y + e.Location.Y - 30);
+                PBplatformControl mc;
+                UC_SensorValue uc;
+                if (sender is PBplatformControl)
+                {
+                    mc = (PBplatformControl)sender;
+                    mc.BringToFront();
+                    mc.Location = new Point(mc.Location.X + e.Location.X - 30, mc.Location.Y + e.Location.Y - 30);
 
-                //speichern der position für spätere bearbeitung
-                mc._platform_control._pos_x = mc.Location.X;
-                mc._platform_control._pos_y = mc.Location.Y;
+                    //speichern der position für spätere bearbeitung
+                    mc._platform_control._pos_x = mc.Location.X;
+                    mc._platform_control._pos_y = mc.Location.Y;
+                }
+                else if (sender is UC_SensorValue)
+                {
+                    uc = (UC_SensorValue)sender;
+                    uc.BringToFront();
+                    uc.Location = new Point(uc.Location.X + e.Location.X - 30, uc.Location.Y + e.Location.Y - 30);
+
+                    //speichern der position für spätere bearbeitung
+                    uc._platform_control._pos_x = uc.Location.X;
+                    uc._platform_control._pos_y = uc.Location.Y;
+                }
+                else
+                    return;
             }
         }
+        //void _UCSensorControl_MouseMove(object sender, MouseEventArgs e)
+        //{
+        //    if (e.Button == System.Windows.Forms.MouseButtons.Left)
+        //    {
+        //        UC_SensorValue mc = (UC_SensorValue)sender;
+        //        if (mc._platform_control != null)
+        //        {
+        //            mc.BringToFront();
+        //            mc.Location = new Point(mc.Location.X + e.Location.X - 30, mc.Location.Y + e.Location.Y - 30);
+
+        //            //speichern der position für spätere bearbeitung
+        //            mc._platform_control._pos_x = mc.Location.X;
+        //            mc._platform_control._pos_y = mc.Location.Y;
+        //        }
+        //        else
+        //            MessageBox.Show("FrmConfigPlatform -> _UCSensorControl_MouseMove()", "mc.platform_control==null");
+        //    }
+        //}
         #endregion 
 
         #region floor plan
@@ -348,7 +448,7 @@ namespace AutoHome
             this.BackColor = Color.Transparent;
             this.BringToFront();
             Image = GetPicByType(t);
-
+            this._type = t;
         }
         public static Bitmap GetPicByType(aktor_type t) {
             try
@@ -369,8 +469,8 @@ namespace AutoHome
             }
             catch (Exception e)
             {
-                //MessageBox.Show()
-                log.exception("FrmConfigPlatform", "error loading png from file ", e);
+                MessageBox.Show("FrmConfigPlatform: " + e.Message, "error loading png from file ");
+                //log.exception("FrmConfigPlatform", "error loading png from file ", e);
             }
             return null;
         }
@@ -399,122 +499,5 @@ namespace AutoHome
         }
     }
 
-    /// <summary>
-    /// Darstellung der aktoren in GUI (platform picture)
-    /// </summary>
-    class PBplatformControl : PictureBox
-    {
-        public platform_control _platform_control;
-        Label l;
-        private Frame lastFrame = null;
-
-        //neues element wird erstellt
-        public PBplatformControl(aktor_type t, platform_control platform_control)
-        {
-            _platform_control = platform_control;
-            pic_set_edit_pic(t);
-        }
-
-        //element wird durch deserialisieren erstellt
-        public PBplatformControl(platform_control platform_control, int pos_x, int pos_y)
-        {
-            _platform_control = platform_control;
-            Location = new Point(pos_x, pos_y);
-            pic_set_edit_pic(_platform_control._aktuator.GetAktType());
-
-            update_label_text();
-        }
-
-        public void update_label_text() {
-            if (_platform_control._aktuator != null)
-            {
-                if (l != null)
-                    l.Text = _platform_control._aktuator.Name;
-                else
-                {
-                    l = new Label();
-                    l.BackColor = Color.Transparent;
-                    l.Text = _platform_control._aktuator.Name;
-                    this.Controls.Add(l);
-                }
-            }
-            else {
-//pikture box sollte gelöscht sein.....
-                ;
-            }
-        }
-
-        //bild für FrmConfigPlatform wird erstellt
-        private void pic_set_edit_pic(aktor_type t)
-        {
-            Visible = true;
-            Size = new Size(60, 60);
-            this.BackColor = Color.Transparent;
-            this.BringToFront();
-            Image = PBdefaultControl.GetPicByType(t);
-        }
-
-        /// <summary>
-        /// aktuell dargestelltes bild wird je nach aktualdaten aus cpu angepasst
-        /// </summary>
-        public void pic_update(cpsLIB.Frame f)
-        {
-            //no content changed to last request
-            if (lastFrame != null && lastFrame.IsEqualPayload(f))
-                return;
-
-            this.BackColor = Color.Transparent;
-            this.Controls.Remove(l);
-            switch (_platform_control._aktuator.GetAktType())
-            {
-                case aktor_type.light:
-                    if (Convert.ToBoolean(f.getPayloadInt(2)))
-                        Image = new Bitmap(AutoHome.Properties.Resources.img_candle_on);
-                    //Image = System.Drawing.Bitmap.FromFile(var.img_candle_on);
-                    else
-                        Image = new Bitmap(Properties.Resources.img_candle_off);
-                    break;
-                case aktor_type.jalousie:
-                    if (f.isJob(DataIOType.GetState))
-                    {
-                        if (f.getPayloadInt(2) >= 0 && f.getPayloadInt(2) < 33)
-                            Image = new Bitmap(Properties.Resources.img_jalousie_up);
-                        else if (f.getPayloadInt(2) < 66)
-                            Image = new Bitmap(Properties.Resources.img_jalousie_middle);
-                        else if (f.getPayloadInt(2) <= 100)
-                            Image = new Bitmap(Properties.Resources.img_jalousie_down);
-                        //PictureBox pbu = new PictureBox();
-                        //pbu.Image = System.Drawing.Bitmap.FromFile(var.workingdir + "\\img_arrow_up.png");
-                        //this.Controls.Add(pbu);
-                    }
-                    break;
-                case aktor_type.heater:
-                    if (f.isJob(DataIOType.GetState)) {
-                        bool state_on = Convert.ToBoolean(f.getPayloadInt(2));
-                        bool ctrl_manual = Convert.ToBoolean(f.getPayloadInt(3));
-
-                        if (state_on && !ctrl_manual) //an und automatic
-                            Image = new Bitmap(Properties.Resources.img_heater_on);
-                        else if (state_on && ctrl_manual) //an und manuell
-                            Image = new Bitmap(Properties.Resources.img_heater_on_manual);
-                        else if (!state_on && !ctrl_manual) //aus und automatic
-                            Image = new Bitmap(Properties.Resources.img_heater_off);
-                        else if (!state_on && ctrl_manual) //aus und manuell
-                            Image = new Bitmap(Properties.Resources.img_heater_off_manual);
-                    }
-                    break;
-                case aktor_type.sensor:
-                    throw new Exception("pic_update() in FrmConfigPlatform for aktor_type.sensor (should be handled at UC_SensorValue)");
-                    
-                    //case aktor_type.undef:
-                    //    Image = System.Drawing.Bitmap.FromFile(var.workingdir + "\\img_undef.png");
-                    //    break;
-            }
-
-            lastFrame = f;
-        }
-
-
-    }
 
 }

@@ -447,7 +447,7 @@ namespace CpuPcStack
 
         private void UpdateFrameDataInGUI(Frame f) {
             
-            textBox_msg_payload_byte.Text = f.getPayloadByte();
+            textBox_msg_payload_byte.Text = f.getPayloadByteAsString();
             textBox_msg_payload_hex.Text = f.getPayloadHex();
             textBox_msg_payload_int.Text = f.ShowPayloadInt();
             textBox_msg_payload_ASCII.Text = f.getPayloadASCII();

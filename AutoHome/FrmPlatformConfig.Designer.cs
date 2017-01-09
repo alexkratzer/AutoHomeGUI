@@ -1,6 +1,6 @@
 ﻿namespace AutoHome
 {
-    partial class FrmConfigPlatform
+    partial class FrmPlatformConfig
     {
         /// <summary>
         /// Required designer variable.

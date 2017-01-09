@@ -28,45 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label_sensorName = new System.Windows.Forms.Label();
-            this.label_sensorValue = new System.Windows.Forms.Label();
             this.SuspendLayout();
-            // 
-            // label_sensorName
-            // 
-            this.label_sensorName.AutoSize = true;
-            this.label_sensorName.Location = new System.Drawing.Point(3, 0);
-            this.label_sensorName.Name = "label_sensorName";
-            this.label_sensorName.Size = new System.Drawing.Size(68, 13);
-            this.label_sensorName.TabIndex = 0;
-            this.label_sensorName.Text = "SensorName";
-            // 
-            // label_sensorValue
-            // 
-            this.label_sensorValue.AutoSize = true;
-            this.label_sensorValue.Location = new System.Drawing.Point(3, 13);
-            this.label_sensorValue.Name = "label_sensorValue";
-            this.label_sensorValue.Size = new System.Drawing.Size(33, 13);
-            this.label_sensorValue.TabIndex = 1;
-            this.label_sensorValue.Text = "value";
             // 
             // UC_SensorValue
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Transparent;
-            this.Controls.Add(this.label_sensorValue);
-            this.Controls.Add(this.label_sensorName);
+            this.BackColor = System.Drawing.Color.White;
+            this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Name = "UC_SensorValue";
-            this.Size = new System.Drawing.Size(86, 33);
+            this.Size = new System.Drawing.Size(171, 72);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Label label_sensorName;
-        private System.Windows.Forms.Label label_sensorValue;
     }
 }

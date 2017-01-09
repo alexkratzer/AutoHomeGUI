@@ -51,17 +51,17 @@
     <Compile Include="aktuator.cs" />
     <Compile Include="aktuator_control.cs" />
     <Compile Include="floor_plan.cs" />
-    <Compile Include="FrmConfigPlatform.cs">
+    <Compile Include="FrmPlatformConfig.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmConfigPlatform.Designer.cs">
-      <DependentUpon>FrmConfigPlatform.cs</DependentUpon>
+    <Compile Include="FrmPlatformConfig.Designer.cs">
+      <DependentUpon>FrmPlatformConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmConfigPlatform_controlDialog.cs">
+    <Compile Include="FrmPlatformConfig_EditControlDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmConfigPlatform_controlDialog.Designer.cs">
-      <DependentUpon>FrmConfigPlatform_controlDialog.cs</DependentUpon>
+    <Compile Include="FrmPlatformConfig_EditControlDialog.Designer.cs">
+      <DependentUpon>FrmPlatformConfig_EditControlDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="FrmLogPCS.cs">
       <SubType>Form</SubType>
@@ -76,8 +76,10 @@
       <DependentUpon>FrmMain_controlDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="log.cs" />
+    <Compile Include="PBplatformControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="platform.cs" />
-    <Compile Include="platform_label.cs" />
     <Compile Include="platform_control.cs" />
     <Compile Include="plc.cs" />
     <Compile Include="FrmJalousieEvent.cs">
@@ -156,11 +158,11 @@
       <DependentUpon>UC_SensorValue.cs</DependentUpon>
     </Compile>
     <Compile Include="var.cs" />
-    <EmbeddedResource Include="FrmConfigPlatform.resx">
-      <DependentUpon>FrmConfigPlatform.cs</DependentUpon>
+    <EmbeddedResource Include="FrmPlatformConfig.resx">
+      <DependentUpon>FrmPlatformConfig.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmConfigPlatform_controlDialog.resx">
-      <DependentUpon>FrmConfigPlatform_controlDialog.cs</DependentUpon>
+    <EmbeddedResource Include="FrmPlatformConfig_EditControlDialog.resx">
+      <DependentUpon>FrmPlatformConfig_EditControlDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmJalousieEvent.resx">
       <DependentUpon>FrmJalousieEvent.cs</DependentUpon>

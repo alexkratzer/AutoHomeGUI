@@ -202,14 +202,15 @@ namespace AutoHome
         public static void serialize_platform(List<platform> list)
         {
             try{
-                
-                foreach (platform p in list)
+                foreach (platform p in list) {
+                    //alle controls ohne zugewiesenem aktuator entfernen
+                    p._list_platform_control.RemoveAll(x => x._aktuator == null);
                     foreach (platform_control pc in p._list_platform_control)
                     {
                         pc._PictureBox = null; //alle bilder-controlls löschen da nicht serialisierbar
                         pc.serialize_init(); //mapped hash des zugehörigen aktors speichern
                     }
-
+                }
                 IFormatter formatter = new BinaryFormatter();
                 Stream stream = new FileStream(var.workingdir + "\\" + var.file_platform,
                                          FileMode.Create,
@@ -325,8 +326,7 @@ namespace AutoHome
                     foreach (platform p in list)
                         foreach (platform_control pc in p._list_platform_control)
                             pc.deserialize_init(list_aktuator);
-
-                    //log.msg("var", "deserialize_platform() DONE");
+                                //log.msg("var", "deserialize_platform() DONE");
                 }
                 else
                     log.msg("var", "deserialize_platform() FAILED -> File: \"" + path + "\" not found");

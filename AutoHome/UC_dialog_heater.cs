@@ -26,29 +26,29 @@ namespace AutoHome
             label_dbg_frame.Text = "->" + f.ToString();
 
             if (f.isJob(DataIOType.GetState)) {
-                //checkBox_ctrl_manuel.Checked = Convert.ToBoolean(f.getPayloadInt(3)); // -> override GUI input
-                //checkBox_ctrl_on.Checked = Convert.ToBoolean(f.getPayloadInt(4)); // -> override GUI input
-                radioButton_state_on.Checked = Convert.ToBoolean(f.getPayloadInt(2));
-                label_remaining_time.Text = f.getPayloadInt(5).ToString("##") + f.getPayloadInt(6).ToString("##");
+                //checkBox_ctrl_manuel.Checked = Convert.ToBoolean(f.getPayload(3)); // -> override GUI input
+                //checkBox_ctrl_on.Checked = Convert.ToBoolean(f.getPayload(4)); // -> override GUI input
+                radioButton_state_on.Checked = Convert.ToBoolean(f.getPayload(2));
+                label_remaining_time.Text = f.getPayload(5).ToString("##") + f.getPayload(6).ToString("##");
             }
             else if (f.isJob(DataIOType.GetParam) || f.isJob(DataIOType.SetParam) )
             {
-                checkBox_ctrl_manuel.Checked = Convert.ToBoolean(f.getPayloadInt(2));
-                checkBox_ctrl_on.Checked = Convert.ToBoolean(f.getPayloadInt(3));
-                textBox_time_on.Text = ((f.getPayloadInt(4) * 60) + f.getPayloadInt(5)).ToString();
-                textBox_time_off.Text = ((f.getPayloadInt(6) * 60) + f.getPayloadInt(7)).ToString();
-                textBox_start_h.Text = f.getPayloadInt(8).ToString();
-                textBox_start_m.Text = f.getPayloadInt(9).ToString();
-                textBox_stop_h.Text = f.getPayloadInt(10).ToString();
-                textBox_stop_m.Text = f.getPayloadInt(11).ToString();
-                textBox_stop_at_degree.Text = (Convert.ToDouble(f.getPayloadInt(12)) / 100).ToString();
-                radioButton_state_on.Checked = Convert.ToBoolean(f.getPayloadInt(13));
-                label_remaining_time.Text = f.getPayloadInt(14).ToString("##") + f.getPayloadInt(15).ToString("##");
+                checkBox_ctrl_manuel.Checked = Convert.ToBoolean(f.getPayload(2));
+                checkBox_ctrl_on.Checked = Convert.ToBoolean(f.getPayload(3));
+                textBox_time_on.Text = ((f.getPayload(4) * 60) + f.getPayload(5)).ToString();
+                textBox_time_off.Text = ((f.getPayload(6) * 60) + f.getPayload(7)).ToString();
+                textBox_start_h.Text = f.getPayload(8).ToString();
+                textBox_start_m.Text = f.getPayload(9).ToString();
+                textBox_stop_h.Text = f.getPayload(10).ToString();
+                textBox_stop_m.Text = f.getPayload(11).ToString();
+                textBox_stop_at_degree.Text = (Convert.ToDouble(f.getPayload(12)) / 100).ToString();
+                radioButton_state_on.Checked = Convert.ToBoolean(f.getPayload(13));
+                label_remaining_time.Text = f.getPayload(14).ToString("##") + f.getPayload(15).ToString("##");
                 button_send.Visible = false;
             }else if(f.isJob(DataIOType.SetState))
-                MessageBox.Show("rcv frame with unknown job (DataIOType.SetState): " + f.getPayloadInt(1) + " " + f.ToString());
+                MessageBox.Show("rcv frame with unknown job (DataIOType.SetState): " + f.getPayload(1) + " " + f.ToString());
             else
-                MessageBox.Show("rcv frame with unknown job: " + f.getPayloadInt(1) + " " + f.ToString());
+                MessageBox.Show("rcv frame with unknown job: " + f.getPayload(1) + " " + f.ToString());
         }
 
         private void button_send_Click(object sender, EventArgs e)

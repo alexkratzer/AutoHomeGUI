@@ -41,31 +41,31 @@ namespace AutoHome
         public void interprete(object _f)
         {
             Frame f = (Frame)_f;
-            show_state(Convert.ToBoolean(f.getPayloadInt(0)));
+            show_state(Convert.ToBoolean(f.getPayload(0)));
 
             if (f.isJob(DataIOType.GetParam) || f.isJob(DataIOType.SetParam))
             {
-                checkBox_switch.Checked = Convert.ToBoolean(f.getPayloadInt(2));
-                checkBox_light_enable_lux.Checked = Convert.ToBoolean(f.getPayloadInt(3));
-                textBox_light_lux_off.Text = f.getPayloadInt(4).ToString();
-                checkBox_light_enable_timer.Checked = Convert.ToBoolean(f.getPayloadInt(5));
+                checkBox_switch.Checked = Convert.ToBoolean(f.getPayload(2));
+                checkBox_light_enable_lux.Checked = Convert.ToBoolean(f.getPayload(3));
+                textBox_light_lux_off.Text = f.getPayload(4).ToString();
+                checkBox_light_enable_timer.Checked = Convert.ToBoolean(f.getPayload(5));
 
-                textBox_light_time_h.Text = f.getPayloadInt(6).ToString();
-                textBox_light_time_m.Text = f.getPayloadInt(7).ToString();
-                textBox_light_time_s.Text = f.getPayloadInt(8).ToString();
+                textBox_light_time_h.Text = f.getPayload(6).ToString();
+                textBox_light_time_m.Text = f.getPayload(7).ToString();
+                textBox_light_time_s.Text = f.getPayload(8).ToString();
             }
             else if (f.isJob(DataIOType.SetState))
             {
-                checkBox_switch.Checked = Convert.ToBoolean(f.getPayloadInt(2));
+                checkBox_switch.Checked = Convert.ToBoolean(f.getPayload(2));
             }
             else if (f.isJob(DataIOType.GetState))
             {
-                checkBox_switch.Checked = Convert.ToBoolean(f.getPayloadInt(2));
+                checkBox_switch.Checked = Convert.ToBoolean(f.getPayload(2));
 
                 label_remaining_on.Text = "remaining: " +
-                    f.getPayloadInt(3).ToString("##") + ":" +
-                    f.getPayloadInt(4).ToString("##") + ":" +
-                    f.getPayloadInt(5).ToString("##");
+                    f.getPayload(3).ToString("##") + ":" +
+                    f.getPayload(4).ToString("##") + ":" +
+                    f.getPayload(5).ToString("##");
             }
             else
                 throw new Exception("uc_light unknown job at interprete");

@@ -33,7 +33,7 @@ namespace AutoHome
 
         public void print_data(object _f) {
             Frame f = (Frame)_f;
-            list_UC_jalousie[f.getPayloadInt(2)].print_data(f);
+            list_UC_jalousie[f.getPayload(2)].print_data(f);
         
         }
     }

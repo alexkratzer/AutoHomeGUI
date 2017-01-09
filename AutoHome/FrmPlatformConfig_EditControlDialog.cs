@@ -9,12 +9,13 @@ using System.Windows.Forms;
 
 namespace AutoHome
 {
-    public partial class FrmConfigPlatform_controlDialog : Form
+    public partial class FrmPlatformConfig_EditControlDialog : Form
     {
         List<aktuator> _list_a;
         List<plc> _list_plc;
         platform_control _platform_control = null;
-        public FrmConfigPlatform_controlDialog(object list_a, object platform_control, object list_plc, int selected_plc)
+
+        public FrmPlatformConfig_EditControlDialog(object list_a, object platform_control, object list_plc, int selected_plc)
         {
             InitializeComponent();
             _list_a = (List<aktuator>)list_a;
@@ -30,7 +31,8 @@ namespace AutoHome
             {
                 fill_content(_platform_control._aktuator);
                 comboBox_aktor_name.SelectedItem = _platform_control._aktuator;
-            }else
+            }
+            else
                 this.WindowTitle = "select aktuator";
         }
 
@@ -69,7 +71,8 @@ namespace AutoHome
         private void fill_selectable() {
             comboBox_aktor_name.Items.Clear();
             foreach (aktuator akt in _list_a)
-                if (akt._type == _platform_control._aktuator.GetAktType())
+            {
+                if (akt._type == _platform_control._type)
                     if (comboBox_plc.SelectedItem != null)
                     {
                         if (comboBox_plc.SelectedItem == akt._plc)
@@ -77,6 +80,7 @@ namespace AutoHome
                     }
                     else
                         comboBox_aktor_name.Items.Add(akt);
+            }
         }
 
         private void FrmConfigPlatform_controlDialog_Load(object sender, EventArgs e)

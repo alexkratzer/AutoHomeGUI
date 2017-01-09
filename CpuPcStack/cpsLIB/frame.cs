@@ -156,14 +156,14 @@ namespace cpsLIB
         #region getter IO Data
         public bool isJob(DataIOType jobType)
         {
-            if (getPayloadInt(1) == (Int16)jobType)
+            if (getPayload(1) == (Int16)jobType)
                 return true;
             else
                 return false;
         }
         public bool isIOIndex(int index)
         {
-            if (getPayloadInt(0) == index)
+            if (getPayload(0) == index)
                 return true;
             else
                 return false;
@@ -171,7 +171,7 @@ namespace cpsLIB
         #endregion
 
         #region getter
-        private byte[] getPayload()
+        private byte[] getPayloadByte()
         {
             return FramePayloadByte;
         }
@@ -179,7 +179,7 @@ namespace cpsLIB
         //{
         //    return FramePayloadByte[i];
         //}
-        public Int16 getPayloadInt(int i)
+        public Int16 getPayload(int i)
         {
             int index = i * 2;
             if (index >= FramePayloadByte.Length)
@@ -201,7 +201,7 @@ namespace cpsLIB
                 return false;
         }
         public bool IsEqualPayload(Frame f) {
-            if (f.getPayload() == getPayload())
+            if (f.getPayloadByte() == getPayloadByte())
                 return true;
             else
                 return false;    
@@ -216,13 +216,14 @@ namespace cpsLIB
         }
 
         //TODO: für IBS um an der GUI darzustellen. später evtl rausnehmen
-        public string getPayloadByte() {
+        public string getPayloadByteAsString() {
             string s = string.Empty;
 
             for (int i = 0; i < FramePayloadByte.Length; i++)
                 s += FramePayloadByte[i].ToString() + ", ";
             return s;
         }
+
         public string getPayloadHex()
         {
             return BitConverter.ToString(FramePayloadByte);
@@ -262,7 +263,7 @@ namespace cpsLIB
             string s = string.Empty;
 
             for (int i = 0; i < FramePayloadByte.Length / 2; i++)
-                s += getPayloadInt(i) + "-";
+                s += getPayload(i) + "-";
             s.TrimEnd('-', ' ');
             return s;
         }

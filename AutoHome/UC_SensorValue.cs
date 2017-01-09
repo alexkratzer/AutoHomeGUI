@@ -14,29 +14,50 @@ namespace AutoHome
     /// </summary>
     partial class UC_SensorValue : UserControl
     {
-        private platform_control _platform_control;
-        Label l;
+        public platform_control _platform_control;
+        Label label_sensorName;
+        Label label_sensorValue;
         private float lastVal = 0;
 
-        public UC_SensorValue()
-        {
-            InitializeComponent();
-        }
-        
         //neues element wird erstellt
         public UC_SensorValue(platform_control platform_control)
         {
             _platform_control = platform_control;
-            //pic_set_edit_pic(t);
+            init_fill_content();
+            label_sensorValue.Visible = false;
         }
         //element wird durch deserialisieren erstellt
         public UC_SensorValue(platform_control platform_control, int pos_x, int pos_y)
         {
             _platform_control = platform_control;
             Location = new Point(pos_x, pos_y);
-            //pic_set_edit_pic(_platform_control._aktuator.GetAktType());
+            init_fill_content();
+            //this.BackColor = Color.AliceBlue;
+            //this.BorderStyle = BorderStyle.FixedSingle;
+            //update_label_text();
+        }
 
-            update_label_text();
+        private void init_fill_content() {
+            label_sensorName = new Label();
+            label_sensorValue = new Label();
+            label_sensorName.Location = new Point(2, 2);
+            label_sensorValue.Location = new Point(2, 24);
+            label_sensorName.BackColor = Color.GreenYellow;//Color.Transparent;
+            label_sensorValue.BackColor = Color.GreenYellow; 
+
+            if (_platform_control != null && _platform_control._aktuator != null)
+                label_sensorName.Text = _platform_control._aktuator.name();
+            else
+                label_sensorName.Text = "choose";
+            label_sensorValue.Text = "0";
+
+            this.Controls.Add(label_sensorName);
+            this.Controls.Add(label_sensorValue);
+
+            Size = new Size(100, 40);
+            //this.BackColor = Color.Transparent;
+            this.BackColor = Color.AliceBlue;
+            this.BorderStyle = BorderStyle.FixedSingle;
         }
 
         //bild für FrmConfigPlatform wird erstellt -> TODO: notwendig?
@@ -54,31 +75,10 @@ namespace AutoHome
             //no content changed to last request
             if (lastVal==value)
                 return;
-
-            label_sensorValue.Text = value.ToString();
-
+            if(label_sensorValue!=null)
+                label_sensorValue.Text = value.ToString();
+            label_sensorValue.Visible = true;
             lastVal = value;
-        }
-
-        public void update_label_text()
-        {
-            if (_platform_control._aktuator != null)
-            {
-                if (l != null)
-                    l.Text = _platform_control._aktuator.Name;
-                else
-                {
-                    l = new Label();
-                    l.BackColor = Color.Transparent;
-                    l.Text = _platform_control._aktuator.Name;
-                    this.Controls.Add(l);
-                }
-            }
-            else
-            {
-                //pikture box sollte gelöscht sein.....
-                ;
-            }
         }
 
     }

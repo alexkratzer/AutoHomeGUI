@@ -31,8 +31,8 @@ namespace AutoHome
 
         //TODO: extract Form Dbg -> //FrmDbg frmdbg;
 
-        public const Int16 cpu_net_management = 10;
-        public const Int16 ID_ETA = 11;
+        //public const Int16 cpu_net_management = 10;
+        //public const Int16 ID_ETA = 11;
         FrmLogPCS FrmLog; 
 
         #region init / connect / close
@@ -58,6 +58,7 @@ namespace AutoHome
             list_plc = var.deserialize_plc();
             list_aktuator = var.deserialize_aktor(list_plc);
             list_platform = var.deserialize_platform(list_aktuator);
+            log.msg(this, "### start AutoHome GUI " + tool_version + " ###");
         }
 
         private void safe_projekt_data() {
@@ -249,7 +250,7 @@ namespace AutoHome
         {
             paint_platform(true);
 
-            FrmConfigPlatform FCP = new FrmConfigPlatform(list_platform, list_aktuator, list_plc, this);
+            FrmPlatformConfig FCP = new FrmPlatformConfig(list_platform, list_aktuator, list_plc, this);
             FCP.ShowDialog();
         }
 
@@ -762,10 +763,13 @@ namespace AutoHome
                 {
                     if (pc._PictureBox != null) //platform_control mit sensor_value haben keine PictrueBox sondern UC_SensorValue
                     {
-                        pictureBox_platform.Controls.Remove(pc._PictureBox);
                         pc._PictureBox.MouseDown -= new MouseEventHandler(_PictureBox_MouseDown);
+                        pictureBox_platform.Controls.Remove(pc._PictureBox);
                     }
+                    else if (pc._UCsensorValue != null)
+                        pictureBox_platform.Controls.Remove(pc._UCsensorValue);
                 }
+            pictureBox_platform.Image = null;
 
             if (!clear)
             {//event handler zuweisen und bild zeichnen
@@ -776,16 +780,17 @@ namespace AutoHome
                         {
                             if (pc._PictureBox != null)//platform_control mit sensor_value haben keine PictrueBox sondern UC_SensorValue
                             {
-                                pictureBox_platform.Controls.Add(pc._PictureBox);
-                                pictureBox_platform.Image = p_selected.get_background_pic();
                                 pc._PictureBox.MouseDown += new MouseEventHandler(_PictureBox_MouseDown);
+                                pictureBox_platform.Controls.Add(pc._PictureBox);
                             }
-                            else {
+                            else if(pc._UCsensorValue != null)
                                 pictureBox_platform.Controls.Add(pc._UCsensorValue);
-                            }
                         }
                 if (p_selected != null && p_selected._floor_plan != null)
+                {
                     pictureBox_platform.Size = new Size(p_selected._floor_plan._picture_width, p_selected._floor_plan._picture_heigth);
+                    pictureBox_platform.Image = p_selected.get_background_pic();
+                }
             }
         }
 
@@ -797,7 +802,7 @@ namespace AutoHome
         private void pictureBox_platform_SizeChanged(object sender, EventArgs e)
         {
             //TODO größe anpassen
-            this.Size = new Size(pictureBox_platform.Size.Width + 250, pictureBox_platform.Size.Height + 130) ;
+            this.Size = new Size(pictureBox_platform.Size.Width + 50, pictureBox_platform.Size.Height + 130) ;
         }
         #endregion
 
@@ -896,8 +901,8 @@ namespace AutoHome
         }
         private void timer_stop()
         {
-            timer_MngData.Stop();
             //timer_refresh_main.Stop();
+            timer_MngData.Stop();
             timer_refresh_controls.Stop();
             timer_footer_connection_status.Stop();
         }
@@ -938,36 +943,51 @@ namespace AutoHome
 
         void timer_refresh_control_Tick(object sender, EventArgs e)
         {
-            Dictionary<Int16, plc> sensor_dic = new Dictionary<short, plc>(); //enthält alle projektierten aktuatoren vom typ sensor
-            //List<Int16, plc> list_sensor = new List<short>();
-            //############################### automatisches update der controlls #################################################
-            if (pictureBox_platform.Visible)
-                //bei kaputem serialise file keine elemente
-                if (list_platform.Any())
-                    if (comboBox_platform.SelectedItem != null)
-                        foreach (platform_control pc in ((platform)comboBox_platform.SelectedItem)._list_platform_control)
-                            //controlls denen kein aktor zugewiesen ist nicht beachten
-                            if (pc._aktuator != null && pc._aktuator._plc != null) 
-                                //sensor controlls sammeln und in einzelnen management frame versenden
-                                if (pc._aktuator.GetAktType() == aktor_type.sensor) 
-                                    sensor_dic.Add(pc._aktuator.Index, pc._aktuator._plc);
-                                else
-                                    pc._aktuator.plc_send_IO(DataIOType.GetState);
+            try
+            {
+                Dictionary<Int16, plc> sensor_dic = new Dictionary<short, plc>(); //enthält alle projektierten aktuatoren vom typ sensor
 
-            //send sensor value request
-            foreach (plc p in list_plc) {
-                List<Int16> list_sensor = new List<short>();
-                foreach (KeyValuePair<Int16, plc> var in sensor_dic)
-                    if (p == var.Value)
-                        list_sensor.Add(var.Key);
+                //############################### automatisches update der controlls #################################################
+                if (pictureBox_platform.Visible)
+                    //bei kaputem serialise file keine elemente
+                    if (list_platform.Any())
+                        if (comboBox_platform.SelectedItem != null)
+                            foreach (platform_control pc in ((platform)comboBox_platform.SelectedItem)._list_platform_control)
+                                //controlls denen kein aktor zugewiesen ist nicht beachten
+                                if (pc._aktuator != null && pc._aktuator._plc != null)
+                                    //sensor controlls sammeln und in einzelnen management frame versenden
+                                    if (pc._aktuator.GetAktType() == aktor_type.sensor)
+                                    {
+                                        try
+                                        {
+                                            sensor_dic.Add(pc._aktuator.Index, pc._aktuator._plc);
+                                        }
+                                        catch (Exception ex) {
+                                            log.exception(this, "timer_refresh_control_Tick " + Environment.NewLine + "Key: " + pc._aktuator.Index + " Value: " + pc._aktuator._plc, ex);
+                                        }
+                                    }
+                                    else
+                                        pc._aktuator.plc_send_IO(DataIOType.GetState);
 
-                //if (list_sensor.Any())
-                if (list_sensor.Count > 0)
+                //send sensor value request
+                foreach (plc p in list_plc)
                 {
-                    //sende frame an plc
-                    list_sensor.Insert(0, (Int16)DataMngType.GetPlcSensorValues);
-                    p.send(FrameHeaderFlag.MngData, list_sensor.ToArray());
+                    List<Int16> list_sensor = new List<short>();
+                    foreach (KeyValuePair<Int16, plc> var in sensor_dic)
+                        if (p == var.Value)
+                            list_sensor.Add(var.Key);
+
+                    //if (list_sensor.Any())
+                    if (list_sensor.Count > 0)
+                    {
+                        //sende frame an plc
+                        list_sensor.Insert(0, (Int16)DataMngType.GetPlcSensorValues);
+                        p.send(FrameHeaderFlag.MngData, list_sensor.ToArray());
+                    }
                 }
+            }
+            catch (Exception ex) {
+                log.exception(this, "timer_refresh_control_Tick -> evtl timer bei FrmPlatformConfig stoppen...", ex);
             }
         }
         #endregion
@@ -1017,11 +1037,11 @@ namespace AutoHome
             {
                 //statusStrip_bottom contains CPSstatus Label with no p.Tag
                 if (p.Tag != null && (f.client.RemoteIp == ((plc)p.Tag).getClient().RemoteIp)) {
-                    try
-                    {
-                        if (f.getPayloadInt(0) == (Int16)DataMngType.GetPlcTime)
+                    //try
+                    //{
+                        if (f.getPayload(0) == (Int16)DataMngType.GetPlcTime)
                         {
-                            DateTime clockPlc = new DateTime(f.getPayloadInt(1), f.getPayloadInt(2), f.getPayloadInt(3), f.getPayloadInt(4), f.getPayloadInt(5), f.getPayloadInt(6));
+                            DateTime clockPlc = new DateTime(f.getPayload(1), f.getPayload(2), f.getPayload(3), f.getPayload(4), f.getPayload(5), f.getPayload(6));
 
                             p.Text = p.Name + " [" + clockPlc.ToString("HH:mm:ss") + "]";
                             p.BackColor = Color.Transparent;
@@ -1040,12 +1060,12 @@ namespace AutoHome
                                 p.BackColor = Color.Yellow;
                             }
                         }
-                        else if (f.getPayloadInt(0) == (Int16)DataMngType.SetPlcTime) {
-                            Int16 retval = f.getPayloadInt(1);
+                        else if (f.getPayload(0) == (Int16)DataMngType.SetPlcTime) {
+                            Int16 retval = f.getPayload(1);
                             if(retval>0)
-                                MessageBox.Show("retval: " + f.getPayloadInt(1) + Environment.NewLine + " see TIA Help [WR_SYS_T: Set time-of-day]", "SetPlcTime: ERROR");
+                                MessageBox.Show("retval: " + f.getPayload(1) + Environment.NewLine + " see TIA Help [WR_SYS_T: Set time-of-day]", "SetPlcTime: ERROR");
                         }
-                        else if (f.getPayloadInt(0) == (Int16)DataMngType.GetPlcSensorValues)
+                        else if (f.getPayload(0) == (Int16)DataMngType.GetPlcSensorValues)
                         {
                             if (pictureBox_platform.Visible)
                             {
@@ -1054,17 +1074,17 @@ namespace AutoHome
                                 {
                                     FrmLog.AddLog("SensorVal: " + f.ShowPayloadInt());
                                     Dictionary<Int16, float> dicSensorVal = new Dictionary<short, float>();
-                                    dicSensorVal.Clear();
+                                    //dicSensorVal.Clear();
                                     //komplettes frame durchgehen und auspacken. für jeden sensorwert entsprechendes controll befüllen
                                     float SensorValue;
                                     for (int i = 3; i < (f.getPaloadIntLengt()); i = i + 3)
                                     {
-                                        if (f.getPayloadInt(i + 2) != 0)
-                                            SensorValue = (float) f.getPayloadInt(i + 1) / (float)f.getPayloadInt(i + 2);
+                                        if (f.getPayload(i + 2) != 0)
+                                            SensorValue = (float) f.getPayload(i + 1) / (float)f.getPayload(i + 2);
                                         else
-                                            SensorValue = f.getPayloadInt(i + 1);
+                                            SensorValue = f.getPayload(i + 1);
 
-                                        dicSensorVal.Add(f.getPayloadInt(i), SensorValue);
+                                        dicSensorVal.Add(f.getPayload(i), SensorValue);
                                     }
 
                                     p_selected.update_SensorControl(dicSensorVal);
@@ -1075,15 +1095,15 @@ namespace AutoHome
                                 }
                             }
                         }
-                    }
-                    catch (Exception e) {
-                        //TODO: globalen error log mit notify in GUI einrichten
-                        //MessageBox.Show(e.Message, "exception")
-                            FrmLog.AddLog("Exception interprete_MngData: " + e.Message);
-                        ;
-                    }
+                    //}
+                    //catch (Exception e) {
+                    //    //TODO: globalen error log mit notify in GUI einrichten
+                    //    //MessageBox.Show(e.Message, "exception")
+                    //        FrmLog.AddLog("Exception interprete_MngData: " + e.Message);
+                    //    ;
+                    //}
 
-
+                    break; //da richtige plc zu ToolStripDropDownButton bearbeitet wurde schleife beenden
                 }   
             }
         }

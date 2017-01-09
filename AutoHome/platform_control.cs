@@ -10,7 +10,7 @@ namespace AutoHome
     {
         public int _pos_x;
         public int _pos_y;
-        //public aktor_type _type;
+        public aktor_type _type; //zwischenspeichern damit in FrmConfigPlatform_EditControlDialog
 
         [NonSerialized]//nicht serialisieren da sonst keine referenz auf das aktuelle objekt vorhanden ist sondern mit alten kopien gearbeitet wird
         public aktuator _aktuator;
@@ -28,6 +28,7 @@ namespace AutoHome
             if (_aktuator != null)
                 mapped_aktuator_hash = _aktuator.get_aktor_hash();
         }
+
         public void deserialize_init(List<aktuator> list_aktor)
         {
             foreach (aktuator _akt_in_list in list_aktor)
@@ -41,18 +42,21 @@ namespace AutoHome
 
             //wird beim deserialisieren aufgerufen da PictureBox nicht serialisierbar ist
             //sollte erst passieren nachdem der aktuator zugewiesen ist da sonst die label info nicht vorhanden ist
-            if (_aktuator.GetAktType() == aktor_type.sensor)
-                _UCsensorValue = new UC_SensorValue(this, _pos_x, _pos_y);
-            else
-                _PictureBox = new PBplatformControl(this, _pos_x, _pos_y);
+            if (_aktuator != null)
+            {
+                if (_aktuator.GetAktType() == aktor_type.sensor)
+                    _UCsensorValue = new UC_SensorValue(this, _pos_x, _pos_y);
+                else
+                    _PictureBox = new PBplatformControl(this, _pos_x, _pos_y);
+            }
         }
 
         //anlegen eines neuen controls ohne ausgewähltem aktuator
         public platform_control(aktor_type t)
         {
-            //_type = t;
-            if (_aktuator.GetAktType() == aktor_type.sensor)
-                _UCsensorValue = new UC_SensorValue();
+            _type = t; 
+            if (t == aktor_type.sensor)
+                _UCsensorValue = new UC_SensorValue(this);
             else
                 _PictureBox = new PBplatformControl(t, this);
         }
@@ -60,10 +64,10 @@ namespace AutoHome
         public void change_aktuator(aktuator a)
         {
             _aktuator = a;
-            if (_aktuator.GetAktType() == aktor_type.sensor)
-                _UCsensorValue.update_label_text();
-            else
-                _PictureBox.update_label_text();
+            //if (_aktuator.GetAktType() == aktor_type.sensor)
+            //    _UCsensorValue.update_label_text();
+            //else
+            //    _PictureBox.update_label_text();
         }
 
         public void update_control(cpsLIB.Frame f)

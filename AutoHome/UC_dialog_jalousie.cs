@@ -31,18 +31,18 @@ namespace AutoHome
             if (f.isJob(DataIOType.GetState) || f.isJob(DataIOType.SetState))
             {
                 this.BackColor = Control.DefaultBackColor;
-                textBox_position.Text = f.getPayloadInt(2).ToString();
-                textBox_angle.Text = f.getPayloadInt(3).ToString();
+                textBox_position.Text = f.getPayload(2).ToString();
+                textBox_angle.Text = f.getPayload(3).ToString();
             }
             else if (f.isJob(DataIOType.GetParam) || f.isJob(DataIOType.SetParam))
             {
-                textBox_wind_go_up.Text = (Convert.ToDouble(f.getPayloadInt(2)) / 100).ToString("0.0");
-                checkBox_initJalousie.Checked = Convert.ToBoolean(f.getPayloadInt(3));
+                textBox_wind_go_up.Text = (Convert.ToDouble(f.getPayload(2)) / 100).ToString("0.0");
+                checkBox_initJalousie.Checked = Convert.ToBoolean(f.getPayload(3));
             }
             else if (f.isJob(DataIOType.GetParamJalousieEvent) || f.isJob(DataIOType.SetParamJalousieEvent))
                 LoadData_event(f);
             else
-                MessageBox.Show("rcv frame with unknown job: " + f.getPayloadInt(1) + " " + f.ToString());
+                MessageBox.Show("rcv frame with unknown job: " + f.getPayload(1) + " " + f.ToString());
         }
 
         #region event
@@ -60,7 +60,7 @@ namespace AutoHome
         public void LoadData_event(object _f)
         {
             Frame f = (Frame)_f;
-            list_UC_jalousie[f.getPayloadInt(2)].print_data(f);
+            list_UC_jalousie[f.getPayload(2)].print_data(f);
         }
         #endregion
 

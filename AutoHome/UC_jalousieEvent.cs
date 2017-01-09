@@ -28,14 +28,14 @@ namespace AutoHome
 
         public void print_data(object _f) {
             Frame f = (Frame)_f;
-            textBox_event_time_hour.Text = f.getPayloadInt(3).ToString();
-            textBox_event_time_min.Text = f.getPayloadInt(4).ToString();
-            textBox_event_time_sec.Text = f.getPayloadInt(5).ToString();
-            comboBox_event_position.Text = f.getPayloadInt(6).ToString();
-            comboBox_event_angle.Text = f.getPayloadInt(7).ToString();
-            checkBox_event_enable.Checked = Convert.ToBoolean(f.getPayloadInt(8));
-            radioButton_event_driving_up.Checked = Convert.ToBoolean(f.getPayloadInt(9));
-            radioButton_event_drive_down.Checked = !Convert.ToBoolean(f.getPayloadInt(9));
+            textBox_event_time_hour.Text = f.getPayload(3).ToString();
+            textBox_event_time_min.Text = f.getPayload(4).ToString();
+            textBox_event_time_sec.Text = f.getPayload(5).ToString();
+            comboBox_event_position.Text = f.getPayload(6).ToString();
+            comboBox_event_angle.Text = f.getPayload(7).ToString();
+            checkBox_event_enable.Checked = Convert.ToBoolean(f.getPayload(8));
+            radioButton_event_driving_up.Checked = Convert.ToBoolean(f.getPayload(9));
+            radioButton_event_drive_down.Checked = !Convert.ToBoolean(f.getPayload(9));
             button_set_event.Visible = false;
         }
 

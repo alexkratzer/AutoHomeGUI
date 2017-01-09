@@ -1,6 +1,6 @@
 ﻿namespace AutoHome
 {
-    partial class FrmConfigPlatform_controlDialog
+    partial class FrmPlatformConfig_EditControlDialog
     {
         /// <summary>
         /// Required designer variable.
