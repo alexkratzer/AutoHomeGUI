@@ -37,6 +37,9 @@ namespace AutoHome
             update_label_text();
         }
 
+        /// <summary>
+        /// call from FrmPlatformConfig if aktuator of control is changed or set
+        /// </summary>
         public void update_label_text()
         {
             if (_platform_control._aktuator != null)
@@ -52,10 +55,8 @@ namespace AutoHome
                 }
             }
             else
-            {
-                //pikture box sollte gelöscht sein.....
-                ;
-            }
+                log.msg(this, "call update_label_text() with _platform_control._aktuator == null");
+                //picture box sollte gelöscht sein.....
         }
 
         //bild für FrmConfigPlatform wird erstellt

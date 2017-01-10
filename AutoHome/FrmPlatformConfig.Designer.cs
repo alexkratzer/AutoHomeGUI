@@ -35,13 +35,14 @@
             this.platformToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.makeNewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.floorPlanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.controlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dbghideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.floorPlanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.comboBox_floor_plan = new System.Windows.Forms.ComboBox();
-            this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_platform)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -109,29 +110,6 @@
             this.deleteToolStripMenuItem.Text = "delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
-            // controlToolStripMenuItem
-            // 
-            this.controlToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.deleteAllToolStripMenuItem,
-            this.dbghideToolStripMenuItem});
-            this.controlToolStripMenuItem.Name = "controlToolStripMenuItem";
-            this.controlToolStripMenuItem.Size = new System.Drawing.Size(57, 23);
-            this.controlToolStripMenuItem.Text = "control";
-            // 
-            // deleteAllToolStripMenuItem
-            // 
-            this.deleteAllToolStripMenuItem.Name = "deleteAllToolStripMenuItem";
-            this.deleteAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.deleteAllToolStripMenuItem.Text = "delete all";
-            this.deleteAllToolStripMenuItem.Click += new System.EventHandler(this.deleteAllToolStripMenuItem_Click);
-            // 
-            // dbghideToolStripMenuItem
-            // 
-            this.dbghideToolStripMenuItem.Name = "dbghideToolStripMenuItem";
-            this.dbghideToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.dbghideToolStripMenuItem.Text = "dbg_hide";
-            this.dbghideToolStripMenuItem.Click += new System.EventHandler(this.dbghideToolStripMenuItem_Click);
-            // 
             // floorPlanToolStripMenuItem
             // 
             this.floorPlanToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -144,9 +122,39 @@
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.importToolStripMenuItem.Text = "import";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
+            // 
+            // exportToolStripMenuItem
+            // 
+            this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.exportToolStripMenuItem.Text = "export";
+            this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
+            // 
+            // controlToolStripMenuItem
+            // 
+            this.controlToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.deleteAllToolStripMenuItem,
+            this.dbghideToolStripMenuItem});
+            this.controlToolStripMenuItem.Name = "controlToolStripMenuItem";
+            this.controlToolStripMenuItem.Size = new System.Drawing.Size(122, 23);
+            this.controlToolStripMenuItem.Text = "control - evtl delete";
+            // 
+            // deleteAllToolStripMenuItem
+            // 
+            this.deleteAllToolStripMenuItem.Name = "deleteAllToolStripMenuItem";
+            this.deleteAllToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.deleteAllToolStripMenuItem.Text = "delete all";
+            this.deleteAllToolStripMenuItem.Click += new System.EventHandler(this.deleteAllToolStripMenuItem_Click);
+            // 
+            // dbghideToolStripMenuItem
+            // 
+            this.dbghideToolStripMenuItem.Name = "dbghideToolStripMenuItem";
+            this.dbghideToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.dbghideToolStripMenuItem.Text = "dbg_hide";
+            this.dbghideToolStripMenuItem.Click += new System.EventHandler(this.dbghideToolStripMenuItem_Click);
             // 
             // comboBox_floor_plan
             // 
@@ -158,24 +166,27 @@
             this.comboBox_floor_plan.SelectedIndexChanged += new System.EventHandler(this.comboBox_floor_plan_SelectedIndexChanged);
             this.comboBox_floor_plan.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.comboBox_floor_plan_KeyPress);
             // 
-            // exportToolStripMenuItem
+            // label1
             // 
-            this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.exportToolStripMenuItem.Text = "export";
-            this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(1129, 191);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.TabIndex = 38;
+            this.label1.Text = "label1";
             // 
-            // FrmConfigPlatform
+            // FrmPlatformConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1179, 793);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.comboBox_floor_plan);
             this.Controls.Add(this.button_new_platform_name_save);
             this.Controls.Add(this.pictureBox_platform);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "FrmConfigPlatform";
+            this.Name = "FrmPlatformConfig";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.Text = "FrmConfigPlatform";
@@ -205,5 +216,6 @@
         private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
         private System.Windows.Forms.ComboBox comboBox_floor_plan;
         private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
+        private System.Windows.Forms.Label label1;
     }
 }

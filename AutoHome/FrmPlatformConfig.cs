@@ -221,8 +221,14 @@ namespace AutoHome
                     else if (pictureBox_platform.Controls.Contains(pc._UCsensorValue))
                     {
                         pictureBox_platform.Controls.Remove(pc._UCsensorValue);
-                        pc._UCsensorValue.MouseDoubleClick -= new MouseEventHandler(_UCSensorControl_MouseDoubleClick);
+                        pc._UCsensorValue.MouseDoubleClick -= new MouseEventHandler(_PictureBox_MouseDoubleClick);
                         pc._UCsensorValue.MouseMove -= new MouseEventHandler(_PictureBox_MouseMove);
+
+                        foreach (Control c in pc._UCsensorValue.Controls)
+                        {
+                            c.MouseMove -= new MouseEventHandler(_PictureBox_MouseMove);
+                            c.MouseDoubleClick -= new MouseEventHandler(_PictureBox_MouseDoubleClick);
+                        }
                     }
                 }
 
@@ -247,13 +253,13 @@ namespace AutoHome
                         else if (pc._UCsensorValue != null) {
                             pictureBox_platform.Controls.Add(pc._UCsensorValue);
                             pc._UCsensorValue.MouseMove += new MouseEventHandler(_PictureBox_MouseMove);
-                            pc._UCsensorValue.MouseDoubleClick += new MouseEventHandler(_UCSensorControl_MouseDoubleClick);
+                            pc._UCsensorValue.MouseDoubleClick += new MouseEventHandler(_PictureBox_MouseDoubleClick);
 
-                            //foreach (Control c in this.Controls)
-                            //{
-                            //    c.MouseMove += new MouseEventHandler(_UCSensorControl_MouseMove);
-                            //    c.MouseDoubleClick += new MouseEventHandler(_UCSensorControl_MouseDoubleClick);
-                            //}
+                            foreach (Control c in pc._UCsensorValue.Controls)
+                            {
+                                c.MouseMove += new MouseEventHandler(_PictureBox_MouseMove);
+                                c.MouseDoubleClick += new MouseEventHandler(_PictureBox_MouseDoubleClick);
+                            }
                         }
                     }
                     this.Text = var.tool_text + " Platform: [" + platform_selected._platform_name + "]";
@@ -266,26 +272,6 @@ namespace AutoHome
         #endregion
 
         #region event handler
-        //public new event MouseEventHandler MouseDoubleClick //Click
-        //{
-        //    add
-        //    {
-        //        base.MouseDoubleClick += value;
-        //        foreach (Control control in Controls)
-        //        {
-        //            control.MouseDoubleClick += value;
-        //        }
-        //    }
-        //    remove
-        //    {
-        //        base.MouseDoubleClick -= value;
-        //        foreach (Control control in Controls)
-        //        {
-        //            control.MouseDoubleClick -= value;
-        //        }
-        //    }
-        //}
-
         //default control wird angeklickt, damit wird ein neues control zum definieren erstellt
         void c_MouseClick_new_platform(object sender, MouseEventArgs e)
         {
@@ -308,42 +294,62 @@ namespace AutoHome
         //control wird angeklickt
         void _PictureBox_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            PBplatformControl c = (PBplatformControl)sender;
-            FrmPlatformConfig_EditControlDialog d = new FrmPlatformConfig_EditControlDialog(_list_aktor, c._platform_control, _list_plc, selected_plc);
-            
-            DialogResult dr = d.ShowDialog();
-            if (dr == DialogResult.OK)
-            { //aktuator zuweisen oder ändern
-                c._platform_control.change_aktuator((aktuator)d.get_aktuator());
-                selected_plc = d.get_selected_plc();
-            }
-            else if (dr == DialogResult.Abort) //controll wird komplett gelöscht
+            if (sender is PBplatformControl)
             {
-                pictureBox_platform.Controls.Remove(c._platform_control._PictureBox);
-                platform_selected._list_platform_control.Remove(c._platform_control);
+                PBplatformControl pc = (PBplatformControl)sender;
+                FrmPlatformConfig_EditControlDialog d = new FrmPlatformConfig_EditControlDialog(_list_aktor, pc._platform_control, _list_plc, selected_plc);
+
+                DialogResult dr = d.ShowDialog();
+                if (dr == DialogResult.OK)
+                { //aktuator zuweisen oder ändern
+                    pc._platform_control.change_aktuator((aktuator)d.get_aktuator());
+                    selected_plc = d.get_selected_plc();
+                }
+                else if (dr == DialogResult.Abort) //controll wird komplett gelöscht
+                {
+                    pictureBox_platform.Controls.Remove(pc._platform_control._PictureBox);
+                    platform_selected._list_platform_control.Remove(pc._platform_control);
+                }
             }
-        }
-
-        void _UCSensorControl_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (sender is Label) 
-                MessageBox.Show("label");
-
-
-            UC_SensorValue c = (UC_SensorValue)sender;
-            FrmPlatformConfig_EditControlDialog d = new FrmPlatformConfig_EditControlDialog(_list_aktor, c._platform_control, _list_plc, selected_plc);
-
-            DialogResult dr = d.ShowDialog();
-            if (dr == DialogResult.OK)
-            { //aktuator zuweisen oder ändern
-                c._platform_control.change_aktuator((aktuator)d.get_aktuator());
-                selected_plc = d.get_selected_plc();
-            }
-            else if (dr == DialogResult.Abort) //controll wird komplett gelöscht
+            else if (sender is UC_SensorValue)
             {
-                pictureBox_platform.Controls.Remove(c._platform_control._UCsensorValue);
-                platform_selected._list_platform_control.Remove(c._platform_control);
+                UC_SensorValue uc = (UC_SensorValue)sender;
+                FrmPlatformConfig_EditControlDialog d = new FrmPlatformConfig_EditControlDialog(_list_aktor, uc._platform_control, _list_plc, selected_plc);
+
+                DialogResult dr = d.ShowDialog();
+                if (dr == DialogResult.OK)
+                { //aktuator zuweisen oder ändern
+                    uc._platform_control.change_aktuator((aktuator)d.get_aktuator());
+                    selected_plc = d.get_selected_plc();
+                }
+                else if (dr == DialogResult.Abort) //controll wird komplett gelöscht
+                {
+                    pictureBox_platform.Controls.Remove(uc._platform_control._UCsensorValue);
+                    platform_selected._list_platform_control.Remove(uc._platform_control);
+                }
             }
+            else if (sender is Label) //TODO: die 3 typen ohne verzweigung behandeln
+            {
+                //MessageBox.Show("sender -> label " + Environment.NewLine + l.Handle.ToString() + Environment.NewLine + l.Tag.ToString()
+                //    + Environment.NewLine + ((UC_SensorValue)l.Tag).label_sensorName );
+
+                UC_SensorValue uc = (UC_SensorValue)((Label)sender).Tag;
+                FrmPlatformConfig_EditControlDialog d = new FrmPlatformConfig_EditControlDialog(_list_aktor, uc._platform_control, _list_plc, selected_plc);
+
+                DialogResult dr = d.ShowDialog();
+                if (dr == DialogResult.OK)
+                { //aktuator zuweisen oder ändern
+                    uc._platform_control.change_aktuator((aktuator)d.get_aktuator());
+                    selected_plc = d.get_selected_plc();
+                }
+                else if (dr == DialogResult.Abort) //controll wird komplett gelöscht
+                {
+                    pictureBox_platform.Controls.Remove(uc._platform_control._UCsensorValue);
+                    platform_selected._list_platform_control.Remove(uc._platform_control);
+                }
+            }
+            else
+                log.msg(this, "call control_MouseMove with unknown sender (allowed PBplatformControl/UC_SensorValue): " + sender.GetType());
         }
 
         //control wird verschoben
@@ -373,28 +379,19 @@ namespace AutoHome
                     uc._platform_control._pos_x = uc.Location.X;
                     uc._platform_control._pos_y = uc.Location.Y;
                 }
+                else if (sender is Label) {
+                    uc = (UC_SensorValue)((Label)sender).Tag;
+                    uc.BringToFront();
+                    uc.Location = new Point(uc.Location.X + e.Location.X - 30, uc.Location.Y + e.Location.Y - 30);
+
+                    //speichern der position für spätere bearbeitung
+                    uc._platform_control._pos_x = uc.Location.X;
+                    uc._platform_control._pos_y = uc.Location.Y;
+                }
                 else
-                    return;
+                    log.msg(this, "call control_MouseMove with unknown sender (allowed PBplatformControl/UC_SensorValue): " + sender.GetType());
             }
         }
-        //void _UCSensorControl_MouseMove(object sender, MouseEventArgs e)
-        //{
-        //    if (e.Button == System.Windows.Forms.MouseButtons.Left)
-        //    {
-        //        UC_SensorValue mc = (UC_SensorValue)sender;
-        //        if (mc._platform_control != null)
-        //        {
-        //            mc.BringToFront();
-        //            mc.Location = new Point(mc.Location.X + e.Location.X - 30, mc.Location.Y + e.Location.Y - 30);
-
-        //            //speichern der position für spätere bearbeitung
-        //            mc._platform_control._pos_x = mc.Location.X;
-        //            mc._platform_control._pos_y = mc.Location.Y;
-        //        }
-        //        else
-        //            MessageBox.Show("FrmConfigPlatform -> _UCSensorControl_MouseMove()", "mc.platform_control==null");
-        //    }
-        //}
         #endregion 
 
         #region floor plan

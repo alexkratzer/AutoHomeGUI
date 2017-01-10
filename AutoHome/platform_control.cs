@@ -61,13 +61,17 @@ namespace AutoHome
                 _PictureBox = new PBplatformControl(t, this);
         }
 
+        /// <summary>
+        /// call from FrmPlatformConfig if aktuator of control is changed or set
+        /// </summary>
+        /// <param name="a"></param>
         public void change_aktuator(aktuator a)
         {
             _aktuator = a;
-            //if (_aktuator.GetAktType() == aktor_type.sensor)
-            //    _UCsensorValue.update_label_text();
-            //else
-            //    _PictureBox.update_label_text();
+            if (_aktuator.GetAktType() == aktor_type.sensor)
+                _UCsensorValue.update_label_text();
+            else
+                _PictureBox.update_label_text();
         }
 
         public void update_control(cpsLIB.Frame f)

@@ -10,6 +10,15 @@ using cpsLIB;
 using System.Runtime.InteropServices;
 
 //System.IO.File.AppendAllText(@"\\ATOM\alex\desktop\autohomedbg.txt", "" + Environment.NewLine);
+//##################################################### TODO #########################################################
+/*
+ 10.01.2017 01:19:16 +++ EXCEPTION +++ [AutoHome.FrmMain, Text: AutoHome [Frame min: 15 max: 748 avg: 0 @work: 0 send: 295 rcv: 0 clients: 5]] timer_refresh_control_Tick 
+Key: 1 Value: [IBS] -> System.ArgumentException: An item with the same key has already been added.
+   at System.ThrowHelper.ThrowArgumentException(ExceptionResource resource)
+   at System.Collections.Generic.Dictionary`2.Insert(TKey key, TValue value, Boolean add)
+   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
+   at AutoHome.FrmMain.timer_refresh_control_Tick(Object sender, EventArgs e) in C:\Users\alex\Source\Repos\AutoHomeGUI\AutoHome\FrmMain.cs:line 963
+     */
 
 
 namespace AutoHome

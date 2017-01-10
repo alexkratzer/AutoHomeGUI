@@ -40,10 +40,14 @@ namespace AutoHome
         private void init_fill_content() {
             label_sensorName = new Label();
             label_sensorValue = new Label();
-            label_sensorName.Location = new Point(2, 2);
-            label_sensorValue.Location = new Point(2, 24);
-            label_sensorName.BackColor = Color.GreenYellow;//Color.Transparent;
-            label_sensorValue.BackColor = Color.GreenYellow; 
+            label_sensorName.Tag = this; //Label überdeckt UC -> damit in FrmPlatformConfig über event handler des Labels auf UC zugegriffen werden kann
+            label_sensorValue.Tag = this; //Label überdeckt UC -> damit in FrmPlatformConfig über event handler des Labels auf UC zugegriffen werden kann
+            label_sensorName.AutoSize = true; 
+            label_sensorName.Location = new Point(0, 0);
+            label_sensorValue.Location = new Point(0, 13);
+            //label_sensorName.BackColor = Color.GreenYellow;//Color.Transparent;
+            //label_sensorValue.BackColor = Color.GreenYellow; 
+            label_sensorValue.Font = new Font(label_sensorName.Font, FontStyle.Bold);
 
             if (_platform_control != null && _platform_control._aktuator != null)
                 label_sensorName.Text = _platform_control._aktuator.name();
@@ -54,9 +58,9 @@ namespace AutoHome
             this.Controls.Add(label_sensorName);
             this.Controls.Add(label_sensorValue);
 
-            Size = new Size(100, 40);
-            //this.BackColor = Color.Transparent;
-            this.BackColor = Color.AliceBlue;
+            Size = new Size(label_sensorName.Size.Width + 5, 28);
+            this.BackColor = Color.Transparent;
+            //this.BackColor = Color.AliceBlue;
             this.BorderStyle = BorderStyle.FixedSingle;
         }
 
@@ -69,6 +73,19 @@ namespace AutoHome
         //    this.BringToFront();
         //    Image = PBdefaultControl.GetPicByType(t);
         //}
+
+        /// <summary>
+        /// call from FrmPlatformConfig if aktuator of control is changed or set
+        /// </summary>
+        public void update_label_text()
+        {
+            if (_platform_control._aktuator != null)
+                label_sensorName.Text = _platform_control._aktuator.Name;
+            else
+                log.msg(this, "call update_label_text() with _platform_control._aktuator == null");
+            Size = new Size(label_sensorName.Size.Width + 5, 28);
+            log.msg(this, "label_sensorName.Width: " + label_sensorName.Width.ToString());
+        }
 
         public void updateValue(float value)
         {
