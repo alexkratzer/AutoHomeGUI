@@ -272,7 +272,7 @@ namespace AutoHome
             panel_edit_aktuator.Visible = checkBox_add_new_aktuator.Checked;
             button_edit_delete.Visible = !checkBox_add_new_aktuator.Checked;
 
-            textBox_akt_id.Text = "xxx";
+            textBox_akt_id.Text = listBox_aktors.Items.Count.ToString();
             textBox_edit_name.Text = "type name here";
             comboBox_edit_type.SelectedIndex = 0;
             comboBox_edit_plc.SelectedIndex = 0;
@@ -291,12 +291,13 @@ namespace AutoHome
                     plc plc = (plc)comboBox_edit_plc.SelectedItem;
                     aktor_type type = (aktor_type)Enum.Parse(typeof(aktor_type), comboBox_edit_type.Text);
 
-                    //if (!checkBox_add_new_aktuator.Checked)
-                    //    _list_aktuator.Remove(selected_aktuator);
-
-                    if(checkBox_add_new_aktuator.Checked)
+                    if (checkBox_add_new_aktuator.Checked)
+                    {
                         _list_aktuator.Add(new aktuator(index, textBox_edit_name.Text, plc, type));
-                    else{
+                        textBox_akt_id.Text = (Convert.ToInt16(textBox_akt_id.Text) + 1).ToString();
+                    }
+                    else
+                    {
                         int nr = _list_aktuator.IndexOf(selected_aktuator);
                         _list_aktuator[nr].Index = index;
                         _list_aktuator[nr].Name = textBox_edit_name.Text;
@@ -308,8 +309,6 @@ namespace AutoHome
 
                     //foreach(platform p in _list_platform)
                     //    int fn = p._list_platform_control.
-
-                    
                 }
                 else
                     textBox_akt_id.BackColor = Color.Red;
@@ -406,9 +405,6 @@ namespace AutoHome
 
         private void change_plc(bool make_new)
         {
-            //if(!make_new)
-            //    _list_plc.Remove(selected_plc);
-
             if (make_new || (_list_plc.IndexOf(selected_plc) == -1))
                 _list_plc.Add(new plc(textBox_plcip.Text, Convert.ToInt32(textBox_plc_port.Text), textBox_plc_name.Text));
             else

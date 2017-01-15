@@ -34,14 +34,11 @@ namespace AutoHome
         List<plc> list_plc = new List<plc>();
         List<platform> list_platform = new List<platform>();
         List<floor_plan> list_floor_plan = new List<floor_plan>();
-        List<aktuator_control> list_aktuator_controls = new List<aktuator_control>();
+        List<aktuator_control> list_aktuator_controls = new List<aktuator_control>(); //list to store userControls of aktuator
 
         cpsLIB.CpsNet CpsNet;
 
         //TODO: extract Form Dbg -> //FrmDbg frmdbg;
-
-        //public const Int16 cpu_net_management = 10;
-        //public const Int16 ID_ETA = 11;
         FrmLogPCS FrmLog; 
 
         #region init / connect / close
@@ -652,6 +649,19 @@ namespace AutoHome
         {
             ToolStripLabel o = sender as ToolStripLabel;
 
+            if (o != null)
+            {
+                Frame f3 = new Frame(((plc)o.Tag).getClient(), new Int16[] { 1 });
+                f3.SetHeaderFlag(FrameHeaderFlag.MngData);
+                ((plc)o.Tag).send(f3, FrmLog);
+            }
+            else
+            {
+                MessageBox.Show("TSSL_OnClickIBS()", "ToolStripLabel o == null");
+                return;
+            }
+
+            /*
             for (Int16 i = 0; i < Convert.ToInt16(textBox1.Text); i++)
             {
                 if (o != null) { 
@@ -672,8 +682,8 @@ namespace AutoHome
                     MessageBox.Show("TSSL_OnClickIBS()", "ToolStripLabel o == null");
                     return;
                 }
-
-            }
+                */
+        
         }
         #endregion
         #endregion

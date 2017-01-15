@@ -13,6 +13,7 @@ namespace cpsLIB
     {
         BindingList<log> ListLogFrontend;
         List<log> ListLogBackend;
+        List<Client> ListClients = new List<Client>();
 
         #region var
         private bool AutoScrollonUpdate = true;
@@ -91,7 +92,7 @@ namespace cpsLIB
             DGVtbcPayloadInt.ReadOnly = true;
             dGV_Log.Columns.Add(DGVtbcPayloadInt);
         }
-#endregion
+        #endregion
 
         private void FrmStatusLog_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -161,6 +162,16 @@ namespace cpsLIB
 
         private void logMsg(log _log)
         {
+            ///############################# make client filter ################################
+            /*
+            //check if client is in list
+            foreach (Client c in ListClients)
+
+
+                if(c==cLB_filter_clients.SelectedItem)
+                    cLB_filter_clients.Items.Add(c, true);
+            */
+
             //+++++++++++++++++++ richTextBox ++++++++++++++++++++++++
             //string msg = _log.Timestamp + " [" + _log.Prio.ToString() + "] ";
             //if (_log.Msg != null)
@@ -173,8 +184,7 @@ namespace cpsLIB
             ListLogBackend.Add(_log);
 
             if (UpdateGUIonNewEvent)
-                AddLogFilter(_log);
-            
+                AddLogFilter(_log);           
         }
 
         private void AddLogFilter(log l) {

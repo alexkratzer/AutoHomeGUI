@@ -85,7 +85,6 @@
             this.comboBox_aktor_type = new System.Windows.Forms.ComboBox();
             this.comboBox_aktor_cpu = new System.Windows.Forms.ComboBox();
             this.pictureBox_platform = new System.Windows.Forms.PictureBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.menuStrip_main.SuspendLayout();
             this.statusStrip_bottom.SuspendLayout();
             this.panel_controls.SuspendLayout();
@@ -552,20 +551,11 @@
             this.pictureBox_platform.TabStop = false;
             this.pictureBox_platform.SizeChanged += new System.EventHandler(this.pictureBox_platform_SizeChanged);
             // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(894, 767);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(48, 20);
-            this.textBox1.TabIndex = 38;
-            this.textBox1.Text = "10";
-            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1133, 840);
-            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.comboBox_platform);
             this.Controls.Add(this.panel_controls);
             this.Controls.Add(this.menuStrip_main);
@@ -645,7 +635,6 @@
         private System.Windows.Forms.ToolStripMenuItem dBGFrmToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem managementToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem iODataToolStripMenuItem;
-        private System.Windows.Forms.TextBox textBox1;
     }
 }
 

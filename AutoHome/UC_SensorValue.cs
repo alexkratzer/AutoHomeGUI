@@ -24,7 +24,7 @@ namespace AutoHome
         {
             _platform_control = platform_control;
             init_fill_content();
-            label_sensorValue.Visible = false;
+            //label_sensorValue.Visible = false;
         }
         //element wird durch deserialisieren erstellt
         public UC_SensorValue(platform_control platform_control, int pos_x, int pos_y)
@@ -32,9 +32,6 @@ namespace AutoHome
             _platform_control = platform_control;
             Location = new Point(pos_x, pos_y);
             init_fill_content();
-            //this.BackColor = Color.AliceBlue;
-            //this.BorderStyle = BorderStyle.FixedSingle;
-            //update_label_text();
         }
 
         private void init_fill_content() {
@@ -45,9 +42,9 @@ namespace AutoHome
             label_sensorName.AutoSize = true; 
             label_sensorName.Location = new Point(0, 0);
             label_sensorValue.Location = new Point(0, 13);
-            //label_sensorName.BackColor = Color.GreenYellow;//Color.Transparent;
+            //label_sensorName.BackColor = Color.GreenYellow;
             //label_sensorValue.BackColor = Color.GreenYellow; 
-            label_sensorValue.Font = new Font(label_sensorName.Font, FontStyle.Bold);
+            label_sensorValue.Font = new Font(label_sensorName.Font, FontStyle.Bold); //besser lesbar mit hintergrundbild
 
             if (_platform_control != null && _platform_control._aktuator != null)
                 label_sensorName.Text = _platform_control._aktuator.name();
@@ -94,7 +91,7 @@ namespace AutoHome
                 return;
             if(label_sensorValue!=null)
                 label_sensorValue.Text = value.ToString();
-            label_sensorValue.Visible = true;
+            //label_sensorValue.Visible = true;
             lastVal = value;
         }
 

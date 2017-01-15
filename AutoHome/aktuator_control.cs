@@ -6,10 +6,11 @@ using cpsLIB; //frames
 
 namespace AutoHome
 {
+    /// <summary>
+    /// user control to show aktuators in list
+    /// </summary>
     class aktuator_control
     {
-
-       
         public aktuator aktuator;
         public Int16 aktuatorIndex;
         public object user_control;

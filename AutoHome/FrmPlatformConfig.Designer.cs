@@ -42,7 +42,6 @@
             this.deleteAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dbghideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.comboBox_floor_plan = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_platform)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -166,21 +165,11 @@
             this.comboBox_floor_plan.SelectedIndexChanged += new System.EventHandler(this.comboBox_floor_plan_SelectedIndexChanged);
             this.comboBox_floor_plan.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.comboBox_floor_plan_KeyPress);
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(1129, 191);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 38;
-            this.label1.Text = "label1";
-            // 
             // FrmPlatformConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1179, 793);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.comboBox_floor_plan);
             this.Controls.Add(this.button_new_platform_name_save);
             this.Controls.Add(this.pictureBox_platform);
@@ -216,6 +205,5 @@
         private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
         private System.Windows.Forms.ComboBox comboBox_floor_plan;
         private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
-        private System.Windows.Forms.Label label1;
     }
 }
