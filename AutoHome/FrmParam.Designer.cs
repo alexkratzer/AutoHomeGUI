@@ -90,6 +90,7 @@
             this.label_cps_server_port = new System.Windows.Forms.Label();
             this.textBox_cpsServerPort = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.checkBoxFooterShowPlcTime = new System.Windows.Forms.CheckBox();
             this.panel_edit_plc.SuspendLayout();
             this.panel_expert.SuspendLayout();
             this.panel_edit_aktuator.SuspendLayout();
@@ -567,6 +568,7 @@
             // 
             // panel_edit
             // 
+            this.panel_edit.Controls.Add(this.checkBoxFooterShowPlcTime);
             this.panel_edit.Controls.Add(this.checkBox_connect_at_start);
             this.panel_edit.Controls.Add(this.checkBox_expert_mode);
             this.panel_edit.Controls.Add(this.panel_expert);
@@ -719,6 +721,17 @@
             this.panel1.Size = new System.Drawing.Size(368, 583);
             this.panel1.TabIndex = 27;
             // 
+            // checkBoxFooterShowPlcTime
+            // 
+            this.checkBoxFooterShowPlcTime.AutoSize = true;
+            this.checkBoxFooterShowPlcTime.Location = new System.Drawing.Point(102, 40);
+            this.checkBoxFooterShowPlcTime.Name = "checkBoxFooterShowPlcTime";
+            this.checkBoxFooterShowPlcTime.Size = new System.Drawing.Size(97, 17);
+            this.checkBoxFooterShowPlcTime.TabIndex = 30;
+            this.checkBoxFooterShowPlcTime.Text = "Show Plc Time";
+            this.checkBoxFooterShowPlcTime.UseVisualStyleBackColor = true;
+            this.checkBoxFooterShowPlcTime.CheckedChanged += new System.EventHandler(this.checkBoxFooterShowPlcTime_CheckedChanged);
+            // 
             // FrmParam
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -815,5 +828,6 @@
         private System.Windows.Forms.CheckedListBox ListBoxCheck_plc;
         private System.Windows.Forms.ComboBox comboBox_aktorType;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.CheckBox checkBoxFooterShowPlcTime;
     }
 }

@@ -585,6 +585,7 @@ namespace AutoHome
             {
                 ToolStripDropDownButton TSDDB = new ToolStripDropDownButton("->" + p.get_plc_name(), null, null, "->" + p.get_plc_name());
                 TSDDB.Tag = p;
+                TSDDB.BackColor = Color.Yellow;
 
                 TSSL_connect = new ToolStripStatusLabel("connect");
                 TSSL_connect.Tag = p;
@@ -967,49 +968,40 @@ namespace AutoHome
                 //********************************************************************************************************************
                 //TODO: sensor_dic muss für jede plc vorhanden sein... sonst gleicher key möglich
                 //********************************************************************************************************************
-                Dictionary<Int16, plc> sensor_dic = new Dictionary<short, plc>(); //enthält alle projektierten aktuatoren vom typ sensor
+                //Dictionary<Int16, plc> sensor_dic = new Dictionary<short, plc>(); //enthält alle projektierten aktuatoren vom typ sensor
+                //List<Int16[]> SensorIds = new List<short[]>();
+                foreach (plc p in list_plc)
+                    p.ListSensorIDs = new List<short>();
+
 
                 //############################### automatisches update der controlls #################################################
                 if (pictureBox_platform.Visible)
                     //bei kaputem serialise file keine elemente
-                    if (list_platform.Any())
-                        if (comboBox_platform.SelectedItem != null)
+                        if (list_platform.Any() && comboBox_platform.SelectedItem != null)
                             foreach (platform_control pc in ((platform)comboBox_platform.SelectedItem)._list_platform_control)
                                 //controlls denen kein aktor zugewiesen ist nicht beachten
                                 if (pc._aktuator != null && pc._aktuator._plc != null)
                                     //sensor controlls sammeln und in einzelnen management frame versenden
                                     if (pc._aktuator.GetAktType() == aktor_type.sensor)
-                                    {
-                                        try
-                                        {
-                                            sensor_dic.Add(pc._aktuator.Index, pc._aktuator._plc);
-                                        }
-                                        catch (Exception ex) {
-                                            log.exception(this, "timer_refresh_control_Tick " + Environment.NewLine + "Key: " + pc._aktuator.Index + " Value: " + pc._aktuator._plc, ex);
-                                        }
-                                    }
+                                        pc._aktuator._plc.ListSensorIDs.Add(pc._aktuator.Index);
                                     else
+                                    //alle aktoren anfragen werden einzeln ein eigenem frame versendet
                                         pc._aktuator.plc_send_IO(DataIOType.GetState);
 
                 //send sensor value request
                 foreach (plc p in list_plc)
                 {
-                    List<Int16> list_sensor = new List<short>();
-                    foreach (KeyValuePair<Int16, plc> var in sensor_dic)
-                        if (p == var.Value)
-                            list_sensor.Add(var.Key);
-
                     //if (list_sensor.Any())
-                    if (list_sensor.Count > 0)
+                    if (p.ListSensorIDs.Count > 0)
                     {
                         //sende frame an plc
-                        list_sensor.Insert(0, (Int16)DataMngType.GetPlcSensorValues);
-                        p.send(FrameHeaderFlag.MngData, list_sensor.ToArray());
+                        p.ListSensorIDs.Insert(0, (Int16)DataMngType.GetPlcSensorValues);
+                        p.send(FrameHeaderFlag.MngData, p.ListSensorIDs.ToArray());
                     }
                 }
             }
             catch (Exception ex) {
-                log.exception(this, "timer_refresh_control_Tick -> evtl timer bei FrmPlatformConfig stoppen...", ex);
+                log.exception(this, "timer_refresh_control_Tick", ex);
             }
         }
         #endregion
@@ -1041,7 +1033,13 @@ namespace AutoHome
         {
             Frame _f = (Frame)f;
 
-            if (_f.GetHeaderFlag(FrameHeaderFlag.SYNC)) { }
+            if (_f.GetHeaderFlag(FrameHeaderFlag.SYNC)) {
+                //sync frame empfangen -> statusanzeige "verbunden" in footer durch grün
+                foreach (ToolStripDropDownButton p in statusStrip_bottom.Items)
+                    //statusStrip_bottom contains CPSstatus Label with no p.Tag
+                    if (p.Tag != null && (_f.client.RemoteIp == ((plc)p.Tag).getClient().RemoteIp))
+                        p.BackColor = Color.GreenYellow;
+            }
             else if (_f.GetHeaderFlag(FrameHeaderFlag.MngData))
                 interprete_MngData(_f);
             else if (_f.GetHeaderFlag(FrameHeaderFlag.ACKN))
@@ -1065,23 +1063,22 @@ namespace AutoHome
                         {
                             DateTime clockPlc = new DateTime(f.getPayload(1), f.getPayload(2), f.getPayload(3), f.getPayload(4), f.getPayload(5), f.getPayload(6));
 
-                            p.Text = p.Name + " [" + clockPlc.ToString("HH:mm:ss") + "]";
-                            p.BackColor = Color.Transparent;
+                            if(var.FooterShowPlcTime)
+                                p.Text = p.Name + " [" + clockPlc.ToString("HH:mm:ss") + "]";
+                            //p.BackColor = Color.Transparent;
                             if (DateTime.Now.Subtract(new TimeSpan(0, 0, var.MngData_AcceptedClockDelay)) > clockPlc)
                             {
                                 TimeSpan ts = DateTime.Now - clockPlc;
-                                //p.Text = p.Text + " > " + ts.ToString(TSFormat(ts));
                                 p.Text = p.Text + " > " + ts.ToString(TSFormat(ts));
                                 p.BackColor = Color.Yellow;
                             }
                             else if (DateTime.Now.Add(new TimeSpan(0, 0, var.MngData_AcceptedClockDelay)) < clockPlc)
                             {
                                 TimeSpan dt = clockPlc - DateTime.Now;
-                                //p.Text = p.Text + " < " + dt.ToString(TSFormat(dt));
                                 p.Text = p.Text + " < " + dt.ToString(TSFormat(dt));
                                 p.BackColor = Color.Yellow;
                             }
-                        }
+                    }
                         else if (f.getPayload(0) == (Int16)DataMngType.SetPlcTime) {
                             Int16 retval = f.getPayload(1);
                             if(retval>0)
@@ -1095,21 +1092,22 @@ namespace AutoHome
                                 if (p_selected != null)
                                 {
                                     FrmLog.AddLog("SensorVal: " + f.ShowPayloadInt());
-                                    Dictionary<Int16, float> dicSensorVal = new Dictionary<short, float>();
-                                    //dicSensorVal.Clear();
-                                    //komplettes frame durchgehen und auspacken. für jeden sensorwert entsprechendes controll befüllen
-                                    float SensorValue;
-                                    for (int i = 3; i < (f.getPaloadIntLengt()); i = i + 3)
-                                    {
-                                        if (f.getPayload(i + 2) != 0)
-                                            SensorValue = (float) f.getPayload(i + 1) / (float)f.getPayload(i + 2);
-                                        else
-                                            SensorValue = f.getPayload(i + 1);
 
-                                        dicSensorVal.Add(f.getPayload(i), SensorValue);
-                                    }
+                                    //Dictionary<Int16, float> dicSensorVal = new Dictionary<short, float>();
+                                    ////dicSensorVal.Clear();
+                                    ////komplettes frame durchgehen und auspacken. für jeden sensorwert entsprechendes controll befüllen
+                                    //float SensorValue;
+                                    //for (int i = 3; i < (f.getPaloadIntLengt()); i = i + 3)
+                                    //{
+                                    //    if (f.getPayload(i + 2) != 0)
+                                    //        SensorValue = (float) f.getPayload(i + 1) / (float)f.getPayload(i + 2);
+                                    //    else
+                                    //        SensorValue = f.getPayload(i + 1);
 
-                                    p_selected.update_SensorControl(dicSensorVal);
+                                    //    dicSensorVal.Add(f.getPayload(i), SensorValue);
+                                    //}
+
+                                    p_selected.update_SensorControl(f);
 
 
                                     //p_selected.update_control(f);

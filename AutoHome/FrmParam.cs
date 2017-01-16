@@ -68,6 +68,8 @@ namespace AutoHome
 
             textBox_cpsServerPort.Text = var.CpsServerPort.ToString();
             textBox_MngData_AcceptedClockDelay.Text = var.MngData_AcceptedClockDelay.ToString();
+
+            checkBoxFooterShowPlcTime.Checked = var.FooterShowPlcTime;
         }
 
         private void FrmParam_FormClosing(object sender, FormClosingEventArgs e)
@@ -459,6 +461,11 @@ namespace AutoHome
         private void comboBox_aktorType_SelectedIndexChanged(object sender, EventArgs e)
         {
             listBox_aktors_refresh();
+        }
+
+        private void checkBoxFooterShowPlcTime_CheckedChanged(object sender, EventArgs e)
+        {
+            var.FooterShowPlcTime = checkBoxFooterShowPlcTime.Checked;
         }
     }
 }

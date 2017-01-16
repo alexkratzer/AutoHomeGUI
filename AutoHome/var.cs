@@ -57,6 +57,8 @@ namespace AutoHome
         public static string DBUid;
         public static string DBPwd;
 
+        //GUI vars
+        public static bool FooterShowPlcTime = false;
         
             
         //string conn_string = "Server=192.168.1.200;Database=auto_home;Uid=auto_home;Pwd=XuY98zjMce8VuWZP";

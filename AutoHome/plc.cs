@@ -28,6 +28,10 @@ namespace AutoHome
         [NonSerialized]
         System.Windows.Forms.ToolStripDropDownButton _TSSDDB_Status = null;
 
+        //wird als temporäre variable in FrmMain benötigt
+        public List<Int16> ListSensorIDs;
+        
+
         #region construktor / init
         public plc(string ip, int port, string plc_name = "not named")
         {
