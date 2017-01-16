@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 
 namespace cpsLIB {
-    public enum prio {info, warning, error, fatal_error}
+    public enum prio {info=0, warning=1, error=2, fatal_error=3, dbg = 4 }
     public class log {      
         private DateTime timestamp;
         private prio prio;

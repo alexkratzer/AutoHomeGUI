@@ -964,6 +964,9 @@ namespace AutoHome
         {
             try
             {
+                //********************************************************************************************************************
+                //TODO: sensor_dic muss für jede plc vorhanden sein... sonst gleicher key möglich
+                //********************************************************************************************************************
                 Dictionary<Int16, plc> sensor_dic = new Dictionary<short, plc>(); //enthält alle projektierten aktuatoren vom typ sensor
 
                 //############################### automatisches update der controlls #################################################

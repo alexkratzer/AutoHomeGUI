@@ -452,7 +452,7 @@ namespace CpuPcStack
             textBox_msg_payload_int.Text = f.ShowPayloadInt();
             textBox_msg_payload_ASCII.Text = f.getPayloadASCII();
             //sender
-            label_frameLog.Text = f.GetLog();
+            //label_frameLog.Text = f.GetLog();
             label_frameMetadata.Text = f.ToString();
 
             //if (f.AnswerFrame != null)

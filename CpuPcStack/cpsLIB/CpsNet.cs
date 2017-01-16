@@ -108,10 +108,7 @@ namespace cpsLIB
             //    }
 
             if (CheckIfConnected(f)){
-            //{
-                f.ChangeState(FrameWorkingState.inWork, "Frame put to Stack");
-
-            //der App wird mitgeteilt das dieses frame verschickt wurde
+                //der App wird mitgeteilt das dieses frame verschickt wurde
                 if (SendFramesCallback)
                     _FrmMain.interprete_frame(f);
 
@@ -135,7 +132,7 @@ namespace cpsLIB
                 }
             }
             else
-                f.ChangeState(FrameWorkingState.error, "Remote udp_state NOT connected - NO Frame is send");
+                logMsg(new log(prio.error, "Remote udp_state NOT connected - NO Frame is send", f));
             return false;
 
             
@@ -241,10 +238,7 @@ namespace cpsLIB
                     logMsg(new log(prio.error, "TryGetValue from _fstack == FALSE  ", f));
             }
             else
-            {
-                f.ChangeState(FrameWorkingState.error, "received udp frame without request -> _fstack.IsEmpty");
                 logMsg(new log(prio.warning, "received udp frame without request", f));
-            }
 
             //logMsg("[- put received frame in list: " + f.ToString());
             //put received frame in list 
@@ -297,11 +291,7 @@ namespace cpsLIB
         {
             Frame f;
             if (_fstack.TryRemove(key, out f))
-            {
-                f.ChangeState(FrameWorkingState.finish, "Dequeue frame from stack");
-                //logMsg(new log(prio.info, "takeFrameFromStack", f));
                 return true;
-            }
 
             logMsg(new log(prio.error, "ERROR dequeue frame from stack... ", f));
             return false;
@@ -374,20 +364,17 @@ namespace cpsLIB
                                 {
                                     f.Value.SendTrys++;
                                     f.Value.LastSendDateTime = DateTime.Now;
-                                    f.Value.ChangeState(FrameWorkingState.warning, "repeat send: (" + f.Value.ToString() + ")");
                                     logMsg(new log(prio.warning, "repeat send", f.Value));
                                     f.Value.client.send(f.Value); //TODO: return bool auswerten
                                 }
                                 else
                                 {
-                                    f.Value.ChangeState(FrameWorkingState.error, "stop sending at try: (" + f.Value.SendTrys.ToString() + ")");
                                     logMsg(new log(prio.error, "stop sending at try: (" + f.Value.SendTrys.ToString() + ")", f.Value));
                                     takeFrameFromStack(f.Key);
                                 }
                             }
                             else
                             {
-                                f.Value.ChangeState(FrameWorkingState.error, "no answer to sendrequest");
                                 logMsg(new log(prio.error, "no answer to sendrequest", f.Value));
                                 takeFrameFromStack(f.Key);
                             }

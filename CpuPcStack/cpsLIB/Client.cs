@@ -93,12 +93,14 @@ namespace cpsLIB
                     _clientThread = new Thread(() => send_fkt(f));
                     _clientThread.IsBackground = true;
                     _clientThread.Start();
-                }else
-                    f.ChangeState(FrameWorkingState.error, "Remote udp_state NOT connected - NO Frame is send");
+                } else;
+                     //"Remote udp_state NOT connected - NO Frame is send");
             }
             catch (Exception e)
             {
-                f.ChangeState(FrameWorkingState.error, "Exception send Frame: " + e.Message);
+                
+                //f.frameState = FrameState.ERROR;
+                //f.ChangeState(FrameWorkingState.error, "Exception send Frame: " + e.Message);
                 return false;
             }
             return true;
@@ -108,26 +110,18 @@ namespace cpsLIB
         private void send_fkt(Frame f)
         {
             UdpClient udpClient = new UdpClient();
-            try
-            {
-                //f.ChangeState(FrameWorkingState.send, "send udp frame @: " + f.client);
-                //udpClient.Send(f.GetByteArray(), f.GetByteArray().Length, f.client.RemoteIp, f.client.RemotePort);
+            //try
+            //{
                 //############################################################################################################
-
-
                 //TODO: hier ist f.client nicht mehr notwendig. evtl ist referen von cpsClient in Frame nicht mehr notwendig
                 
-                
-                f.ChangeState(FrameWorkingState.send, "send udp frame @: " + this.ToString());
                 udpClient.Send(f.GetByteArray(), f.GetByteArray().Length, RemoteIp, RemotePort);
-                
-                
                 udpClient.Close();
-            }
-            catch (Exception e)
-            {
-                f.ChangeState(FrameWorkingState.error, "Exception send Frame: " + e.Message);
-            }
+            //}
+            //catch (Exception e)
+            //{
+            //    //TODO: //f.ChangeState(FrameWorkingState.error, "Exception send Frame: " + e.Message);
+            //}
         }
         #endregion
     }

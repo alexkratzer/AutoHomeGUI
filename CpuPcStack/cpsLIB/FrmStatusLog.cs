@@ -26,6 +26,7 @@ namespace cpsLIB
         public FrmStatusLog()
         {
             InitializeComponent();
+            panel_filter.Visible = false;
             ListLogFrontend = new BindingList<log>();
             ListLogBackend = new List<log>();
 
@@ -38,6 +39,9 @@ namespace cpsLIB
 
             dGV_Log.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             dGV_Log.DataSource = bindingSource;
+
+            foreach(prio p in Enum.GetValues(typeof(prio)))
+                cLB_msgType.Items.Add(p,true);
         }
 
         private void AddColumns()
@@ -107,9 +111,7 @@ namespace cpsLIB
         }
         private void showAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ListLogFrontend.Clear();
-            foreach (log l in ListLogBackend)
-                ListLogFrontend.Add(l);
+            ShowAllLog();
         }
 
         private void autoScrollToolStripMenuItem_Click(object sender, EventArgs e)
@@ -139,7 +141,43 @@ namespace cpsLIB
                 freezeToolStripMenuItem.Text = "freeze [on]";
             }
         }
+
+        
+        private void filterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (filterToolStripMenuItem.Text == "filter")
+            {
+                filterToolStripMenuItem.Text = "filter -hide-";
+                panel_filter.Visible = true;
+            }
+            else
+            {
+                filterToolStripMenuItem.Text = "filter";
+                panel_filter.Visible = false;
+            }
+        }
+
+        private void button_hide_filter_Click(object sender, EventArgs e)
+        {
+            panel_filter.Visible = false;
+            filterToolStripMenuItem.Text = "filter";
+        }
         #endregion
+
+
+        //###################################### code ##############################
+        private void ShowAllLog()
+        {
+            ListLogFrontend.Clear();
+            all_messages = ListLogBackend.Count;
+            filtered_messages = 0;
+            shown_messages = 0;
+            foreach (log l in ListLogBackend)
+            {
+                filterMsg(l);
+               // dGV_Log.FirstDisplayedScrollingRowIndex = dGV_Log.RowCount;
+            }
+        }
 
         /// <summary>
         /// log/error messages from udp server
@@ -159,46 +197,54 @@ namespace cpsLIB
                 MessageBox.Show("CpsLogCallback: " + e.Message, "writing to GUI failed");
             }
         }
-
+        public int filtered_messages = 0;
+        public int all_messages = 0;
+        public int shown_messages = 0;
         private void logMsg(log _log)
         {
-            ///############################# make client filter ################################
-            /*
-            //check if client is in list
-            foreach (Client c in ListClients)
-
-
-                if(c==cLB_filter_clients.SelectedItem)
-                    cLB_filter_clients.Items.Add(c, true);
-            */
-
-            //+++++++++++++++++++ richTextBox ++++++++++++++++++++++++
-            //string msg = _log.Timestamp + " [" + _log.Prio.ToString() + "] ";
-            //if (_log.Msg != null)
-            //    msg += _log.Msg;
-            //if (_log.F != null)
-            //    msg += _log.F;
-            //rTB_log_msg.AppendText(msg + Environment.NewLine);
-
-            //+++++++++++++++++++ DataGridView ++++++++++++++++++++++++
+            footer_TSSL_filtered.Text = "msg total: "+ all_messages+" / filtered: " + filtered_messages + " / shown: " + shown_messages;
+            //store all log message in ListLogBackend
             ListLogBackend.Add(_log);
+            all_messages++;
+
+            //check if client is in list
+            bool client_new = false;
+            foreach (Client c in ListClients)
+                if (_log.F.client == c)
+                    break;
+                else
+                    client_new = true;
+            //add new client
+            if (client_new) 
+                ListClients.Add(_log.F.client);
+
+            //
+            //if (c==cLB_filter_clients.SelectedItem)
+            //        cLB_filter_clients.Items.Add(c, true);
+
 
             if (UpdateGUIonNewEvent)
-                AddLogFilter(_log);           
+                filterMsg(_log);
+                //if(!cBshowInfo.Checked && !l.Prio.Equals(prio.info))
+                //foreach (prio p in Enum.GetValues(typeof(prio)))
+
+
+            
         }
 
-        private void AddLogFilter(log l) {
-
-            //if(!cBshowInfo.Checked && !l.Prio.Equals(prio.info))
-                ListLogFrontend.Add(l);
+        private void filterMsg(log _log) {
+            if (cLB_msgType.GetItemChecked((int)_log.Prio))
+            {
+                shown_messages++;
+                ListLogFrontend.Add(_log);
 
                 if (AutoScrollonUpdate)
                     dGV_Log.FirstDisplayedScrollingRowIndex = dGV_Log.RowCount - 1;
+            }
+            else
+                filtered_messages++;
         }
 
-
-
-
-
+       
     }
 }

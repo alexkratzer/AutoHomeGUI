@@ -81,7 +81,7 @@ namespace cpsLIB
                                 "udp_server receive EMPTY MESSAGE"));
 
                         Frame f = new Frame(new Client(groupEP.Address.ToString(), groupEP.Port.ToString()), bytes );
-                        f.ChangeState(FrameWorkingState.received, "udp server received new frame");
+                        
                         _sender.receive(f);
                     }
                 }

@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4A031BAE-1448-4C5D-B7C5-D234B037A1F7}"
 	ProjectSection(SolutionItems) = preProject
 		CPS_protokoll.xlsx = CPS_protokoll.xlsx
+		README.md = README.md
 		release_notes.txt = release_notes.txt
 	EndProjectSection
 EndProject

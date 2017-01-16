@@ -12,7 +12,7 @@ namespace cpsLIB
 {
     public enum FrameSender { SEND, RCVE, unknown }
     public enum FrameState { UNDEF, ERROR, IS_OK}
-    public enum FrameWorkingState { created, inWork, finish, error, warning, received, send}
+    //public enum FrameWorkingState { created, inWork, finish, error, warning, received, send}
     
         //public static Int16[] SET_STATE(int index, string position, string angle) { return new Int16[] { Convert.ToInt16(index), 2, Convert.ToInt16(position), Convert.ToInt16(angle), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; }
         //public static Int16[] SET_STATE(int index, bool state_switch) { return new Int16[] { Convert.ToInt16(index), 2, Convert.ToInt16(state_switch), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; }
@@ -31,15 +31,13 @@ namespace cpsLIB
     public class FrameRawData
     {
         #region vars
+        FrameState frameState = FrameState.UNDEF;
         //constanten
         public const int FrameHeaderByteLength = 6; //Länge des Headers in Byte
 
         //frame content
         private FrameHeader header;
         private byte[] FramePayloadByte;
-
-        //public string RemoteIp = null;
-        //public int RemotePort;
 
         // connection depending to frame
         public Client client;
@@ -48,7 +46,7 @@ namespace cpsLIB
         public DateTime TimeCreated; //Zeitstempel an dem das Frame erzeugt wurde
 
         public FrameSender frameSender = FrameSender.unknown;
-        private List<frameLog> ListFrameLog;
+        //private List<frameLog> ListFrameLog;
         //public FrameState frameState = FrameState.UNDEF;
         public int SendTrys; //Wird bei FrameType.SYNC Frames verwendet. Anzahl der wiederholungen bei keiner antwort
         public DateTime LastSendDateTime;
@@ -72,7 +70,6 @@ namespace cpsLIB
                 _allFrameCounterTotal++;
                 
                 this.client = _client; //client evtl überflüssig wenn nur wegen counter (***) verwendet
-                ListFrameLog = new List<frameLog>();
                 TimeCreated = DateTime.Now;
                 LastSendDateTime = DateTime.Now;
                 frameSender = FS;
@@ -80,12 +77,13 @@ namespace cpsLIB
 
                 //if (int.TryParse(port, out RemotePort))
                 //{
+
+                ///#### "make new frame to send it later on" ####
                 if (frameSender.Equals(FrameSender.SEND))
                 {
                     // ++ send Frame to Remote ++
                     //data is only payload, no FrameHeader
                     Index_tmp = _allFrameCounter;
-                    ChangeState(FrameWorkingState.created, "make new frame to send it later on");
                     
                     //header = new FrameHeader(client.CountSendFrames); (***)
                     header = new FrameHeader(Index_tmp);
@@ -94,21 +92,16 @@ namespace cpsLIB
                     if (_RemoteIsBigEndian)
                         FramePayloadByte = changeEndian(FramePayloadByte);
                 }
+
+                ///#### "make new frame from rcv UDP Frame" ####
                 else if (frameSender.Equals(FrameSender.RCVE))
                 {
                     // ++ rcv Frame from Remote ++
                     //data includes FrameHeader
-                    ChangeState(FrameWorkingState.created, "make new frame from rcv UDP Frame");
 
                     header = new FrameHeader(data, out FramePayloadByte);
                 }
-                else
-                    ChangeState(FrameWorkingState.error, "FrameSender == unknown");
-
-
-                //}
-                //else
-                //    ChangeState(FrameWorkingState.error, "structural defect @send Frame -> port not valid: " + port);
+                
             }
             catch (Exception) {}
         }
@@ -141,16 +134,16 @@ namespace cpsLIB
         /// frame ändert seinen status
         /// änderung wird protokolliert
         /// </summary>
-        public FrameRawData ChangeState(FrameWorkingState ws, string msg)
-        {
-            //log.msg(this, GetDetailedString());
-            //wenn error wird globaler ERROR für das Frame gesetzt
-            //if (ws.Equals(FrameWorkingState.error))
-            //    frameState = FrameState.ERROR;
+        //public FrameRawData ChangeState(FrameWorkingState ws, string msg)
+        //{
+        //    //log.msg(this, GetDetailedString());
+        //    //wenn error wird globaler ERROR für das Frame gesetzt
+        //    //if (ws.Equals(FrameWorkingState.error))
+        //    //    frameState = FrameState.ERROR;
 
-            ListFrameLog.Add(new frameLog(ws, msg));
-            return this;
-        }
+        //    ListFrameLog.Add(new frameLog(ws, msg));
+        //    return this;
+        //}
         #endregion
 
         #region getter IO Data
@@ -175,10 +168,7 @@ namespace cpsLIB
         {
             return FramePayloadByte;
         }
-        //private byte getPayloadByte(int i)
-        //{
-        //    return FramePayloadByte[i];
-        //}
+
         public Int16 getPayload(int i)
         {
             int index = i * 2;
@@ -289,15 +279,6 @@ namespace cpsLIB
             return RetVal;
         }
         
-        public string GetLog()
-        {
-            string s = "";
-            
-            foreach (frameLog fl in ListFrameLog)
-                s += fl.ToString() + Environment.NewLine;
-            return s;
-        }
-
         public Int16 GetIndex() {
             return header.FrameIndex;
         }
@@ -457,24 +438,24 @@ namespace cpsLIB
             #endregion
         }
 
-        class frameLog
-        {
-            DateTime timestamp;
-            FrameWorkingState ws;
-            string msg;
+        //class frameLog
+        //{
+        //    DateTime timestamp;
+        //    FrameWorkingState ws;
+        //    string msg;
 
-            public frameLog(FrameWorkingState ws, string msg)
-            {
-                this.ws = ws;
-                this.msg = msg;
-                timestamp = DateTime.Now;
-            }
-            public override string ToString()
-            {
-                return timestamp.ToString("HH:mm:ss:ffff") + " (" + ws.ToString() + ") " + msg;
-            }
+        //    public frameLog(FrameWorkingState ws, string msg)
+        //    {
+        //        this.ws = ws;
+        //        this.msg = msg;
+        //        timestamp = DateTime.Now;
+        //    }
+        //    public override string ToString()
+        //    {
+        //        return timestamp.ToString("HH:mm:ss:ffff") + " (" + ws.ToString() + ") " + msg;
+        //    }
 
-        }
+        //}
     }
 
    
