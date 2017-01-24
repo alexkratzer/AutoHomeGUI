@@ -15,10 +15,9 @@ namespace AutoHome
         List<plc> _list_plc;
         platform_control _platform_control = null;
 
-        public FrmPlatformConfig_EditControlDialog(object list_a, object platform_control, object list_plc, int selected_plc)
+        public FrmPlatformConfig_EditControlDialog(object platform_control, object list_plc, int selected_plc)
         {
             InitializeComponent();
-            _list_a = (List<aktuator>)list_a;
             _platform_control = (platform_control)platform_control;
             _list_plc = (List<plc>)list_plc;
             comboBox_plc.DataSource = _list_plc;

@@ -15,16 +15,16 @@ namespace AutoHome
         /// <summary>
         //TODO: alle benutzereingabe edit felder maskieren/ bzw auf fehlerhafte eingabe checken 
         
-        List<aktuator> _list_aktuator;
+        //List<aktuator> _list_aktuator;
         List<plc> _list_plc;
         List<platform> _list_platform;
         FrmMain _FrmMain; //notwendig um beim beenden die Main Form zu aktualisieren
-        public FrmParam(FrmMain FrmMain, object list_aktuator, object list_plc, object list_platform)
+        public FrmParam(FrmMain FrmMain, object list_plc, object list_platform)
         {
             InitializeComponent();
                 
             this.Text = var.tool_text + " : parameter";
-            _list_aktuator = (List<aktuator>)list_aktuator;
+            //_list_aktuator = (List<aktuator>)list_aktuator;
             _list_plc = (List<plc>)list_plc;
             _list_platform = (List<platform>)list_platform;
             _FrmMain = FrmMain;
@@ -36,7 +36,8 @@ namespace AutoHome
             //    checkedListBox1.Items.Add(at);
             foreach (plc p in _list_plc)
             {
-                ListBoxCheck_plc.Items.Add(p,true);
+                //ListBoxCheck_plc.Items.Add(p,true);
+                comboBox_listPlc.Items.Add(p);
             }
 
             listBox_aktors_refresh();
@@ -200,7 +201,7 @@ namespace AutoHome
         
 
         #region aktuators
-        aktuator selected_aktuator = null;
+        //aktuator selected_aktuator = null;
 
         //bei auswahl von mehreren elementen anderst verhalten
         private void listBox_aktors_SelectedIndexChanged(object sender, EventArgs e)
@@ -224,18 +225,39 @@ namespace AutoHome
         private void listBox_aktors_refresh()
         {
             List<aktuator> tmp_list_aktor = new List<aktuator>();
-            _list_aktuator.Sort((x, y) => x.Index.CompareTo(y.Index));
 
             //copy aktuator in display list depending on filter settings
-            aktor_type at = (aktor_type)comboBox_aktorType.SelectedItem;
-            foreach (aktuator a in _list_aktuator) {
-                if (a.GetAktType() == at) {
-                    for(int x = 0; x <= ListBoxCheck_plc.CheckedItems.Count -1; x++)
-                        if( a.isPlc((plc)ListBoxCheck_plc.CheckedItems[x]))
+
+            plc selectedPlc = (plc)comboBox_listPlc.SelectedItem;
+
+            foreach (plc p in _list_plc) {
+                if (checkBox_plc.Checked)
+                {
+                    foreach (aktuator a in selectedPlc.ListAktuator)
+                        if (checkBox_aktorType.Checked)
+                        {
+                            if (a.GetAktType() == (aktor_type)comboBox_aktorType.SelectedItem)
+                                tmp_list_aktor.Add(a);
+                        }
+                        else
                             tmp_list_aktor.Add(a);
                 }
-
+                else {//alle aktoren aller plc´s hinzufügen
+                    foreach (aktuator a in p.ListAktuator)
+                    {
+                        if (checkBox_aktorType.Checked)
+                        {
+                            if (a.GetAktType() == (aktor_type)comboBox_aktorType.SelectedItem)
+                                tmp_list_aktor.Add(a);
+                        }else
+                            tmp_list_aktor.Add(a);
+                    }
+                }
             }
+            
+
+            
+            tmp_list_aktor.Sort((x, y) => x.Index.CompareTo(y.Index));
 
             listBox_aktors.DataSource = null;
             listBox_aktors.Items.Clear();
@@ -246,7 +268,7 @@ namespace AutoHome
         {
             checkBox_add_new_aktuator.Checked = false;
             panel_edit_aktuator.Visible = true;
-            selected_aktuator = (aktuator)listBox_aktors.SelectedItem;
+            aktuator selected_aktuator = (aktuator)listBox_aktors.SelectedItem;
             if (selected_aktuator != null)
             {
                 textBox_akt_id.Text = selected_aktuator.Index.ToString();
@@ -263,7 +285,8 @@ namespace AutoHome
         {
             ListBox.SelectedObjectCollection collection = new ListBox.SelectedObjectCollection(listBox_aktors);
             foreach (aktuator akt in collection)
-                _list_aktuator.Remove(akt);
+                akt._plc.ListAktuator.Remove(akt);
+                //_list_aktuator.Remove(akt);
 
             listBox_aktors_refresh();
             panel_edit_aktuator.Visible = false;
@@ -295,16 +318,29 @@ namespace AutoHome
 
                     if (checkBox_add_new_aktuator.Checked)
                     {
-                        _list_aktuator.Add(new aktuator(index, textBox_edit_name.Text, plc, type));
+                        plc.ListAktuator.Add(new aktuator(index, textBox_edit_name.Text, plc, type));
                         textBox_akt_id.Text = (Convert.ToInt16(textBox_akt_id.Text) + 1).ToString();
                     }
                     else
                     {
-                        int nr = _list_aktuator.IndexOf(selected_aktuator);
-                        _list_aktuator[nr].Index = index;
-                        _list_aktuator[nr].Name = textBox_edit_name.Text;
-                        _list_aktuator[nr]._plc = plc;
-                        _list_aktuator[nr]._type = type;
+                        aktuator a = (aktuator)listBox_aktors.SelectedItem;
+                        //plc.ListAktuator.FindIndex(a)
+                        if (comboBox_edit_type.SelectedItem != null)
+                            a._type = (aktor_type)Enum.Parse(typeof(aktor_type), comboBox_edit_type.Text);
+                        if (comboBox_edit_plc.SelectedItem != null)
+                            a.change_plc((plc)comboBox_edit_plc.SelectedItem);
+                        if (textBox_akt_id.Text != "")
+                            a.Index = Convert.ToInt16( textBox_akt_id.Text);
+                        if (textBox_edit_name.Text != "")
+                            a.Name = textBox_edit_name.Text;
+
+
+
+                        //int nr = plc.ListAktuator.IndexOf(a);
+                        //plc.ListAktuator[nr].Index = index;
+                        //plc.ListAktuator[nr].Name = textBox_edit_name.Text;
+                        //plc.ListAktuator[nr]._plc = plc;
+                        //plc.ListAktuator[nr]._type = type;
                     }
                     //################################################# TODO: 
                     //###################### alle bereits projektierten aktoren suchen und ebenfalls updaten
@@ -340,9 +376,9 @@ namespace AutoHome
             listBox_plc.Items.Clear();
             listBox_plc.DataSource = _list_plc;
 
-            comboBox_edit_plc.DataSource = null;
-            comboBox_edit_plc.Items.Clear();
-            comboBox_edit_plc.DataSource = _list_plc;
+            //comboBox_edit_plc.DataSource = null;
+            //comboBox_edit_plc.Items.Clear();
+            //comboBox_edit_plc.DataSource = _list_plc;
         }
         
 
@@ -373,31 +409,18 @@ namespace AutoHome
 
         private void button_plc_delete_Click(object sender, EventArgs e)
         {
-            int count = 0;
-                foreach (aktuator a in _list_aktuator) 
-                    if (a.isPlc(selected_plc))
-                        count++;
-
-                if (count > 0) //abfrage ob plc in aktoren hinterlegt ist
-                {
-                    DialogResult dialogResult = MessageBox.Show("plc is linked to " + count.ToString() + " actuators!", "do you really want to delete " + selected_plc.ToString() + "?",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
-                    if (dialogResult == DialogResult.Yes) //plc löschen
-                    {
-                        foreach (aktuator a in _list_aktuator)
-                            if (a.isPlc(selected_plc))
-                                a.change_plc(null);
-                        _list_plc.Remove(selected_plc);
-                        listBox_plc_refresh();
-                        panel_edit_plc.Visible = false;
-                    }
-                }
-                else {
-                    _list_plc.Remove(selected_plc);
-                    listBox_plc_refresh();
-                    panel_edit_plc.Visible = false;
-                }
+            DialogResult dialogResult = MessageBox.Show("plc is linked to " + selected_plc.ListAktuator.Count + " actuators!", "do you really want to delete " + selected_plc.ToString() + "?",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+            if (dialogResult == DialogResult.Yes) //plc löschen
+            {
+                //foreach (aktuator a in _list_aktuator)
+                //    if (a.isPlc(selected_plc))
+                //        a.change_plc(null);
+                _list_plc.Remove(selected_plc);
+                listBox_plc_refresh();
+                panel_edit_plc.Visible = false;
+            }
         }
 
         private void button_save_plc_Click(object sender, EventArgs e)
@@ -421,6 +444,10 @@ namespace AutoHome
             listBox_plc_refresh();
         }
         #endregion
+        private void checkBoxFooterShowPlcTime_CheckedChanged(object sender, EventArgs e)
+        {
+            var.FooterShowPlcTime = checkBoxFooterShowPlcTime.Checked;
+        }
 
         private void textBox_DBServerIP_TextChanged(object sender, EventArgs e)
         {
@@ -453,19 +480,47 @@ namespace AutoHome
                 var.MngData_AcceptedClockDelay = Convert.ToInt32(textBox_MngData_AcceptedClockDelay.Text);
         }
 
-        private void ListBoxCheck_plc_SelectedValueChanged(object sender, EventArgs e)
-        {
-            listBox_aktors_refresh();
-        }
-
+        #region group box device
         private void comboBox_aktorType_SelectedIndexChanged(object sender, EventArgs e)
         {
             listBox_aktors_refresh();
         }
-
-        private void checkBoxFooterShowPlcTime_CheckedChanged(object sender, EventArgs e)
+        private void comboBox_listPlc_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var.FooterShowPlcTime = checkBoxFooterShowPlcTime.Checked;
+            listBox_aktors_refresh();
         }
+
+        private void checkBox_aktorType_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_aktorType.Checked)
+            {
+                comboBox_aktorType.Enabled = true;
+                comboBox_aktorType.Text = "choose type to filter";
+            }
+            else
+            {
+                comboBox_aktorType.Enabled = false;
+                comboBox_aktorType.Text = "no type filter";
+                listBox_aktors_refresh();
+            }
+        }
+
+        private void checkBox_plc_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_plc.Checked)
+            {
+                comboBox_listPlc.Enabled = true;
+                comboBox_listPlc.Text = "choose plc to filter";
+            }
+            else
+            {
+                comboBox_listPlc.Enabled = false;
+                comboBox_listPlc.Text = "no plc filter";
+                listBox_aktors_refresh();
+            }
+        }
+        #endregion
+
+      
     }
 }

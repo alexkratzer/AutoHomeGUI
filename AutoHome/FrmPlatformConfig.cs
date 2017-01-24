@@ -14,17 +14,16 @@ namespace AutoHome
     public partial class FrmPlatformConfig : Form
     {
         List<platform> _list_platform;
-        List<aktuator> _list_aktor;
         List<plc> _list_plc; //wird in FrmConfigPlatform_controlDialog benötigt
         platform platform_selected = null; //wird gesetzt wenn in combo box ausgewählt wird
         FrmMain _frmMain; //wird benötigt um beim schließen der FrmConfigPlatform Main zu aktualisieren
         List<floor_plan> _list_floor_plan;
 
-        public FrmPlatformConfig(object list_platform, object list_aktor, object list_plc, FrmMain frmMain)
+        public FrmPlatformConfig(object list_platform, object list_plc, FrmMain frmMain)
         {
             InitializeComponent();
             _list_platform = (List<platform>)list_platform;
-            _list_aktor = (List<aktuator>)list_aktor;
+            
             _list_plc = (List<plc>)list_plc;
             _frmMain = frmMain;
             
@@ -297,7 +296,7 @@ namespace AutoHome
             if (sender is PBplatformControl)
             {
                 PBplatformControl pc = (PBplatformControl)sender;
-                FrmPlatformConfig_EditControlDialog d = new FrmPlatformConfig_EditControlDialog(_list_aktor, pc._platform_control, _list_plc, selected_plc);
+                FrmPlatformConfig_EditControlDialog d = new FrmPlatformConfig_EditControlDialog(pc._platform_control, _list_plc, selected_plc);
 
                 DialogResult dr = d.ShowDialog();
                 if (dr == DialogResult.OK)
@@ -314,7 +313,7 @@ namespace AutoHome
             else if (sender is UC_SensorValue)
             {
                 UC_SensorValue uc = (UC_SensorValue)sender;
-                FrmPlatformConfig_EditControlDialog d = new FrmPlatformConfig_EditControlDialog(_list_aktor, uc._platform_control, _list_plc, selected_plc);
+                FrmPlatformConfig_EditControlDialog d = new FrmPlatformConfig_EditControlDialog(uc._platform_control, _list_plc, selected_plc);
 
                 DialogResult dr = d.ShowDialog();
                 if (dr == DialogResult.OK)
@@ -334,7 +333,7 @@ namespace AutoHome
                 //    + Environment.NewLine + ((UC_SensorValue)l.Tag).label_sensorName );
 
                 UC_SensorValue uc = (UC_SensorValue)((Label)sender).Tag;
-                FrmPlatformConfig_EditControlDialog d = new FrmPlatformConfig_EditControlDialog(_list_aktor, uc._platform_control, _list_plc, selected_plc);
+                FrmPlatformConfig_EditControlDialog d = new FrmPlatformConfig_EditControlDialog(uc._platform_control, _list_plc, selected_plc);
 
                 DialogResult dr = d.ShowDialog();
                 if (dr == DialogResult.OK)

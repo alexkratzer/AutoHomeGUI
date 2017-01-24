@@ -100,7 +100,7 @@
     <Compile Include="FrmParam.Designer.cs">
       <DependentUpon>FrmParam.cs</DependentUpon>
     </Compile>
-    <Compile Include="plc_log_msg.cs" />
+    <Compile Include="PlcSubModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UC_dialog_heater.cs">

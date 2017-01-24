@@ -29,7 +29,8 @@ namespace AutoHome
                 //checkBox_ctrl_manuel.Checked = Convert.ToBoolean(f.getPayload(3)); // -> override GUI input
                 //checkBox_ctrl_on.Checked = Convert.ToBoolean(f.getPayload(4)); // -> override GUI input
                 radioButton_state_on.Checked = Convert.ToBoolean(f.getPayload(2));
-                label_remaining_time.Text = f.getPayload(5).ToString("##") + f.getPayload(6).ToString("##");
+                label_remaining_time.Text = f.getPayload(3).ToString("##") + f.getPayload(4).ToString("##");
+                label_temp_ist.Text = "temperatur:" + Environment.NewLine + (Convert.ToDouble( f.getPayload(5))/100).ToString("##.##");
             }
             else if (f.isJob(DataIOType.GetParam) || f.isJob(DataIOType.SetParam) )
             {

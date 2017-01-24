@@ -70,11 +70,11 @@
             this.checkBox_add_new_aktuator = new System.Windows.Forms.CheckBox();
             this.groupBox_aktors = new System.Windows.Forms.GroupBox();
             this.comboBox_aktorType = new System.Windows.Forms.ComboBox();
-            this.ListBoxCheck_plc = new System.Windows.Forms.CheckedListBox();
             this.groupBox_plc = new System.Windows.Forms.GroupBox();
             this.checkBox_add_new_plc = new System.Windows.Forms.CheckBox();
             this.listBox_plc = new System.Windows.Forms.ListBox();
             this.panel_edit = new System.Windows.Forms.Panel();
+            this.checkBoxFooterShowPlcTime = new System.Windows.Forms.CheckBox();
             this.groupBox_DB = new System.Windows.Forms.GroupBox();
             this.textBox_DBPwd = new System.Windows.Forms.TextBox();
             this.textBox_DBUid = new System.Windows.Forms.TextBox();
@@ -90,7 +90,9 @@
             this.label_cps_server_port = new System.Windows.Forms.Label();
             this.textBox_cpsServerPort = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.checkBoxFooterShowPlcTime = new System.Windows.Forms.CheckBox();
+            this.comboBox_listPlc = new System.Windows.Forms.ComboBox();
+            this.checkBox_aktorType = new System.Windows.Forms.CheckBox();
+            this.checkBox_plc = new System.Windows.Forms.CheckBox();
             this.panel_edit_plc.SuspendLayout();
             this.panel_expert.SuspendLayout();
             this.panel_edit_aktuator.SuspendLayout();
@@ -504,8 +506,10 @@
             // 
             // groupBox_aktors
             // 
+            this.groupBox_aktors.Controls.Add(this.checkBox_plc);
+            this.groupBox_aktors.Controls.Add(this.checkBox_aktorType);
+            this.groupBox_aktors.Controls.Add(this.comboBox_listPlc);
             this.groupBox_aktors.Controls.Add(this.comboBox_aktorType);
-            this.groupBox_aktors.Controls.Add(this.ListBoxCheck_plc);
             this.groupBox_aktors.Controls.Add(this.listBox_aktors);
             this.groupBox_aktors.Controls.Add(this.checkBox_add_new_aktuator);
             this.groupBox_aktors.Controls.Add(this.panel_edit_aktuator);
@@ -518,21 +522,13 @@
             // 
             // comboBox_aktorType
             // 
+            this.comboBox_aktorType.Enabled = false;
             this.comboBox_aktorType.FormattingEnabled = true;
-            this.comboBox_aktorType.Location = new System.Drawing.Point(6, 16);
+            this.comboBox_aktorType.Location = new System.Drawing.Point(147, 96);
             this.comboBox_aktorType.Name = "comboBox_aktorType";
             this.comboBox_aktorType.Size = new System.Drawing.Size(121, 21);
             this.comboBox_aktorType.TabIndex = 27;
             this.comboBox_aktorType.SelectedIndexChanged += new System.EventHandler(this.comboBox_aktorType_SelectedIndexChanged);
-            // 
-            // ListBoxCheck_plc
-            // 
-            this.ListBoxCheck_plc.FormattingEnabled = true;
-            this.ListBoxCheck_plc.Location = new System.Drawing.Point(6, 43);
-            this.ListBoxCheck_plc.Name = "ListBoxCheck_plc";
-            this.ListBoxCheck_plc.Size = new System.Drawing.Size(121, 94);
-            this.ListBoxCheck_plc.TabIndex = 0;
-            this.ListBoxCheck_plc.SelectedValueChanged += new System.EventHandler(this.ListBoxCheck_plc_SelectedValueChanged);
             // 
             // groupBox_plc
             // 
@@ -576,6 +572,17 @@
             this.panel_edit.Name = "panel_edit";
             this.panel_edit.Size = new System.Drawing.Size(354, 292);
             this.panel_edit.TabIndex = 25;
+            // 
+            // checkBoxFooterShowPlcTime
+            // 
+            this.checkBoxFooterShowPlcTime.AutoSize = true;
+            this.checkBoxFooterShowPlcTime.Location = new System.Drawing.Point(102, 40);
+            this.checkBoxFooterShowPlcTime.Name = "checkBoxFooterShowPlcTime";
+            this.checkBoxFooterShowPlcTime.Size = new System.Drawing.Size(97, 17);
+            this.checkBoxFooterShowPlcTime.TabIndex = 30;
+            this.checkBoxFooterShowPlcTime.Text = "Show Plc Time";
+            this.checkBoxFooterShowPlcTime.UseVisualStyleBackColor = true;
+            this.checkBoxFooterShowPlcTime.CheckedChanged += new System.EventHandler(this.checkBoxFooterShowPlcTime_CheckedChanged);
             // 
             // groupBox_DB
             // 
@@ -721,16 +728,37 @@
             this.panel1.Size = new System.Drawing.Size(368, 583);
             this.panel1.TabIndex = 27;
             // 
-            // checkBoxFooterShowPlcTime
+            // comboBox_listPlc
             // 
-            this.checkBoxFooterShowPlcTime.AutoSize = true;
-            this.checkBoxFooterShowPlcTime.Location = new System.Drawing.Point(102, 40);
-            this.checkBoxFooterShowPlcTime.Name = "checkBoxFooterShowPlcTime";
-            this.checkBoxFooterShowPlcTime.Size = new System.Drawing.Size(97, 17);
-            this.checkBoxFooterShowPlcTime.TabIndex = 30;
-            this.checkBoxFooterShowPlcTime.Text = "Show Plc Time";
-            this.checkBoxFooterShowPlcTime.UseVisualStyleBackColor = true;
-            this.checkBoxFooterShowPlcTime.CheckedChanged += new System.EventHandler(this.checkBoxFooterShowPlcTime_CheckedChanged);
+            this.comboBox_listPlc.Enabled = false;
+            this.comboBox_listPlc.FormattingEnabled = true;
+            this.comboBox_listPlc.Location = new System.Drawing.Point(147, 123);
+            this.comboBox_listPlc.Name = "comboBox_listPlc";
+            this.comboBox_listPlc.Size = new System.Drawing.Size(121, 21);
+            this.comboBox_listPlc.TabIndex = 28;
+            this.comboBox_listPlc.SelectedIndexChanged += new System.EventHandler(this.comboBox_listPlc_SelectedIndexChanged);
+            // 
+            // checkBox_aktorType
+            // 
+            this.checkBox_aktorType.AutoSize = true;
+            this.checkBox_aktorType.Location = new System.Drawing.Point(53, 99);
+            this.checkBox_aktorType.Name = "checkBox_aktorType";
+            this.checkBox_aktorType.Size = new System.Drawing.Size(77, 17);
+            this.checkBox_aktorType.TabIndex = 29;
+            this.checkBox_aktorType.Text = "aktor Type";
+            this.checkBox_aktorType.UseVisualStyleBackColor = true;
+            this.checkBox_aktorType.CheckedChanged += new System.EventHandler(this.checkBox_aktorType_CheckedChanged);
+            // 
+            // checkBox_plc
+            // 
+            this.checkBox_plc.AutoSize = true;
+            this.checkBox_plc.Location = new System.Drawing.Point(53, 125);
+            this.checkBox_plc.Name = "checkBox_plc";
+            this.checkBox_plc.Size = new System.Drawing.Size(46, 17);
+            this.checkBox_plc.TabIndex = 30;
+            this.checkBox_plc.Text = "PLC";
+            this.checkBox_plc.UseVisualStyleBackColor = true;
+            this.checkBox_plc.CheckedChanged += new System.EventHandler(this.checkBox_plc_CheckedChanged);
             // 
             // FrmParam
             // 
@@ -825,9 +853,11 @@
         private System.Windows.Forms.Label label_MngData_AcceptedClockDelay;
         private System.Windows.Forms.TextBox textBox_MngData_AcceptedClockDelay;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.CheckedListBox ListBoxCheck_plc;
         private System.Windows.Forms.ComboBox comboBox_aktorType;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.CheckBox checkBoxFooterShowPlcTime;
+        private System.Windows.Forms.ComboBox comboBox_listPlc;
+        private System.Windows.Forms.CheckBox checkBox_plc;
+        private System.Windows.Forms.CheckBox checkBox_aktorType;
     }
 }

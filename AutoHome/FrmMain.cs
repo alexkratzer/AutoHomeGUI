@@ -30,7 +30,7 @@ namespace AutoHome
     {
         public static readonly string tool_version = "V0.0.3";
 
-        List<aktuator> list_aktuator = new List<aktuator>();
+        //List<aktuator> list_aktuator = new List<aktuator>();
         List<plc> list_plc = new List<plc>();
         List<platform> list_platform = new List<platform>();
         List<floor_plan> list_floor_plan = new List<floor_plan>();
@@ -62,16 +62,16 @@ namespace AutoHome
         private void load_projekt_data() {
             var.read_ini_file();
             list_plc = var.deserialize_plc();
-            list_aktuator = var.deserialize_aktor(list_plc);
-            list_platform = var.deserialize_platform(list_aktuator);
+            //list_plc = var.deserialize_aktor(list_plc);
+            list_platform = var.deserialize_platform(list_plc);
             log.msg(this, "### start AutoHome GUI " + tool_version + " ###");
         }
 
-        private void safe_projekt_data() {
+        private void safe_projekt_data()
+        {
             var.write_ini_file();
             var.serialize_platform(list_platform);
-            //var.serialize_aktuator_control(list_aktuator_controls);
-            var.serialize_aktor(list_aktuator);
+            //var.serialize_aktor(list_aktuator);
             var.serialize_plc(list_plc);
         }
         private void initCps()
@@ -132,16 +132,17 @@ namespace AutoHome
 
         private void saveToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            safe_projekt_data();
+            MessageBox.Show("saveToolStripMenuItem1_Click", "TODO");
+            //safe_projekt_data();
 
-            SaveFileDialog savefd = new SaveFileDialog();
-            savefd.InitialDirectory = var.default_project_data_path;
-            savefd.FileName = var.tool_text + "_" + DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString();
-            savefd.Filter = "Zip-File (*.zip)|*.zip";
-            if (savefd.ShowDialog() == DialogResult.OK)
-                zip(savefd.FileName, true);
-            var.default_project_data_path = savefd.InitialDirectory;
-            //log.msg(this, "save project data to: " + savefd.FileName);
+            //SaveFileDialog savefd = new SaveFileDialog();
+            //savefd.InitialDirectory = var.default_project_data_path;
+            //savefd.FileName = var.tool_text + "_" + DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString();
+            //savefd.Filter = "Zip-File (*.zip)|*.zip";
+            //if (savefd.ShowDialog() == DialogResult.OK)
+            //    zip(savefd.FileName, true);
+            //var.default_project_data_path = savefd.InitialDirectory;
+            ////log.msg(this, "save project data to: " + savefd.FileName);
         }
 
 
@@ -176,7 +177,7 @@ namespace AutoHome
         #region menue edit
         private void editParamsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FrmParam fp = new FrmParam(this, list_aktuator, list_plc, list_platform);
+            FrmParam fp = new FrmParam(this, list_plc, list_platform);
             fp.ShowDialog();
         }
 
@@ -256,7 +257,7 @@ namespace AutoHome
         {
             paint_platform(true);
 
-            FrmPlatformConfig FCP = new FrmPlatformConfig(list_platform, list_aktuator, list_plc, this);
+            FrmPlatformConfig FCP = new FrmPlatformConfig(list_platform, list_plc, this);
             FCP.ShowDialog();
         }
 
@@ -725,8 +726,8 @@ namespace AutoHome
             int counter = 0;
             list_UC.Clear();
             panel_aktors.Controls.Clear();
-
-            foreach (aktuator a in list_aktuator) {
+            
+            foreach (aktuator a in ((plc)comboBox_aktor_cpu.SelectedItem).ListAktuator) {
                 if (a.GetAktType() == (aktor_type)comboBox_aktor_type.SelectedItem)
                 {
                     aktuator_control ac = new aktuator_control(a);

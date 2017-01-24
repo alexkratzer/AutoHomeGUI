@@ -30,6 +30,8 @@
         {
             this.radioButton_state_on = new System.Windows.Forms.RadioButton();
             this.panel_ctrl_auto = new System.Windows.Forms.Panel();
+            this.label_remaining_time = new System.Windows.Forms.Label();
+            this.label_remaining_dsc = new System.Windows.Forms.Label();
             this.textBox_stop_at_degree = new System.Windows.Forms.TextBox();
             this.label_stop_at_degree = new System.Windows.Forms.Label();
             this.textBox_stop_m = new System.Windows.Forms.TextBox();
@@ -48,8 +50,7 @@
             this.checkBox_ctrl_manuel = new System.Windows.Forms.CheckBox();
             this.button_send = new System.Windows.Forms.Button();
             this.label_dbg_frame = new System.Windows.Forms.Label();
-            this.label_remaining_dsc = new System.Windows.Forms.Label();
-            this.label_remaining_time = new System.Windows.Forms.Label();
+            this.label_temp_ist = new System.Windows.Forms.Label();
             this.panel_ctrl_auto.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -66,6 +67,7 @@
             // 
             // panel_ctrl_auto
             // 
+            this.panel_ctrl_auto.Controls.Add(this.label_temp_ist);
             this.panel_ctrl_auto.Controls.Add(this.label_remaining_time);
             this.panel_ctrl_auto.Controls.Add(this.label_remaining_dsc);
             this.panel_ctrl_auto.Controls.Add(this.textBox_stop_at_degree);
@@ -87,9 +89,27 @@
             this.panel_ctrl_auto.Size = new System.Drawing.Size(163, 109);
             this.panel_ctrl_auto.TabIndex = 93;
             // 
+            // label_remaining_time
+            // 
+            this.label_remaining_time.AutoSize = true;
+            this.label_remaining_time.Location = new System.Drawing.Point(78, 58);
+            this.label_remaining_time.Name = "label_remaining_time";
+            this.label_remaining_time.Size = new System.Drawing.Size(22, 13);
+            this.label_remaining_time.TabIndex = 88;
+            this.label_remaining_time.Text = "xxx";
+            // 
+            // label_remaining_dsc
+            // 
+            this.label_remaining_dsc.AutoSize = true;
+            this.label_remaining_dsc.Location = new System.Drawing.Point(6, 58);
+            this.label_remaining_dsc.Name = "label_remaining_dsc";
+            this.label_remaining_dsc.Size = new System.Drawing.Size(66, 13);
+            this.label_remaining_dsc.TabIndex = 87;
+            this.label_remaining_dsc.Text = "time in state:";
+            // 
             // textBox_stop_at_degree
             // 
-            this.textBox_stop_at_degree.Location = new System.Drawing.Point(56, 78);
+            this.textBox_stop_at_degree.Location = new System.Drawing.Point(45, 78);
             this.textBox_stop_at_degree.Name = "textBox_stop_at_degree";
             this.textBox_stop_at_degree.Size = new System.Drawing.Size(31, 20);
             this.textBox_stop_at_degree.TabIndex = 84;
@@ -99,7 +119,7 @@
             // label_stop_at_degree
             // 
             this.label_stop_at_degree.AutoSize = true;
-            this.label_stop_at_degree.Location = new System.Drawing.Point(7, 83);
+            this.label_stop_at_degree.Location = new System.Drawing.Point(1, 81);
             this.label_stop_at_degree.Name = "label_stop_at_degree";
             this.label_stop_at_degree.Size = new System.Drawing.Size(43, 13);
             this.label_stop_at_degree.TabIndex = 83;
@@ -257,23 +277,14 @@
             this.label_dbg_frame.TabIndex = 95;
             this.label_dbg_frame.Text = "frame";
             // 
-            // label_remaining_dsc
+            // label_temp_ist
             // 
-            this.label_remaining_dsc.AutoSize = true;
-            this.label_remaining_dsc.Location = new System.Drawing.Point(6, 58);
-            this.label_remaining_dsc.Name = "label_remaining_dsc";
-            this.label_remaining_dsc.Size = new System.Drawing.Size(66, 13);
-            this.label_remaining_dsc.TabIndex = 87;
-            this.label_remaining_dsc.Text = "time in state:";
-            // 
-            // label_remaining_time
-            // 
-            this.label_remaining_time.AutoSize = true;
-            this.label_remaining_time.Location = new System.Drawing.Point(93, 58);
-            this.label_remaining_time.Name = "label_remaining_time";
-            this.label_remaining_time.Size = new System.Drawing.Size(22, 13);
-            this.label_remaining_time.TabIndex = 88;
-            this.label_remaining_time.Text = "xxx";
+            this.label_temp_ist.AutoSize = true;
+            this.label_temp_ist.Location = new System.Drawing.Point(90, 78);
+            this.label_temp_ist.Name = "label_temp_ist";
+            this.label_temp_ist.Size = new System.Drawing.Size(60, 13);
+            this.label_temp_ist.TabIndex = 89;
+            this.label_temp_ist.Text = "temperatur:";
             // 
             // UC_dialog_heater
             // 
@@ -318,5 +329,6 @@
         private System.Windows.Forms.Label label_dbg_frame;
         private System.Windows.Forms.Label label_remaining_time;
         private System.Windows.Forms.Label label_remaining_dsc;
+        private System.Windows.Forms.Label label_temp_ist;
     }
 }

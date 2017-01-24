@@ -1,0 +1,942 @@
+﻿FUNCTION_BLOCK "jalousieMotorV0.0"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      new_position : Int;   // drive to position (0 = up) (100 = down)
+      new_angle : Int;   // drive to angel (0 = up) (100 = down)
+      local_DTL {OriginalPartName := 'DTL'; LibVersion := '1.0'} : DTL;   // current time (DTL)
+      interface_ID : Int;
+   END_VAR
+
+   VAR_OUTPUT 
+      drive_up : Bool;   // HW Motor Output
+      drive_down : Bool;   // HW Motor Output
+      position : Int;   // current position (0 = up) (100 = down)
+      angel : Int;   // current angel (0 = up) (100 = down)
+   END_VAR
+
+   VAR_IN_OUT 
+      init : Bool;   // drive absolute up
+   END_VAR
+
+   VAR RETAIN
+      state : Int;
+      cur_data : Struct
+         position_in_time : Time;
+         angle_in_time : Time;
+         position : Int;
+         angle : Int;
+      END_STRUCT;
+   END_VAR
+   VAR 
+      timer_init {OriginalPartName := 'IEC_TIMER'; LibVersion := '1.0'} : TOF_TIME;
+      last_DTL {OriginalPartName := 'DTL'; LibVersion := '1.0'} : DTL;
+      DRIVING_TIME_ANGLE { S7_HMI_Accessible := 'False'; S7_HMI_Visible := 'False'} : Time := T#1S_500MS;   // constante
+      DRIVING_TIME_POSITION { S7_HMI_Accessible := 'False'; S7_HMI_Visible := 'False'} : Time := T#53S;   // constante
+   END_VAR
+
+   VAR_TEMP 
+      do_init : Bool;
+      timediff : Time;
+   END_VAR
+
+   VAR CONSTANT 
+      STATE_HOLD : Int := 0;
+      STATE_UP : Int := 1;
+      STATE_DOWN : Int := 2;
+      DIGIT_SCALA : Real := 100.0;
+   END_VAR
+
+
+BEGIN
+	
+	(*#######################################################################################
+	                                                                                     
+	      "jalousie_motor"      V00.00.01 - creation                        
+	                            V00.00.11 - add log at "positionen berechnen"
+	                            V00.00.14 - add log at "positionen berechnen"
+	                            V00.00.15 - disable log at do_init                                                                                    
+	########################################################################################*)
+	// 600ms ~1 Step driving time
+	#DRIVING_TIME_ANGLE := t#1s_500ms;
+	#DRIVING_TIME_POSITION := t#55s;
+	
+	//#######################################################################################
+	//################################### sequence control ##################################
+	//#######################################################################################
+	#drive_up := false;
+	#drive_down := false;
+	
+	#timer_init(IN := #init,
+	            PT := #DRIVING_TIME_POSITION + #DRIVING_TIME_ANGLE + t#2s,
+	            Q => #do_init);
+	
+	IF #do_init THEN
+	  #drive_up := true;
+	  #init := FALSE;
+	  //"log"(type:=1, id:=#interface_ID, msg :='jal motor do_init'); //müllt log zu.
+	  GOTO INIT;
+	END_IF;
+	
+	CASE #state OF
+	  #STATE_HOLD:
+	    //bei veränderter position diese anfahren
+	    IF #new_position > #cur_data.position OR #new_angle < #cur_data.angle THEN
+	      #state := #STATE_DOWN;
+	    ELSIF #new_position < #cur_data.position OR #new_angle > #cur_data.angle THEN
+	      #state := #STATE_UP;
+	    END_IF;
+	    
+	  #STATE_DOWN:
+	    //solange position noch nicht erreicht wurde wird weitergefahren
+	    IF #new_position > #cur_data.position THEN
+	      #drive_down := true;
+	    ELSIF #new_angle < #cur_data.angle THEN
+	      #drive_up := true;
+	    ELSE
+	      #state := #STATE_HOLD;
+	    END_IF;
+	    
+	  #STATE_UP:
+	    //solange position noch nicht erreicht wurde wird weitergefahren
+	    IF #new_position < #cur_data.position THEN
+	      #drive_up := true;
+	    ELSIF #new_angle > #cur_data.angle THEN
+	      #drive_down := true;
+	    ELSE
+	      #state := #STATE_HOLD;
+	    END_IF;
+	  ELSE
+	    "log"(type:=3,
+	          id:=#interface_ID,
+	          msg:='JALOUSIE_MOTOR unknown state');
+	    #state := #STATE_HOLD;
+	END_CASE;
+	
+	INIT:
+	//#######################################################################################
+	//############################ positionen berechnen #####################################
+	//#######################################################################################
+	//position während hochfahren
+	IF #drive_up THEN
+	  #timediff := T_DIFF(IN1 := #local_DTL, IN2 := #last_DTL);
+	  IF #cur_data.angle_in_time <= t#0ms THEN
+	    #cur_data.position_in_time := T_SUB(IN1 := #cur_data.position_in_time, IN2 := #timediff);
+	    IF #cur_data.position_in_time <= t#0ms THEN
+	        #cur_data.position_in_time := t#0ms;
+	        //################### TO-DO: optimieren ############################
+	        //"log"(type:=2, id:=#interface_ID, msg :='jal drive_up pos_in_time < 0ms');
+	    END_IF;
+	  ELSE
+	    #cur_data.angle_in_time := T_SUB(IN1 := #cur_data.angle_in_time, IN2 := #timediff);
+	    IF #cur_data.angle_in_time <= t#0ms THEN
+	        #cur_data.angle_in_time := t#0ms;
+	        //################### TO-DO: optimieren ############################
+	        //"log"(type:=2, id:=#interface_ID, msg :='jal drive_up angle_in_time < 0ms');
+	    END_IF;
+	  END_IF;
+	END_IF;
+	
+	//position während runterfahren
+	IF #drive_down THEN
+	  #timediff := T_DIFF(IN1 := #local_DTL, IN2 := #last_DTL);
+	  IF #cur_data.angle_in_time >= #DRIVING_TIME_ANGLE THEN
+	      #cur_data.position_in_time := T_ADD(IN1 := #cur_data.position_in_time, IN2 := #timediff);
+	        IF #cur_data.position_in_time > #DRIVING_TIME_POSITION THEN
+	            #cur_data.position_in_time := #DRIVING_TIME_POSITION;
+	            //################### TO-DO: optimieren ############################
+	            //"log"(type:=2, id:=#interface_ID, msg :='jal drive_down pos_in_time > DRIVING_T_POS');
+	        END_IF;
+	  ELSE
+	      #cur_data.angle_in_time := T_ADD(IN1 := #cur_data.angle_in_time, IN2 := #timediff);
+	        IF #cur_data.angle_in_time > #DRIVING_TIME_ANGLE THEN
+	            #cur_data.angle_in_time := #DRIVING_TIME_ANGLE;
+	            //################### TO-DO: optimieren ############################
+	            //"log"(type:=2, id:=#interface_ID, msg :='jal drive_down angle_in_time > DRIVING_T_ANGLE');
+	        END_IF;
+	  END_IF;
+	END_IF;
+	
+	// normierung der position/zeit zwischen 0 - 100 
+	#cur_data.position := REAL_TO_INT(NORM_X(MIN := 0, VALUE := #cur_data.position_in_time, MAX := #DRIVING_TIME_POSITION) * #DIGIT_SCALA);
+	#cur_data.angle := REAL_TO_INT(NORM_X(MIN := 0, VALUE := #cur_data.angle_in_time, MAX := #DRIVING_TIME_ANGLE) * #DIGIT_SCALA);
+	
+	//festhalten der Lokalzeit für nächsten zyklus
+	#last_DTL := #local_DTL;
+	
+	//#######################################################################################
+	//################################## set outputs ########################################
+	//#######################################################################################
+	#position := #cur_data.position;
+	#angel := #cur_data.angle;
+	
+	//Exeption handling
+	IF #drive_down AND #drive_up THEN
+	  "log"(type:=3,
+	        id:=#interface_ID,
+	        msg :='JALOUSIE_MOTOR drive_up AND drive_down');
+	  #drive_down := false;
+	  #drive_up := false;
+	END_IF;
+	
+	
+	
+	
+	
+	
+	
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK "lightV0.0"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      button : Bool;   // zugeordneter Taster
+      interface_nr : Int;   // eindeutige interface ID für kommunikation mit linux
+      turn_off : Bool;   // statisch ausschalten
+      turn_on : Bool;   // statisch einschalten (u.a. Bewegungsmelder)
+      currentLux : Int;
+   END_VAR
+
+   VAR_OUTPUT 
+      out : Bool;   // Ausgang zu Lampe
+   END_VAR
+
+   VAR 
+      mask_jitter_impuls {OriginalPartName := 'IEC_TIMER'; LibVersion := '1.0'} : TP_TIME;
+      signal : Bool;
+   END_VAR
+   VAR RETAIN
+      lock : Bool;
+   END_VAR
+   VAR 
+      "Tauto-off-timer" {OriginalPartName := 'IEC_TIMER'; LibVersion := '1.0'} : TON_TIME;
+   END_VAR
+   VAR RETAIN
+      switch_signal : Bool;
+   END_VAR
+   VAR 
+      "Tauto-off-lux" {OriginalPartName := 'IEC_TIMER'; LibVersion := '1.0'} : TOF_TIME;
+      last_switch_signal : Bool;
+   END_VAR
+   VAR RETAIN
+      param : Struct
+         "auto-off_lux" : Int;   // lichtwert ab welchem das licht automatisch ausgeht bzw nicht eingeschalten werden kann
+         "auto-off_time" : Time := T#4h;   // zeitdauer nach der das licht wieder ausgeschalten wird.
+         "auto-off_lux_enable" : Bool;
+         "auto-off_time_enable" : Bool := true;
+      END_STRUCT;
+   END_VAR
+   VAR 
+      Tturn_off {OriginalPartName := 'IEC_TIMER'; LibVersion := '1.0'} : TOF_TIME;
+      remaining_light_on_time : Time;
+   END_VAR
+
+   VAR_TEMP 
+      frameIO : "UDT_CPSFrame";
+      "tmp_auto-off-time_DTL" {OriginalPartName := 'DTL'; LibVersion := '1.0'} : DTL;
+      tmp_turn_off_lux : Bool;
+      tmp_turn_off_timer : Bool;
+      tmp_turn_off_hold : Bool;
+      tmp_remaining_light_on : Time;
+   END_VAR
+
+   VAR CONSTANT 
+      NET_Get_state : Int := 1;
+      NET_Set_state : Int := 2;
+      NET_Get_Param : Int := 3;
+      NET_Set_Param : Int := 4;
+      NET_tmp : Int := 5;
+   END_VAR
+
+
+BEGIN
+	(*####################################################################################                                                                 
+	      light         V00.00.01 - creation                                             
+	      candle        V00.00.02 - integrate params in instance DB / include net_interface  
+	                    V00.00.03 - turn on/off inputs for detector
+	                    V00.00.04 - include -> send state to websocket
+	                    V00.00.05 - bugfix turn off at time OR lux, set turnoff at time as default and remanent 
+	                    V00.00.06 - change turn off timer
+	                    V00.01.00 - change LUX threshold to Input param / Change TCP to UDP connection
+	#####################################################################################*)
+	
+	//#######################################################################################
+	//#################################  web access #########################################
+	//#######################################################################################
+	IF "CPSisReq"(index:=#interface_nr, frame := #frameIO) THEN
+	    CASE #frameIO.data[1] OF
+	        #NET_Get_state:
+	            #frameIO.data[2] := BOOL_TO_INT(#switch_signal);
+	            #tmp_remaining_light_on := #param."auto-off_time" - #remaining_light_on_time;
+	            //ausrechnen der restzeit die das licht noch an ist
+	            #"tmp_auto-off-time_DTL" := TOD_TO_DTL(TIME_TO_TOD(#tmp_remaining_light_on));
+	            #frameIO.data[3] := #"tmp_auto-off-time_DTL".HOUR;
+	            #frameIO.data[4] := #"tmp_auto-off-time_DTL".MINUTE;
+	            #frameIO.data[5] := #"tmp_auto-off-time_DTL".SECOND;
+	            #frameIO.data[6] := -1; //ende kennung damit 0en auch interpretiert werden
+	        #NET_Set_state:
+	            #switch_signal := INT_TO_BOOL(#frameIO.data[2]);
+	            #frameIO.data[3] := -1; //ende kennung damit 0en auch interpretiert werden
+	        #NET_Get_Param:
+	            #frameIO.data[2] := BOOL_TO_INT(#switch_signal);
+	            #frameIO.data[3] := BOOL_TO_INT(#param."auto-off_lux_enable");
+	            #frameIO.data[4] := #param."auto-off_lux";
+	            #frameIO.data[5] := BOOL_TO_INT(#param."auto-off_time_enable");
+	            #"tmp_auto-off-time_DTL" := TOD_TO_DTL(TIME_TO_TOD(#param."auto-off_time"));
+	            #frameIO.data[6] := #"tmp_auto-off-time_DTL".HOUR;
+	            #frameIO.data[7] := #"tmp_auto-off-time_DTL".MINUTE;
+	            #frameIO.data[8] := #"tmp_auto-off-time_DTL".SECOND;
+	            #frameIO.data[9] := -1; //ende kennung damit 0en auch interpretiert werden
+	            
+	        #NET_Set_Param:
+	            //#frameIO.data[2] := BOOL_TO_INT(#switch_signal);
+	            #param."auto-off_lux_enable" := INT_TO_BOOL(#frameIO.data[3]);
+	            #param."auto-off_lux" := #frameIO.data[4];
+	            #param."auto-off_time_enable" := INT_TO_BOOL(#frameIO.data[5]);
+	            #"tmp_auto-off-time_DTL" := DTL#1970-01-01-00:00:00.0;
+	            #"tmp_auto-off-time_DTL".HOUR := INT_TO_USINT(#frameIO.data[6]);
+	            #"tmp_auto-off-time_DTL".MINUTE := INT_TO_USINT(#frameIO.data[7]);
+	            #"tmp_auto-off-time_DTL".SECOND := INT_TO_USINT(#frameIO.data[8]);
+	            #param."auto-off_time" := TOD_TO_TIME(DTL_TO_TOD(#"tmp_auto-off-time_DTL"));
+	            
+	            //antwort mit aktuellen werten zurückschicken
+	            #frameIO.data[2] := BOOL_TO_INT(#switch_signal);
+	            #frameIO.data[3] := BOOL_TO_INT(#param."auto-off_lux_enable");
+	            #frameIO.data[4] := #param."auto-off_lux";
+	            #frameIO.data[5] := BOOL_TO_INT(#param."auto-off_time_enable");
+	            #"tmp_auto-off-time_DTL" := TOD_TO_DTL(TIME_TO_TOD(#param."auto-off_time"));
+	            #frameIO.data[6] := #"tmp_auto-off-time_DTL".HOUR;
+	            #frameIO.data[7] := #"tmp_auto-off-time_DTL".MINUTE;
+	            #frameIO.data[8] := #"tmp_auto-off-time_DTL".SECOND;
+	            #frameIO.data[9] := -1; //ende kennung damit 0en auch interpretiert werden
+	        #NET_tmp:;
+	        ELSE
+	            #frameIO.data[1] := -1;
+	            #frameIO.data[2] := -1;
+	            #frameIO.data[3] := -1;
+	            #frameIO.data[4] := -1;
+	            #frameIO.data[5] := -1;
+	            
+	    END_CASE;
+	    "CPStoSend"(#frameIO);
+	END_IF;
+	
+	// Entprellen des Signals bei mechanischer Tasterbetätigung
+	// (bzw wenn der stöpsel die ganze zeit rumdrückt)
+	#mask_jitter_impuls(IN := #button,
+	                    PT := t#1s,
+	                    Q => #signal);
+	
+	// #signal wechselt bei Änderung
+	IF #signal AND #lock = FALSE THEN
+	  #lock := TRUE;
+	  #switch_signal := NOT #switch_signal;
+	END_IF;
+	IF #signal = FALSE THEN
+	  #lock := FALSE;
+	END_IF;
+	
+	// bei turn_on wird eingeschalten
+	IF #turn_on THEN
+	    #switch_signal := true;
+	END_IF;
+	
+	// bei turn_off input wird für t ausgeschalten 
+	#Tturn_off(IN:=#turn_off, PT:=t#5s, Q=>#tmp_turn_off_hold);
+	
+	//wenn außen hell dann ausschalten
+	//TODO: "sense_lux_stairs_og" evtl als IN variable übergeben??
+	IF #param."auto-off_lux_enable" THEN
+	    #"Tauto-off-lux"(IN := #currentLux > #param."auto-off_lux",
+	                    PT := t#10s,
+	                    Q => #tmp_turn_off_lux
+	   );
+	ELSE
+	    #tmp_turn_off_lux := false;
+	END_IF;
+	
+	
+	// Timer für automatisches wieder-aus-schalten
+	IF #param."auto-off_time_enable" THEN
+	    #"Tauto-off-timer"(IN := #switch_signal,
+	                      PT := #param."auto-off_time",
+	                      Q => #tmp_turn_off_timer,
+	                      ET=>#remaining_light_on_time);
+	   
+	END_IF;
+	IF #tmp_turn_off_lux OR #tmp_turn_off_timer OR #tmp_turn_off_hold THEN
+	    #switch_signal := FALSE;
+	END_IF;
+	
+	
+	// belegen des ausgangs
+	#out := #switch_signal;
+	
+	(*
+	//signalwechsel an atom senden
+	IF #last_switch_signal <>  #switch_signal THEN
+	    #tmp_data[0] := #interface_nr;
+	    #tmp_data[1] := 0; //für später -> quelle des signalwechsels (taster / webserver / timer / lux / usw...)
+	    #tmp_data[2] := BOOL_TO_INT(#last_switch_signal);
+	    #tmp_data[3] := BOOL_TO_INT(#switch_signal);
+	    "atom_send"(header:=3, type:=1, data:=#tmp_data);
+	    #last_switch_signal := #switch_signal;
+	END_IF;
+	*)
+	
+	(*
+	IF #last_switch_signal <> #switch_signal THEN
+	    #last_switch_signal := #switch_signal;
+	    IF NOT "websock"(ID := #interface_nr, PARAM := BOOL_TO_INT(#switch_signal)) THEN
+	        "log"(CONCAT(IN1:='websock error writing ID: ', IN2:=INT_TO_STRING(#interface_nr)));
+	    END_IF;
+	END_IF;
+	*)
+	
+	
+	
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK "jalousieV0.0"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      button_up : Bool;
+      button_down : Bool;
+      interface_nr : Int;
+   END_VAR
+
+   VAR_OUTPUT 
+      drive_up : Bool;
+      drive_down : Bool;
+   END_VAR
+
+   VAR 
+      motor : "jalousieMotorV0.0";
+      trigger_up_FP {OriginalPartName := 'R_TRIG_1200'; LibVersion := '1.0'} : R_TRIG;
+      trigger_down_FP {OriginalPartName := 'R_TRIG_1200'; LibVersion := '1.0'} : R_TRIG;
+      trigger_down_FN {OriginalPartName := 'F_TRIG_1200'; LibVersion := '1.0'} : F_TRIG;
+      trigger_up_FN {OriginalPartName := 'F_TRIG_1200'; LibVersion := '1.0'} : F_TRIG;
+   END_VAR
+   VAR RETAIN
+      cmd : Struct
+         new_position : Int;
+         new_angle : Int;
+      END_STRUCT;
+      data_motor : Struct
+         position : Int;
+         angle : Int;
+         drive_up : Bool;
+         drive_down : Bool;
+      END_STRUCT;
+      event : Array[0..#EVENT_COUNT] of "UDT_jalousie_event";
+   END_VAR
+   VAR 
+      init_motor { S7_HMI_Accessible := 'False'; S7_HMI_Visible := 'False'} : Bool;
+      "timer" : Struct
+         button_hold : Bool;
+         event_lock : Bool;
+         event_signal : Bool;
+         wind_warning_lock : Bool;
+         wind_warning_signal : Bool;
+      END_STRUCT;
+      Twind_warning_lock {OriginalPartName := 'IEC_TIMER'; LibVersion := '1.0'} : TOF_TIME;
+      Tevent_lock {OriginalPartName := 'IEC_TIMER'; LibVersion := '1.0'} : TOF_TIME;
+      timer_button_hold {OriginalPartName := 'IEC_TIMER'; LibVersion := '1.0'} : TON_TIME;
+   END_VAR
+   VAR RETAIN
+      DRIVE_UP_WIND_SPEED : Real := 14.0;   // grenzwert in m/s bei dem jalousie hochfährt (http://www.warema.de/FACHPARTNER/PRODUKTE/Raffstoren/Zubehoer-Infos/Windwarnanlagen_300806.pdf)
+   END_VAR
+
+   VAR_TEMP 
+      frameIO : "UDT_CPSFrame";
+      button : Struct
+         up : Struct
+            FP : Bool;
+            FN : Bool;
+         END_STRUCT;
+         down : Struct
+            FP : Bool;
+            FN : Bool;
+         END_STRUCT;
+      END_STRUCT;
+      loop : Int;
+      "time" : Struct
+         retval : Int;
+         local_DTL {OriginalPartName := 'DTL'; LibVersion := '1.0'} : DTL;
+         not_used_local_TOD : Time_Of_Day;
+      END_STRUCT;
+      msg : String;
+      tmp_data : "UDT_net_frame_data";
+   END_VAR
+
+   VAR CONSTANT 
+      BUTTON_HOLD_TIME : Time := T#300MS;   // Zeit um nach FN motor zu stopen. ansonsten wird auf anschlag gefahren
+      EVENT_COUNT : Int := 9;   // Anzahl der Events die der Baustein maximal verwaltet
+      NET_GET_STATE : Int := 1;
+      NET_SET_STATE : Int := 2;   // fahre zu position
+      NET_GET_PARAM : Int := 3;   // nicht verwendet...
+      NET_SET_PARAM : Int := 4;   // windgeschwindigkeit bei der hochgefahren wird
+      NET_SetParamJalousieEvent : Int := 5;
+      NET_GetParamJalousieEvent : Int := 6;
+   END_VAR
+
+
+BEGIN
+	(*####################################################################################
+	                                                                                     
+	      jalousie      V00.00.01 - creation                                             
+	                    V00.00.04 - verify wind-speed / static var cmd, data_motor remanent  
+	                    V00.00.11 - check event to >= not only >
+	                    V00.00.12 - add log at init motor / change init_motor from temp to static
+	                    V00.00.13 - hard code wind-speed and remove it from input
+	                    V00.00.14 - change logging and add lock timer for wind-speed-warning
+	                    V00.00.15 - check event angel after position
+	                    V00.00.16 - move DRIVE_UP_WIND_SPEED from const to static param and include in NET interface
+	                    V00.00.17 - write log event DRIVE_UP_WIND_SPEED in Database
+	                    V00.01.00 - Change TCP to UDP connection
+	#####################################################################################*)
+	
+	//systemzeit lesen
+	#time.retval := RD_LOC_T(#time.local_DTL);
+	(*
+	IF #time.retval > 1 THEN
+	    "log"(id:=2,
+	          index:=#interface_nr,
+	          Ret_Val:=CONCAT(IN1 := 'jal time.retval <>1 ==> ', IN2 := INT_TO_STRING(#time.retval)));
+	END_IF;
+	*)
+	//#######################################################################################
+	//#########################  web acces drive position ###################################
+	//#######################################################################################
+	IF "CPSisReq"(index:=#interface_nr, frame := #frameIO) THEN
+	    CASE #frameIO.data[1] OF
+	    #NET_GET_STATE:
+	        #frameIO.data[2] := #data_motor.position;
+	        #frameIO.data[3] := #data_motor.angle;
+	        #frameIO.data[4] := -1; //ende kennung damit 0en auch interpretiert werden
+	    #NET_SET_STATE:
+	        #cmd.new_position := #frameIO.data[2];
+	        #cmd.new_angle := #frameIO.data[3];
+	        //für visualisierung
+	        #frameIO.data[2] := #data_motor.position;
+	        #frameIO.data[3] := #data_motor.angle;
+	        #frameIO.data[4] := -1; //ende kennung damit 0en auch interpretiert werden
+	    #NET_GET_PARAM:
+	        #frameIO.data[2] := REAL_TO_INT(#DRIVE_UP_WIND_SPEED * 100);
+	        #frameIO.data[3] := BOOL_TO_INT(#init_motor);
+	        #frameIO.data[4] := -1; //ende kennung damit 0en auch interpretiert werden
+	    #NET_SET_PARAM:
+	        #DRIVE_UP_WIND_SPEED := INT_TO_REAL(#frameIO.data[2]) / 100;
+	        IF #frameIO.data[3] = 1 THEN
+	            #init_motor := true;
+	            "log"(type := 1,
+	                  id := #interface_nr,
+	                  msg := 'init jalousie motor');
+	        END_IF;
+	        #frameIO.data[4] := -1; //ende kennung damit 0en auch interpretiert werden
+	    #NET_GetParamJalousieEvent:
+	      #frameIO.data[3] := #event[#frameIO.data[2]]."time".hour;
+	      #frameIO.data[4] := #event[#frameIO.data[2]]."time".minute;
+	      #frameIO.data[5] := #event[#frameIO.data[2]]."time".secound;
+	      #frameIO.data[6] := #event[#frameIO.data[2]].position;
+	      #frameIO.data[7] := #event[#frameIO.data[2]].angle;
+	      #frameIO.data[8] := BOOL_TO_INT(#event[#frameIO.data[2]].enable);
+	      #frameIO.data[9] := BOOL_TO_INT(#event[#frameIO.data[2]].driving_up);
+	      #frameIO.data[10] := -1; //ende kennung damit 0en auch interpretiert werden
+	  #NET_SetParamJalousieEvent:
+	      #event[#frameIO.data[2]]."time".hour := #frameIO.data[3];
+	      #event[#frameIO.data[2]]."time".minute := #frameIO.data[4];
+	      #event[#frameIO.data[2]]."time".secound := #frameIO.data[5];
+	      #event[#frameIO.data[2]].position := #frameIO.data[6];
+	      #event[#frameIO.data[2]].angle := #frameIO.data[7];
+	      #event[#frameIO.data[2]].enable := INT_TO_BOOL(#frameIO.data[8]);
+	      #event[#frameIO.data[2]].driving_up := INT_TO_BOOL(#frameIO.data[9]);
+	      #frameIO.data[10] := -1; //ende kennung damit 0en auch interpretiert werden
+	  ELSE
+	      #frameIO.data[1] := -1;
+	      #frameIO.data[2] := -1;
+	      #frameIO.data[3] := -1;
+	      #frameIO.data[4] := -1;
+	      #frameIO.data[5] := -1;
+	END_CASE;
+	
+	"CPStoSend"(#frameIO);
+	END_IF;
+	
+	//#######################################################################################
+	//#########################  event based drive position #################################       
+	//#######################################################################################
+	IF NOT #timer.event_lock THEN
+	    FOR #loop := 0 TO #EVENT_COUNT DO
+	        IF #event[#loop].enable THEN
+	            IF #time.local_DTL.HOUR = #event[#loop]."time".hour AND #time.local_DTL.MINUTE = #event[#loop]."time".minute AND #time.local_DTL.SECOND = #event[#loop]."time".secound THEN
+	                #timer.event_signal := true;
+	                IF #event[#loop].driving_up THEN
+	                    IF #event[#loop].position <= #data_motor.position THEN
+	                        #cmd.new_position := #event[#loop].position;
+	                        #cmd.new_angle := #data_motor.angle;
+	                        IF #event[#loop].angle < #data_motor.angle THEN
+	                            #cmd.new_angle := #event[#loop].angle;
+	                        END_IF;
+	                    END_IF;
+	                ELSE
+	                    IF #event[#loop].position >= #data_motor.position THEN
+	                        #cmd.new_position := #event[#loop].position;
+	                        #cmd.new_angle := #data_motor.angle;
+	                        IF #event[#loop].angle > #data_motor.angle THEN
+	                            #cmd.new_angle := #event[#loop].angle;
+	                        END_IF;
+	                    END_IF;
+	                END_IF;
+	                (*
+	                #msg := CONCAT_STRING(IN1 := 'jal event :', IN2 := INT_TO_STRING(#loop));
+	                #msg := CONCAT_STRING(IN1 := #msg, IN2 := ' [pos/angle cur: ');
+	                #msg := CONCAT_STRING(IN1 := #msg, IN2 := INT_TO_STRING(#data_motor.position));
+	                #msg := CONCAT_STRING(IN1 := #msg, IN2 := '/');
+	                #msg := CONCAT_STRING(IN1 := #msg, IN2 := INT_TO_STRING(#data_motor.angle));
+	                #msg := CONCAT_STRING(IN1 := #msg, IN2 := ' -> new: ');
+	                #msg := CONCAT_STRING(IN1 := #msg, IN2 := INT_TO_STRING(#cmd.new_position));
+	                #msg := CONCAT_STRING(IN1 := #msg, IN2 := '/');
+	                #msg := CONCAT_STRING(IN1 := #msg, IN2 := INT_TO_STRING(#cmd.new_angle));
+	                #msg := CONCAT_STRING(IN1 := #msg, IN2 := ']');
+	                "log"(type := 1, id := #interface_nr, msg := #msg);
+	                *)
+	            END_IF;
+	        END_IF;
+	    END_FOR;
+	END_IF;
+	
+	#Tevent_lock(IN:=#timer.event_signal,
+	                  PT:=t#2s,
+	                  Q=>#timer.event_lock);
+	
+	#timer.event_signal := FALSE;
+	
+	//#######################################################################################
+	//###########################  check input data #########################################
+	//#######################################################################################
+	//verify data 
+	IF #button_down AND #button_up THEN
+	    "log"(type:=3, id:=#interface_nr, msg:='jalousie button up AND down is pressed');
+	  GOTO STOP;
+	ELSIF #cmd.new_position < 0 OR #cmd.new_position > 100 THEN
+	    "log"(type:=3, id:=#interface_nr, msg:='jal pos invalid');
+	  GOTO STOP;
+	ELSIF #cmd.new_angle < 0 OR #cmd.new_angle > 100 THEN
+	    "log"(type:=3, id:=#interface_nr, msg:='jal angle invalid');
+	  GOTO STOP;
+	END_IF;
+	
+	#trigger_up_FP(CLK := #button_up,
+	               Q => #button.up.FP);
+	#trigger_up_FN(CLK := #button_up,
+	               Q => #button.up.FN);
+	#trigger_down_FP(CLK := #button_down,
+	                 Q => #button.down.FP);
+	#trigger_down_FN(CLK := #button_down,
+	                 Q => #button.down.FN);
+	
+	//bei steigender flanke an taster und während fahrenden motor wird dieser gestoppt
+	IF (#button.up.FP OR #button.down.FP) AND (#data_motor.drive_up OR #data_motor.drive_down) THEN
+	  GOTO STOP;
+	ELSIF #button.up.FP THEN //fahre ganz hoch
+	  #cmd.new_angle := 0;
+	  #cmd.new_position := 0;
+	ELSIF #button.down.FP THEN //fahre ganz runter
+	  #cmd.new_angle := 100;
+	  #cmd.new_position := 100;
+	  //stoppe motor nach FN wenn taster für hold-time gedrückt war
+	ELSIF (#button.down.FN OR #button.up.FN) AND #timer.button_hold THEN
+	  GOTO STOP;
+	END_IF;
+	
+	//check buttons for hold
+	#timer_button_hold(IN := #button_down OR #button_up,
+	                   PT := #BUTTON_HOLD_TIME,
+	                   Q => #timer.button_hold);
+	
+	//#######################################################################################
+	//############################## verify wind speed ######################################      
+	//#######################################################################################
+	// --> IO shared Device notwendig
+	IF NOT #timer.wind_warning_lock THEN
+	    IF "weather_wind(m/s)" > #DRIVE_UP_WIND_SPEED THEN
+	        #cmd.new_angle := 0;
+	        #cmd.new_position := 0;
+	        #timer.wind_warning_signal := TRUE;
+	        //########################## LOG in PC-Tool ##############################
+	        //"log"(type := 2, id := #interface_nr, msg := CONCAT(IN1 := 'DRIVE_UP_WIND_SPEED at (m/s): ', IN2 := REAL_TO_STRING("weather_wind(m/s)")) );
+	        //########################## LOG in Database ##############################
+	        #tmp_data.data[0] := -1;
+	        #tmp_data.data[1] := #interface_nr;
+	        #tmp_data.data[2] := REAL_TO_INT("weather_wind(m/s)" * 100);
+	        #tmp_data.data[3] := #data_motor.position;
+	        #tmp_data.data[4] := #data_motor.angle;
+	        #tmp_data.data[5] := REAL_TO_INT(#DRIVE_UP_WIND_SPEED * 100);
+	        "logger_DB"(index := 2, job := 2, data := #tmp_data);
+	    END_IF;
+	END_IF;
+	
+	#Twind_warning_lock(IN := #timer.wind_warning_signal,
+	             PT := t#10s,
+	             Q => #timer.wind_warning_lock);
+	
+	#timer.wind_warning_signal := FALSE;
+	
+	
+	//#######################################################################################
+	//################################# drive motor #########################################
+	//#######################################################################################
+	#motor(new_position := #cmd.new_position,
+	       new_angle := #cmd.new_angle,
+	       interface_ID:=#interface_nr,
+	       init := #init_motor,
+	       local_DTL := #time.local_DTL,
+	       drive_up => #data_motor.drive_up,
+	       drive_down => #data_motor.drive_down,
+	       position => #data_motor.position,
+	       angel => #data_motor.angle);
+	
+	#drive_up := #data_motor.drive_up;
+	#drive_down := #data_motor.drive_down;
+	
+	RETURN;
+	
+	
+	//#######################################################################################
+	//################################## stop motor #########################################
+	//#######################################################################################
+	STOP:
+	#cmd.new_angle := #data_motor.angle;
+	#cmd.new_position := #data_motor.position;
+	#drive_up := FALSE;
+	#drive_down := FALSE;
+	
+	
+	
+	
+	
+	
+	
+	
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK "heaterV0.0"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+   VAR_INPUT 
+      interface_nr : Int;   // eindeutige interface ID für kommunikation mit linux
+      current_temp : Real;
+   END_VAR
+
+   VAR_OUTPUT 
+      heater_circuit { S7_HMI_Accessible := 'False'; S7_HMI_Visible := 'False'} : Bool;   // Signal ob Heizkreis ein/ oder aus sein soll
+   END_VAR
+
+   VAR 
+      heater_circuit_state { S7_HMI_Accessible := 'False'; S7_HMI_Visible := 'False'} : Bool;   // Signal ob Heizkreis ein/ oder aus sein soll
+      timer_working { S7_HMI_Accessible := 'False'; S7_HMI_Visible := 'False'} : Bool;
+      timer_start { S7_HMI_Accessible := 'False'; S7_HMI_Visible := 'False'} : Bool;
+      switching_delay { S7_HMI_Accessible := 'False'; S7_HMI_Visible := 'False'} : Bool;
+      timer_impuls {OriginalPartName := 'IEC_TIMER'; LibVersion := '1.0'} : TOF_TIME;
+      last_state : Bool;
+   END_VAR
+   VAR RETAIN
+      param : Struct
+         ctrl_manual : Bool;   // bei false wird heizkreis automatisch gesteuert. bei true nur manuell
+         manual_ctrl_state : Bool;
+         time_on { S7_HMI_Accessible := 'False'; S7_HMI_Visible := 'False'} : Time := T#45m;   // Zeitdauer die Heizkreis eingeschalten ist
+         time_off { S7_HMI_Accessible := 'False'; S7_HMI_Visible := 'False'} : Time := T#15m;   // Zeitdauer die Heizkreis ausgeschalten ist
+         start_time { S7_HMI_Accessible := 'False'; S7_HMI_Visible := 'False'} : Time_Of_Day := TOD#07:00:00;   // Tageszeit ab wann Heizkreis ein/aus geschalten wird
+         stop_time { S7_HMI_Accessible := 'False'; S7_HMI_Visible := 'False'} : Time_Of_Day := TOD#23:30:00;   // Tageszeit bis wann Heizkreis ein/aus geschalten wird
+         stop_at_degree { S7_HMI_Accessible := 'False'; S7_HMI_Visible := 'False'} : Real := 23.45;   // Temperatur ab welcher nicht mehr geheizt wird
+      END_STRUCT;
+   END_VAR
+   VAR 
+      remaining_time { S7_HMI_Accessible := 'False'; S7_HMI_Visible := 'False'} : Time;
+   END_VAR
+
+   VAR_TEMP 
+      frameIO : "UDT_CPSFrame";
+      next_time_intervall : Time;
+      "time" : Struct
+         retval : Int;
+         local_DTL {OriginalPartName := 'DTL'; LibVersion := '1.0'} : DTL;
+         local_TOD : Time_Of_Day;
+      END_STRUCT;
+      tmp_DTL {OriginalPartName := 'DTL'; LibVersion := '1.0'} : DTL;
+   END_VAR
+
+   VAR CONSTANT 
+      NET_Get_state : Int := 1;
+      NET_Set_state : Int := 2;
+      NET_Get_Param : Int := 3;
+      NET_Set_Param : Int := 4;
+      NET_tmp : Int := 5;
+   END_VAR
+
+
+BEGIN
+	(*#######################################################################################
+	
+	    heater      V00.00.01 - creation
+	                V00.00.02 - insert read local time
+	                V00.00.03 - integrate web access
+	                V00.00.04 - integrate log heater switch
+	                V00.00.05 - change Get/Set State to Param
+	########################################################################################*)
+	
+	//systemzeit lesen
+	#time.retval := RD_LOC_T(#time.local_DTL);
+	#time.local_TOD := DTL_TO_TOD(#time.local_DTL);
+	
+	//#######################################################################################
+	//#################################  web access #########################################
+	//#######################################################################################
+	IF "CPSisReq"(index:=#interface_nr, frame := #frameIO) THEN
+	    CASE #frameIO.data[1] OF
+	        #NET_Get_state:
+	            #frameIO.data[2] := BOOL_TO_INT(#heater_circuit_state);
+	            #tmp_DTL := TOD_TO_DTL(TIME_TO_TOD(#remaining_time));
+	            #frameIO.data[3] := #tmp_DTL.HOUR;
+	            #frameIO.data[4] := #tmp_DTL.MINUTE;
+	            #frameIO.data[5] := REAL_TO_INT(#current_temp * 100);
+	            #frameIO.data[6] := -1; //ende kennung damit 0en auch interpretiert werden
+	            
+	        #NET_Get_Param:
+	            #frameIO.data[2] := BOOL_TO_INT(#param.ctrl_manual);
+	            #frameIO.data[3] := BOOL_TO_INT(#param.manual_ctrl_state);
+	            
+	            #tmp_DTL := TOD_TO_DTL(TIME_TO_TOD(#param.time_on));
+	            #frameIO.data[4] := #tmp_DTL.HOUR;
+	            #frameIO.data[5] := #tmp_DTL.MINUTE;
+	            
+	            #tmp_DTL := TOD_TO_DTL(TIME_TO_TOD(#param.time_off));
+	            #frameIO.data[6] := #tmp_DTL.HOUR;
+	            #frameIO.data[7] := #tmp_DTL.MINUTE;
+	            
+	            #tmp_DTL := TOD_TO_DTL(#param.start_time);
+	            #frameIO.data[8] := #tmp_DTL.HOUR;
+	            #frameIO.data[9] := #tmp_DTL.MINUTE;
+	            
+	            #tmp_DTL := TOD_TO_DTL(#param.stop_time);
+	            #frameIO.data[10] := #tmp_DTL.HOUR;
+	            #frameIO.data[11] := #tmp_DTL.MINUTE;
+	            
+	            #frameIO.data[12] := REAL_TO_INT(#param.stop_at_degree * 100);
+	            #frameIO.data[13] := BOOL_TO_INT(#heater_circuit_state);
+	            
+	            #tmp_DTL := TOD_TO_DTL(TIME_TO_TOD(#remaining_time));
+	            #frameIO.data[14] := #tmp_DTL.HOUR;
+	            #frameIO.data[15] := #tmp_DTL.MINUTE;
+	            #frameIO.data[16] := -1; //ende kennung damit 0en auch interpretiert werden
+	            
+	        #NET_Set_Param:
+	            #param.ctrl_manual := INT_TO_BOOL(#frameIO.data[2]);
+	            #param.manual_ctrl_state := INT_TO_BOOL(#frameIO.data[3]);
+	            
+	            #tmp_DTL := DTL#1970-01-01-00:00:00.0;
+	            #tmp_DTL.HOUR := INT_TO_USINT(#frameIO.data[4]);
+	            #tmp_DTL.MINUTE := INT_TO_USINT(#frameIO.data[5]);
+	            #param.time_on := TOD_TO_TIME(DTL_TO_TOD(#tmp_DTL));
+	            
+	            #tmp_DTL := DTL#1970-01-01-00:00:00.0;
+	            #tmp_DTL.HOUR := INT_TO_USINT(#frameIO.data[6]);
+	            #tmp_DTL.MINUTE := INT_TO_USINT(#frameIO.data[7]);
+	            #param.time_off := TOD_TO_TIME(DTL_TO_TOD(#tmp_DTL));
+	            
+	            #tmp_DTL := DTL#1970-01-01-00:00:00.0;
+	            #tmp_DTL.HOUR := INT_TO_USINT(#frameIO.data[8]);
+	            #tmp_DTL.MINUTE := INT_TO_USINT(#frameIO.data[9]);
+	            #param.start_time := TOD_TO_TIME(DTL_TO_TOD(#tmp_DTL));
+	            
+	            #tmp_DTL := DTL#1970-01-01-00:00:00.0;
+	            #tmp_DTL.HOUR := INT_TO_USINT(#frameIO.data[10]);
+	            #tmp_DTL.MINUTE := INT_TO_USINT(#frameIO.data[11]);
+	            #param.stop_time := TOD_TO_TIME(DTL_TO_TOD(#tmp_DTL));
+	            
+	            #param.stop_at_degree := INT_TO_REAL(#frameIO.data[12]) / 100;
+	            
+	            #frameIO.data[13] := BOOL_TO_INT(#heater_circuit_state); //da request gespiegelt wird darf hier kein falscher wert drinnen stehen
+	            #tmp_DTL := TOD_TO_DTL(TIME_TO_TOD(#remaining_time));
+	            #frameIO.data[14] := #tmp_DTL.HOUR;
+	            #frameIO.data[15] := #tmp_DTL.MINUTE;
+	            #frameIO.data[16] := -1; //ende kennung damit 0en auch interpretiert werden
+	        ELSE
+	            #frameIO.data[1] := -1;
+	            #frameIO.data[2] := -1;
+	            #frameIO.data[3] := -1;
+	            #frameIO.data[4] := -1;
+	            #frameIO.data[5] := -1;
+	    END_CASE;
+	    
+	    "CPStoSend"(#frameIO);
+	END_IF;
+	
+	#heater_circuit_state := FALSE; //INIT
+	//Nachts oder bei !"heizung".automatik oder temperatur_ist > switching_value -> Kreis aus
+	
+	IF #param.ctrl_manual THEN
+	    #heater_circuit_state := #param.manual_ctrl_state;
+	ELSE
+	    
+	    IF #param.stop_at_degree + 0.5 < #current_temp THEN //Heizkreis läuft 0,5 Grad über Soll weiter
+	      #switching_delay := false;
+	    END_IF;
+	    
+	    IF #param.stop_at_degree > #current_temp OR #switching_delay THEN // IST temperatur kleiner schwellwert
+	        #switching_delay := true;
+	        IF #param.start_time < #time.local_TOD AND #param.stop_time > #time.local_TOD THEN //tageszeit innerhalb heizungsbetrieb
+	            #heater_circuit_state := true;
+	            
+	            //############## toggeln durch impuls ein/aus auswertung ############
+	            (*
+	            IF #timer_working = false THEN //wenn impulstimer abgelaufen ist
+	                #timer_start := true; //impulstimer neu starten
+	                #heater_circuit_state := NOT #heater_circuit_state; //Heizung an/aus toggeln
+	                IF #heater_circuit_state THEN //Zeitdauer für nächsten Impuls setzen auf:
+	                    #next_time_intervall := #param.time_on; //Zeit für Heizung an
+	                ELSE
+	                    #next_time_intervall := #param.time_off; //Zeit für Heizung aus
+	                END_IF;
+	            ELSE
+	                #timer_start := FALSE;
+	            END_IF;
+	            *)
+	            //############## toggeln durch impuls ein/aus auswertung ############
+	            
+	        ELSE
+	            #heater_circuit_state := false;
+	        END_IF;
+	    ELSE //temperatur größer schwellwert -> aus
+	        #heater_circuit_state := false;
+	    END_IF; 
+	END_IF;
+	
+	
+	
+	
+	#timer_impuls(IN := #timer_start,
+	              PT := #next_time_intervall,
+	              Q => #timer_working,
+	              ET => #remaining_time);
+	
+	#heater_circuit := #heater_circuit_state;
+	
+	//log des zustandswechsels
+	IF #heater_circuit_state <> #last_state THEN
+	    #last_state := #heater_circuit_state;
+	    //"log"(type := 1, id := #interface_nr, msg := CONCAT(IN1 := CONCAT(IN1 := 'heater switch to: ', IN2:=INT_TO_STRING( BOOL_TO_INT(#heater_circuit_state))), IN2 :=CONCAT(IN1:= ' at temp:',IN2 := REAL_TO_STRING(#current_temp))));
+	    (*
+	    #net.data.data[0] := -1;
+	    #net.data.data[1] := #interface_nr;
+	    #net.data.data[2] := BOOL_TO_INT(#heater_circuit_state);
+	    #net.data.data[3] := REAL_TO_INT(#current_temp * 100);
+	    "logger_DB"(job := 2, data := 3, data := #net.data);
+	    *)
+	END_IF;
+	
+END_FUNCTION_BLOCK
+

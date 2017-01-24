@@ -29,14 +29,17 @@ namespace AutoHome
                 mapped_aktuator_hash = _aktuator.get_aktor_hash();
         }
 
-        public void deserialize_init(List<aktuator> list_aktor)
+        public void deserialize_init(List<plc> list_plc)
         {
-            foreach (aktuator _akt_in_list in list_aktor)
+            foreach (plc p in list_plc)
             {
-                if (mapped_aktuator_hash == _akt_in_list.get_aktor_hash())
+                foreach (aktuator _akt_in_list in p.ListAktuator)
                 {
-                    _aktuator = _akt_in_list;
-                    break;
+                    if (mapped_aktuator_hash == _akt_in_list.get_aktor_hash())
+                    {
+                        _aktuator = _akt_in_list;
+                        break;
+                    }
                 }
             }
 

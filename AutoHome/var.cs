@@ -11,6 +11,7 @@ namespace AutoHome
 {
     class var
     {
+        #region vars
         public static readonly string tool_text = "AutoHome";
         public static readonly string inifile = "vars.ah";
         public static readonly string workingdir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\" + tool_text;
@@ -59,8 +60,8 @@ namespace AutoHome
 
         //GUI vars
         public static bool FooterShowPlcTime = false;
-        
-            
+
+
         //string conn_string = "Server=192.168.1.200;Database=auto_home;Uid=auto_home;Pwd=XuY98zjMce8VuWZP";
 
 
@@ -80,8 +81,7 @@ namespace AutoHome
         //public static string img_heater_off = workingdir + "\\img_heater_off.png";
         //public static string img_heater_on_manual = workingdir + "\\img_heater_on_manual.png";
         //public static string img_heater_off_manual = workingdir + "\\img_heater_off_manual.png";
-
-
+        #endregion
 
         #region ini file
         //write / read ini file
@@ -157,8 +157,17 @@ namespace AutoHome
         #region serialize
         public static void serialize_plc(List<plc> list)
         {
+            //TODO: überprüfen ob hash überhaupt noch verwendet wird
+            //evtl nur noch von gui controlls aber nicht mehr zwischen plc und aktuator
             foreach (plc p in list)
-                p.set_plc_hash();
+            {
+                //p.set_plc_hash();
+                foreach (aktuator a in p.ListAktuator)
+                {
+                    //a.serialize_init(); //mapped_hash der zugehörigen PLC speichern
+                    a.set_aktor_hash(); //eigenen hash erzeugen
+                }
+            }
 
             try
             {
@@ -177,29 +186,29 @@ namespace AutoHome
             }  
         }
 
-        public static void serialize_aktor(List<aktuator> list)
-        {
-            try
-            {
-                foreach (aktuator a in list)
-                {
-                    a.serialize_init(); //mapped_hash der zugehörigen PLC speichern
-                    a.set_aktor_hash(); //eigenen hash erzeugen
-                }
+        //public static void serialize_aktor(List<aktuator> list)
+        //{
+        //    try
+        //    {
+        //        foreach (aktuator a in list)
+        //        {
+        //            a.serialize_init(); //mapped_hash der zugehörigen PLC speichern
+        //            a.set_aktor_hash(); //eigenen hash erzeugen
+        //        }
 
-                IFormatter formatter = new BinaryFormatter();
-                Stream stream = new FileStream(var.workingdir + "\\" + var.file_aktuator,
-                                         FileMode.Create,
-                                         FileAccess.Write, FileShare.None);
+        //        IFormatter formatter = new BinaryFormatter();
+        //        Stream stream = new FileStream(var.workingdir + "\\" + var.file_aktuator,
+        //                                 FileMode.Create,
+        //                                 FileAccess.Write, FileShare.None);
 
-                formatter.Serialize(stream, list);
-                stream.Close();
-                //log.msg("var", "serialize_aktor() DONE");
-            }
-            catch (Exception e) {
-                log.exception("var", "serialize_aktor()", e);
-            }
-        }
+        //        formatter.Serialize(stream, list);
+        //        stream.Close();
+        //        //log.msg("var", "serialize_aktor() DONE");
+        //    }
+        //    catch (Exception e) {
+        //        log.exception("var", "serialize_aktor()", e);
+        //    }
+        //}
 
         public static void serialize_platform(List<platform> list)
         {
@@ -264,7 +273,6 @@ namespace AutoHome
                                               FileShare.Read);
                     list = (List<plc>)formatter.Deserialize(stream);
                     stream.Close();
-                    //log.msg("var", "deserialize_plc() DONE");
                 }
                 else
                     log.msg("var", "deserialize_plc() FAILED -> File: \"" + path + "\" not found");
@@ -273,42 +281,63 @@ namespace AutoHome
             {
                 log.exception("var", "deserialize_plc()", e);
             }
+
+
+            foreach (plc p in list)
+                foreach (aktuator a in p.ListAktuator)
+                    a._plc = p;
+
             return list;
         }
 
-        public static List<aktuator> deserialize_aktor(List<plc> list_plc)
-        {
-            List<aktuator> list = new List<aktuator>();
+        /// überflüssig da jetzt jede plc ihre eigene aktor liste hat
+        //public static List<plc> deserialize_aktor(List<plc> list_plc)
+        //{
+        //    List<aktuator> list = new List<aktuator>();
 
-            try
-            {
-                string path = var.workingdir + "\\" + var.file_aktuator;
-                if (File.Exists(path))
-                {
-                    IFormatter formatter = new BinaryFormatter();
-                    Stream stream = new FileStream(path,
-                                              FileMode.Open,
-                                              FileAccess.Read,
-                                              FileShare.Read);
-                    list = (List<aktuator>)formatter.Deserialize(stream);
-                    stream.Close();
+        //    foreach (plc p in list_plc)
+        //        p.ListAktuator = new List<aktuator>();
 
-                    foreach (aktuator a in list)
-                        a.deserialize_init(list_plc);
-                    //log.msg("var", "deserialize_aktor() DONE");
-                }
-                else
-                    log.msg("var", "deserialize_aktor() FAILED -> File: \"" + path + "\" not found");
-                
-            }
-            catch (Exception e)
-            {
-                log.exception("var", "deserialize_aktor()", e);
-            }
-            return list;
-        }
+        //    try
+        //    {
+        //        string path = var.workingdir + "\\" + var.file_aktuator;
+        //        if (File.Exists(path))
+        //        {
+        //            IFormatter formatter = new BinaryFormatter();
+        //            Stream stream = new FileStream(path,
+        //                                      FileMode.Open,
+        //                                      FileAccess.Read,
+        //                                      FileShare.Read);
+        //            list = (List<aktuator>)formatter.Deserialize(stream);
+        //            stream.Close();
 
-        public static List<platform> deserialize_platform(List<aktuator> list_aktuator)
+        //            foreach (aktuator a in list)
+        //                a.deserialize_init(list_plc);
+        //        }
+        //        else
+        //            log.msg("var", "deserialize_aktor() FAILED -> File: \"" + path + "\" not found");
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        log.exception("var", "deserialize_aktor()", e);
+        //    }
+
+        //    ///########################### IBS zeuchs
+        //    //foreach (aktuator a in list)
+        //    //{
+        //    //    foreach (plc p in list_plc)
+        //    //    {
+        //    //        if (a._plc == p)
+        //    //            p.ListAktuator.Add(a);
+        //    //    }
+        //    //}
+
+
+        //    return list_plc;
+        //}
+
+        public static List<platform> deserialize_platform(List<plc> list_aktuator)
         {
             List<platform> list = new List<platform>();
 

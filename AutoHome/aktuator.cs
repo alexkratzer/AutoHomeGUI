@@ -44,18 +44,19 @@ namespace AutoHome
 
         #region serialize
         //notwendig um nach deserialisieren eine referenz auf aktuelle plc zu erzeugen
-        public void serialize_init() {
-            if(_plc != null)
-                mapped_plc_hash = _plc.get_plc_hash();
-        }
-        public void deserialize_init(List<plc> list_plc) {
-            foreach (plc _plc_in_list in list_plc)
-                if (mapped_plc_hash == _plc_in_list.get_plc_hash())
-                {
-                    _plc = _plc_in_list;
-                    break;
-                }
-        }
+        //public void serialize_init() {
+        //    if(_plc != null)
+        //        mapped_plc_hash = _plc.get_plc_hash();
+        //}
+
+        //public void deserialize_init(List<plc> list_plc) {
+        //    foreach (plc _plc_in_list in list_plc)
+        //        if (mapped_plc_hash == _plc_in_list.get_plc_hash())
+        //        {
+        //            _plc = _plc_in_list;
+        //            break;
+        //        }
+        //}
 
         public void set_aktor_hash()
         {
@@ -83,11 +84,12 @@ namespace AutoHome
         }
 
 
-
+        //wurde beim löschen aufgerufen -> jetzt gibt es für jede plc einie eigene aktuator liste -> wird nicht mehr 
         public void change_plc(plc plc_new)
         {
             _plc = plc_new;
         }
+        
 
         public string name()
         {

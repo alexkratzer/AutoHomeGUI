@@ -16,9 +16,11 @@ namespace AutoHome
         private string _ip;
         private int _port;
         private string _PLC_Name = plc_default_name;
-        public List<plc_log_msg> list_log = new List<plc_log_msg>();
+        
         public int new_message_count = 0;
-        private string plc_hash; //wird zum deserialisieren verwendet um objekte eindeutig zu identifizieren
+        //private string plc_hash; //wird zum deserialisieren verwendet um objekte eindeutig zu identifizieren
+
+        public List<aktuator> ListAktuator;
 
         [NonSerialized]
         private cpsLIB.CpsNet cpsNet = null;
@@ -32,33 +34,53 @@ namespace AutoHome
         public List<Int16> ListSensorIDs;
         
 
-        #region construktor / init
+        #region construktor / init / connect
         public plc(string ip, int port, string plc_name = "not named")
         {
             _ip = ip;
             _port = port;
             _PLC_Name = plc_name;
             client_udp = new Client(_ip, port.ToString());
+            ListAktuator = new List<aktuator>();
         }
 
         public void init_TSDDB(System.Windows.Forms.ToolStripDropDownButton TSSDDB_Status)
         {
             _TSSDDB_Status = TSSDDB_Status;
         }
+
+        public void connect(CpsNet _cpsNet, FrmLogPCS frm)
+        {
+            cpsNet = _cpsNet;
+            if (client_udp != null)
+            {
+                if (client_udp.RemoteIp != _ip)
+                    client_udp.RemoteIp = _ip;
+                if (client_udp.RemotePort != _port)
+                    client_udp.RemotePort = _port;
+            }
+            else
+                client_udp = cpsNet.newClient(_ip, _port.ToString());
+
+            Frame f = new Frame(client_udp);
+            f.SetHeaderFlag(FrameHeaderFlag.SYNC);
+            send(f, frm);
+        }
+
         #endregion
 
         #region vars
-        public void set_plc_hash()
-        {
-            plc_hash = _PLC_Name + ":" + _ip + ":" + _port.ToString();
-        }
-        public string get_plc_hash()
-        {
-            return plc_hash;
-        }
+        //public void set_plc_hash()
+        //{
+        //    plc_hash = _PLC_Name + ":" + _ip + ":" + _port.ToString();
+        //}
+        //public string get_plc_hash()
+        //{
+        //    return plc_hash;
+        //}
         public void set_plc_name(string name) {
             _PLC_Name = name;
-            set_plc_hash();
+            //set_plc_hash();
         }
         public string get_plc_name()
         {
@@ -69,7 +91,7 @@ namespace AutoHome
             if (System.Net.IPAddress.TryParse(ip, out valid_ip))
             {
                 _ip = valid_ip.ToString();
-                set_plc_hash();
+                //set_plc_hash();
             }
         }
         public string get_plc_ip() {
@@ -81,7 +103,7 @@ namespace AutoHome
             if (int.TryParse(port, out valid_port))
             {
                 _port = valid_port;
-                set_plc_hash();
+                //set_plc_hash();
             }
         }
         public string get_plc_port()
@@ -90,22 +112,6 @@ namespace AutoHome
         }
         #endregion
   
-        public void connect(CpsNet _cpsNet, FrmLogPCS frm)
-        {
-            cpsNet = _cpsNet;
-            if (client_udp != null) {
-                if (client_udp.RemoteIp != _ip)
-                    client_udp.RemoteIp = _ip;
-                if (client_udp.RemotePort != _port)
-                    client_udp.RemotePort = _port;
-            }else
-                client_udp = cpsNet.newClient(_ip, _port.ToString());
-            
-            Frame f = new Frame(client_udp);
-            f.SetHeaderFlag(FrameHeaderFlag.SYNC);
-            send(f, frm);
-        }
-
         public bool send(Frame f, FrmLogPCS frm) 
         {
             if (client_udp == null){    
@@ -131,19 +137,6 @@ namespace AutoHome
             }
         }
 
-        /*
-        public void newlog(string msg)
-        {
-            plc_log_msg m = new plc_log_msg(msg);
-            list_log.Add(m);
-        }
-        public void newlog(string msg, List<aktuator> la)
-        {
-            plc_log_msg m = new plc_log_msg(msg, la);
-            list_log.Add(m);
-        }
-         * */
-
         public override string ToString()
         { 
             if ((_PLC_Name == String.Empty) || (_PLC_Name == plc_default_name))
@@ -156,35 +149,7 @@ namespace AutoHome
             return client_udp;
         }
     }
-
-    //public class msg_log
-    //{
-    //    string _plc_name;
-    //    string _f;
-    //    msg_log_type _type;
-
-    //    public msg_log(string plc_name, string f, msg_log_type type)
-    //    {
-    //        _plc_name = plc_name;
-    //        _f = f;
-    //        _type = type;
-    //    }
-
-    //    public string msg()
-    //    {
-    //        return _f;
-    //    }
-    //    public string plc_name()
-    //    {
-    //        return _plc_name;
-    //    }
-    //    public msg_log_type type()
-    //    {
-    //        return _type;
-    //    }
-    //}
-
-    
+        
 }
 
 
