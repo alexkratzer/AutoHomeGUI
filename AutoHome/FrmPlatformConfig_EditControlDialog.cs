@@ -11,13 +11,18 @@ namespace AutoHome
 {
     public partial class FrmPlatformConfig_EditControlDialog : Form
     {
-        List<aktuator> _list_a;
+        //List<aktuator> _list_a;
         List<plc> _list_plc;
         platform_control _platform_control = null;
 
         public FrmPlatformConfig_EditControlDialog(object platform_control, object list_plc, int selected_plc)
         {
             InitializeComponent();
+            if (platform_control == null)
+                MessageBox.Show("platform_control == null", "Exception");
+            if (list_plc == null)
+                MessageBox.Show("list_plc == null", "Exception");
+
             _platform_control = (platform_control)platform_control;
             _list_plc = (List<plc>)list_plc;
             comboBox_plc.DataSource = _list_plc;
@@ -69,7 +74,7 @@ namespace AutoHome
 
         private void fill_selectable() {
             comboBox_aktor_name.Items.Clear();
-            foreach (aktuator akt in _list_a)
+            foreach (aktuator akt in ((plc)comboBox_plc.SelectedItem).ListAktuator)
             {
                 if (akt._type == _platform_control._type)
                     if (comboBox_plc.SelectedItem != null)
@@ -78,7 +83,7 @@ namespace AutoHome
                             comboBox_aktor_name.Items.Add(akt);
                     }
                     else
-                        comboBox_aktor_name.Items.Add(akt);
+                        MessageBox.Show( "TODO comboBox_aktor_name.Items.Add(akt);", "fill_selectable()");
             }
         }
 
