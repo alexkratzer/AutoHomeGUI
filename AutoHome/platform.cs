@@ -72,10 +72,17 @@ namespace AutoHome
             _floor_plan = fp;
         }
 
-        public void update_control(Frame f) {
+        public void update_control() {
+            //if (f == null)
+            //{
+            //    log.msg("Frame == null @update_control(), platform.cs", "++++ error ++++");
+            //    return;
+            //}
             foreach (platform_control pc in _list_platform_control)
-                if (pc._aktuator != null && f.isIOIndex(pc._aktuator.Index))
-                    pc.update_control(f);
+                if (pc._aktuator != null && pc._aktuator.ValueFrame != null)
+                    //if(pc._aktuator.RcvFrame.isIOIndex)
+                    //f.isIOIndex(pc._aktuator.Index))
+                    pc.update_control();
         }
         //public void update_SensorControl(Dictionary<short, float> dicSensorVal) {
         //    foreach (KeyValuePair<Int16, float> kvp in dicSensorVal) {

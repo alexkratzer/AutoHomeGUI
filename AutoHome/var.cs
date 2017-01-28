@@ -39,9 +39,9 @@ namespace AutoHome
         public static bool connect_to_plc_at_start = false;
         public static bool start_timers_at_start = true;
         public static bool display_exception = false;
-        public static int timer_plc_management_interval = 5000; //refresh timer der cpu management daten
-        public static int timer_MngData_interval = 10000; //refresh timer der ManagementDaten aus cpu
-        public static int timer_control_interval = 1000; //refresh timer der aktualisierung von control elementen
+        public static int footer_connection_status = 1000; //refresh timer der cpu management daten
+        public static int timer_GetRequestInterval = 1000; //refresh timer der ManagementDaten aus cpu
+        public static int timer_refresh_GUI = 1000; //refresh timer der aktualisierung von control elementen
         public static bool show_expert_mode = false;
         public static bool expert_display_hash = false; //zeigt den hash wert von plc/aktuator an
         public static int connect_error_retrys = 5; //anzahl der fehler bei verbindungsproblemen bis abbruch

@@ -83,7 +83,7 @@ namespace AutoHome
                             comboBox_aktor_name.Items.Add(akt);
                     }
                     else
-                        MessageBox.Show( "TODO comboBox_aktor_name.Items.Add(akt);", "fill_selectable()");
+                        log.msg(this, "fill_selectable() TODO comboBox_aktor_name.Items.Add(akt); ");
             }
         }
 

@@ -77,10 +77,10 @@ namespace AutoHome
                 _PictureBox.update_label_text();
         }
 
-        public void update_control(cpsLIB.Frame f)
+        public void update_control()
         {
             if (_PictureBox != null)
-                _PictureBox.pic_update(f);
+                _PictureBox.pic_update( _aktuator.ValueFrame);
         }
         public void update_SensorControl(float val)
         {

@@ -47,9 +47,9 @@ namespace AutoHome
         private void init_controlls() {
             textBox_plcip.Text = var.PLCip;
             textBox_plc_port.Text = var.PLC_PORT.ToString();
-            textBox_timer_refresh_interval.Text = var.timer_plc_management_interval.ToString();
-            textBox_timer_log_interval.Text = var.timer_MngData_interval.ToString();
-            textBox_timer_refresh_controls_interval.Text = var.timer_control_interval.ToString();
+            textBox_timer_refresh_interval.Text = var.footer_connection_status.ToString();
+            textBox_timer_log_interval.Text = var.timer_GetRequestInterval.ToString();
+            textBox_timer_refresh_controls_interval.Text = var.timer_refresh_GUI.ToString();
             checkBox_display_exception.Checked = var.display_exception;
             checkBox_display_hash.Checked = var.expert_display_hash;
             checkBox_connect_at_start.Checked = var.connect_to_plc_at_start;
@@ -122,7 +122,7 @@ namespace AutoHome
             if (Int32.TryParse(textBox_timer_refresh_interval.Text, out tmp))
             {
                 textBox_timer_refresh_interval.BackColor = Color.White;
-                var.timer_plc_management_interval = Convert.ToInt32(textBox_timer_refresh_interval.Text);
+                var.footer_connection_status = Convert.ToInt32(textBox_timer_refresh_interval.Text);
             }
             else
                 textBox_timer_refresh_interval.BackColor = Color.Red;
@@ -133,7 +133,7 @@ namespace AutoHome
             if (Int32.TryParse(textBox_timer_log_interval.Text, out tmp))
             {
                 textBox_timer_log_interval.BackColor = Color.White;
-                var.timer_MngData_interval = Convert.ToInt32(textBox_timer_log_interval.Text);
+                var.timer_GetRequestInterval = Convert.ToInt32(textBox_timer_log_interval.Text);
             }
             else
                 textBox_timer_log_interval.BackColor = Color.Red;
@@ -145,7 +145,7 @@ namespace AutoHome
             if (Int32.TryParse(textBox_timer_refresh_controls_interval.Text, out tmp))
             {
                 textBox_timer_refresh_controls_interval.BackColor = Color.White;
-                var.timer_control_interval = Convert.ToInt32(textBox_timer_refresh_controls_interval.Text);
+                var.timer_refresh_GUI = Convert.ToInt32(textBox_timer_refresh_controls_interval.Text);
             }
             else
                 textBox_timer_refresh_controls_interval.BackColor = Color.Red;  

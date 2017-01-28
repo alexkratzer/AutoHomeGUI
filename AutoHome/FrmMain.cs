@@ -10,16 +10,6 @@ using cpsLIB;
 using System.Runtime.InteropServices;
 
 //System.IO.File.AppendAllText(@"\\ATOM\alex\desktop\autohomedbg.txt", "" + Environment.NewLine);
-//##################################################### TODO #########################################################
-/*
- 10.01.2017 01:19:16 +++ EXCEPTION +++ [AutoHome.FrmMain, Text: AutoHome [Frame min: 15 max: 748 avg: 0 @work: 0 send: 295 rcv: 0 clients: 5]] timer_refresh_control_Tick 
-Key: 1 Value: [IBS] -> System.ArgumentException: An item with the same key has already been added.
-   at System.ThrowHelper.ThrowArgumentException(ExceptionResource resource)
-   at System.Collections.Generic.Dictionary`2.Insert(TKey key, TValue value, Boolean add)
-   at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)
-   at AutoHome.FrmMain.timer_refresh_control_Tick(Object sender, EventArgs e) in C:\Users\alex\Source\Repos\AutoHomeGUI\AutoHome\FrmMain.cs:line 963
-     */
-
 
 namespace AutoHome
 {
@@ -30,15 +20,12 @@ namespace AutoHome
     {
         public static readonly string tool_version = "V0.0.3";
 
-        //List<aktuator> list_aktuator = new List<aktuator>();
         List<plc> list_plc = new List<plc>();
         List<platform> list_platform = new List<platform>();
         List<floor_plan> list_floor_plan = new List<floor_plan>();
         List<aktuator_control> list_aktuator_controls = new List<aktuator_control>(); //list to store userControls of aktuator
 
         cpsLIB.CpsNet CpsNet;
-
-        //TODO: extract Form Dbg -> //FrmDbg frmdbg;
         FrmLogPCS FrmLog; 
 
         #region init / connect / close
@@ -62,7 +49,6 @@ namespace AutoHome
         private void load_projekt_data() {
             var.read_ini_file();
             list_plc = var.deserialize_plc();
-            //list_plc = var.deserialize_aktor(list_plc);
             list_platform = var.deserialize_platform(list_plc);
             log.msg(this, "### start AutoHome GUI " + tool_version + " ###");
         }
@@ -71,7 +57,6 @@ namespace AutoHome
         {
             var.write_ini_file();
             var.serialize_platform(list_platform);
-            //var.serialize_aktor(list_aktuator);
             var.serialize_plc(list_plc);
         }
         private void initCps()
@@ -91,13 +76,12 @@ namespace AutoHome
         {
             try
             {
-                //log.msg(this, "######## start closing #######");
                 timer_stop();
                 CpsNet.cleanup();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "ERROR Closing");
+                log.exception(this, "closing main gui", ex);
             }
             finally {
                 safe_projekt_data();
@@ -293,15 +277,15 @@ namespace AutoHome
 
         private void managementToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (managementToolStripMenuItem.Text == "MngData [on]" || managementToolStripMenuItem.Text == "MngData")
+            if (managementToolStripMenuItem.Text == "timer_GetRequestInterval [on]" || managementToolStripMenuItem.Text == "MngData")
             {
-                timer_MngData.Stop();
-                managementToolStripMenuItem.Text = "MngData [off]";
+                timer_GetRequestInterval.Stop();
+                managementToolStripMenuItem.Text = "timer_GetRequestInterval [off]";
             }
             else
             {
-                timer_MngData.Start();
-                managementToolStripMenuItem.Text = "MngData [on]";
+                timer_GetRequestInterval.Start();
+                managementToolStripMenuItem.Text = "timer_GetRequestInterval [on]";
             }
         }
         private void iODataToolStripMenuItem_Click(object sender, EventArgs e)
@@ -885,29 +869,23 @@ namespace AutoHome
         #endregion
 
         #region TIMER send/receive/refresh
-        //System.Windows.Forms.Timer timer_refresh_main;
-        System.Windows.Forms.Timer timer_MngData;
+        System.Windows.Forms.Timer timer_GetRequestInterval;
         System.Windows.Forms.Timer timer_refresh_controls;
         System.Windows.Forms.Timer timer_footer_connection_status;
 
         private void init_timer()
         {           
-            //timer_refresh_main = new System.Windows.Forms.Timer();
-            ////timer_refresh_main.Interval = var.timer_plc_management_interval;
-            //timer_refresh_main.Interval = 500;
-            //timer_refresh_main.Tick +=new EventHandler(timer_refresh_main_Tick);
-
             timer_refresh_controls = new System.Windows.Forms.Timer();
-            timer_refresh_controls.Interval = var.timer_control_interval;
+            timer_refresh_controls.Interval = var.timer_refresh_GUI;
             timer_refresh_controls.Tick += new EventHandler(timer_refresh_control_Tick);
 
             timer_footer_connection_status = new System.Windows.Forms.Timer();
-            timer_footer_connection_status.Interval = 100;
+            timer_footer_connection_status.Interval = var.footer_connection_status;
             timer_footer_connection_status.Tick += new EventHandler(footer_connection_status_Tick);
 
-            timer_MngData = new System.Windows.Forms.Timer();
-            timer_MngData.Interval = var.timer_MngData_interval;
-            timer_MngData.Tick += new EventHandler(timer_MngData_Tick);
+            timer_GetRequestInterval = new System.Windows.Forms.Timer();
+            timer_GetRequestInterval.Interval = var.timer_GetRequestInterval;
+            timer_GetRequestInterval.Tick += new EventHandler(timer_GetRequestInterval_Tick);
 
             if (var.start_timers_at_start)
                 timer_start();
@@ -915,46 +893,58 @@ namespace AutoHome
 
         private void timer_start()
         {
-            //timer_refresh_main.Start();
-            timer_MngData.Start();
+            timer_GetRequestInterval.Start();
             timer_refresh_controls.Start();
             timer_footer_connection_status.Start();
         }
         private void timer_stop()
         {
-            //timer_refresh_main.Stop();
-            timer_MngData.Stop();
+            timer_GetRequestInterval.Stop();
             timer_refresh_controls.Stop();
             timer_footer_connection_status.Stop();
         }
 
 
-
-        void timer_refresh_main_Tick(object sender, EventArgs e)
+        void timer_GetRequestInterval_Tick(object sender, EventArgs e)
         {
-            //TODO job.GET_CPU_TIME
-            /*
-            foreach (plc p in list_plc)
-                if(p.isConnected())
-                    p.putFrameToStack(new Frame(Frame.GETbyJOB(cpu_net_management, job.GET_CPU_TIME)));
-                //send_stack.put(new Frame(Frame.GETbyJOB(ID_sense_data, job.GET_CPU_TIME)), var.PLC_OG_IP);
+            if (list_plc.Any())
+            {
+                //********************************************************************************************************************
+                //collect all visible controll IDs and send GetRequest @PLC
+                //********************************************************************************************************************
+                foreach (plc p in list_plc)
+                    p.ListSensorIDs = new List<short>();
 
-            //TODO: weather / eta als aktor mit projektieren
-            foreach (plc p in list_plc)
-                if (p.get_plc_ip() == var.tmp_PLC_EG_IP)
-                { 
-                    p.putFrameToStack(new Frame(Frame.GETbyJOB(cpu_net_management, job.GET_WEATHER)));
-                    p.putFrameToStack(new Frame(Frame.GETbyJOB(ID_ETA, job.get_state)));
-                }
-             * */
-        }
+                if (pictureBox_platform.Visible)
+                    if (list_platform.Any() && comboBox_platform.SelectedItem != null)
+                        foreach (platform_control pc in ((platform)comboBox_platform.SelectedItem)._list_platform_control)
+                            //controlls denen kein aktor zugewiesen ist nicht beachten
+                            if (pc._aktuator != null && pc._aktuator._plc != null)
+                                //sensor controlls sammeln und in einzelnen management frame versenden
+                                if (pc._aktuator.GetAktType() == aktor_type.sensor) //nur sensoren beachten
+                                    pc._aktuator._plc.ListSensorIDs.Add(pc._aktuator.Index);
+                                else
+                                    //alle aktoren anfragen werden einzeln ein eigenem frame versendet
+                                    pc._aktuator.plc_send_IO(DataIOType.GetState); //send GetRequest @PLC for all visible aktuator controll IDs
 
-        void timer_MngData_Tick(object sender, EventArgs e)
-        {
-            if (list_plc.Count > 0)
+
+                //********************************************************************************************************************
+                //send GetRequest @PLC
+                //********************************************************************************************************************
                 foreach (plc p in list_plc)
                     if (p.getClient().state == udp_state.connected)
+                    {
+                        //send get Time request @PLC
                         p.send(Frame.MngData(p.getClient(), DataMngType.GetPlcTime));
+
+                        //send sensor value request @plc
+                        if (p.ListSensorIDs.Any())
+                        {
+                            p.ListSensorIDs.Insert(0, (Int16)DataMngType.GetPlcSensorValues);
+                            p.send(FrameHeaderFlag.MngData, p.ListSensorIDs.ToArray());
+                        }
+                    }
+            }
         }
 
         void footer_connection_status_Tick(object sender, EventArgs e)
@@ -962,44 +952,44 @@ namespace AutoHome
             this.Text = "AutoHome " + CpsNet.GetStatus();
         }
 
+
+        /// <summary>
+        /// alle controls in gui werden mit ihren aktual werten befüllt
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void timer_refresh_control_Tick(object sender, EventArgs e)
         {
             try
             {
                 //********************************************************************************************************************
-                //TODO: sensor_dic muss für jede plc vorhanden sein... sonst gleicher key möglich
+                //show current aktuator value @GUI
                 //********************************************************************************************************************
-                //Dictionary<Int16, plc> sensor_dic = new Dictionary<short, plc>(); //enthält alle projektierten aktuatoren vom typ sensor
-                //List<Int16[]> SensorIds = new List<short[]>();
-                foreach (plc p in list_plc)
-                    p.ListSensorIDs = new List<short>();
+                
+                //[view platform] fill aktuator dialog box with values
+                //if (_FrmMain_controlDialog != null)
+                //    if (f.isIOIndex(_FrmMain_controlDialog.get_aktuator_id()))
+                //        _FrmMain_controlDialog.update_with_frame(f);
+                //############################################################################################# TODO #################################
 
-
-                //############################### automatisches update der controlls #################################################
+                //update [view controls]
                 if (pictureBox_platform.Visible)
-                    //bei kaputem serialise file keine elemente
-                        if (list_platform.Any() && comboBox_platform.SelectedItem != null)
-                            foreach (platform_control pc in ((platform)comboBox_platform.SelectedItem)._list_platform_control)
-                                //controlls denen kein aktor zugewiesen ist nicht beachten
-                                if (pc._aktuator != null && pc._aktuator._plc != null)
-                                    //sensor controlls sammeln und in einzelnen management frame versenden
-                                    if (pc._aktuator.GetAktType() == aktor_type.sensor)
-                                        pc._aktuator._plc.ListSensorIDs.Add(pc._aktuator.Index);
-                                    else
-                                    //alle aktoren anfragen werden einzeln ein eigenem frame versendet
-                                        pc._aktuator.plc_send_IO(DataIOType.GetState);
-
-                //send sensor value request
-                foreach (plc p in list_plc)
                 {
-                    //if (list_sensor.Any())
-                    if (p.ListSensorIDs.Count > 0)
-                    {
-                        //sende frame an plc
-                        p.ListSensorIDs.Insert(0, (Int16)DataMngType.GetPlcSensorValues);
-                        p.send(FrameHeaderFlag.MngData, p.ListSensorIDs.ToArray());
-                    }
+                    //update [view platform] GUI with values
+                    if (comboBox_platform.SelectedItem != null)
+                        ((platform)comboBox_platform.SelectedItem).update_control();
                 }
+                else if (panel_controls.Visible)
+                {
+                    //foreach (aktuator_control ac in list_aktuator_controls)
+                    //{
+                    //    if (f.isIOIndex(ac.aktuatorIndex))
+                    //        ac.interprete(f);
+                    //}
+                }
+
+
+
             }
             catch (Exception ex) {
                 log.exception(this, "timer_refresh_control_Tick", ex);
@@ -1025,6 +1015,7 @@ namespace AutoHome
             }
             catch (Exception e)
             {
+                log.exception(this, "interprete_frame(); writing to GUI failed!", e);
                 if (var.display_exception)
                     MessageBox.Show("interprete_frameCallback: " + e.Message, "writing to GUI failed");
             }
@@ -1070,13 +1061,13 @@ namespace AutoHome
                             if (DateTime.Now.Subtract(new TimeSpan(0, 0, var.MngData_AcceptedClockDelay)) > clockPlc)
                             {
                                 TimeSpan ts = DateTime.Now - clockPlc;
-                                p.Text = p.Text + " > " + ts.ToString(TSFormat(ts));
+                                p.Text = p.Name + " > " + ts.ToString(TSFormat(ts));
                                 p.BackColor = Color.Yellow;
                             }
                             else if (DateTime.Now.Add(new TimeSpan(0, 0, var.MngData_AcceptedClockDelay)) < clockPlc)
                             {
                                 TimeSpan dt = clockPlc - DateTime.Now;
-                                p.Text = p.Text + " < " + dt.ToString(TSFormat(dt));
+                                p.Text = p.Name + " < " + dt.ToString(TSFormat(dt));
                                 p.BackColor = Color.Yellow;
                             }
                     }
@@ -1148,27 +1139,34 @@ namespace AutoHome
             /// DBG -  display all IOData in Log Form
             FrmLog.AddLog("IOData {" + f.client.RemoteIp + " " + f.ToString() + "} " + f.getPayloadHex() + " / " + f.ShowPayloadInt());
 
-            //[view platform] fill aktuator dialog box with values
-            if (_FrmMain_controlDialog != null)
-                if (f.isIOIndex(_FrmMain_controlDialog.get_aktuator_id()))
-                    _FrmMain_controlDialog.update_with_frame(f);
+            //speichere frame in zugehörigem aktuator
+            //über time_tick wird wert in gui angezeigt
+            foreach (plc p in list_plc) 
+                if (p.get_plc_ip()==f.client.RemoteIp) 
+                    p.SetAktuatorData(f);
+                
+            
+            ////[view platform] fill aktuator dialog box with values
+            //if (_FrmMain_controlDialog != null)
+            //    if (f.isIOIndex(_FrmMain_controlDialog.get_aktuator_id()))
+            //        _FrmMain_controlDialog.update_with_frame(f);
 
-            //update [view controls]
-            if (pictureBox_platform.Visible)
-            {
-                //update [view platform] GUI with values
-                platform p_selected = (platform)comboBox_platform.SelectedItem;
-                if (p_selected != null)
-                    p_selected.update_control(f);
-            }
-            else if (panel_controls.Visible)
-            {
-                foreach (aktuator_control ac in list_aktuator_controls)
-                {
-                    if (f.isIOIndex(ac.aktuatorIndex))
-                        ac.interprete(f);
-                }
-            }
+            ////update [view controls]
+            //if (pictureBox_platform.Visible)
+            //{
+            //    //update [view platform] GUI with values
+            //    platform p_selected = (platform)comboBox_platform.SelectedItem;
+            //    if (p_selected != null)
+            //        p_selected.update_control(f);
+            //}
+            //else if (panel_controls.Visible)
+            //{
+            //    foreach (aktuator_control ac in list_aktuator_controls)
+            //    {
+            //        if (f.isIOIndex(ac.aktuatorIndex))
+            //            ac.interprete(f);
+            //    }
+            
             else { } //TODO:globale log funktion einbauen
         }
 

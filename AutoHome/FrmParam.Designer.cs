@@ -69,6 +69,9 @@
             this.textBox_akt_id = new System.Windows.Forms.TextBox();
             this.checkBox_add_new_aktuator = new System.Windows.Forms.CheckBox();
             this.groupBox_aktors = new System.Windows.Forms.GroupBox();
+            this.checkBox_plc = new System.Windows.Forms.CheckBox();
+            this.checkBox_aktorType = new System.Windows.Forms.CheckBox();
+            this.comboBox_listPlc = new System.Windows.Forms.ComboBox();
             this.comboBox_aktorType = new System.Windows.Forms.ComboBox();
             this.groupBox_plc = new System.Windows.Forms.GroupBox();
             this.checkBox_add_new_plc = new System.Windows.Forms.CheckBox();
@@ -90,9 +93,6 @@
             this.label_cps_server_port = new System.Windows.Forms.Label();
             this.textBox_cpsServerPort = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.comboBox_listPlc = new System.Windows.Forms.ComboBox();
-            this.checkBox_aktorType = new System.Windows.Forms.CheckBox();
-            this.checkBox_plc = new System.Windows.Forms.CheckBox();
             this.panel_edit_plc.SuspendLayout();
             this.panel_expert.SuspendLayout();
             this.panel_edit_aktuator.SuspendLayout();
@@ -214,13 +214,13 @@
             this.label_timer_send.AutoSize = true;
             this.label_timer_send.Location = new System.Drawing.Point(7, 6);
             this.label_timer_send.Name = "label_timer_send";
-            this.label_timer_send.Size = new System.Drawing.Size(61, 13);
+            this.label_timer_send.Size = new System.Drawing.Size(161, 13);
             this.label_timer_send.TabIndex = 3;
-            this.label_timer_send.Text = "plc interval:";
+            this.label_timer_send.Text = "interval footer connection status:";
             // 
             // textBox_timer_refresh_interval
             // 
-            this.textBox_timer_refresh_interval.Location = new System.Drawing.Point(110, 3);
+            this.textBox_timer_refresh_interval.Location = new System.Drawing.Point(187, 3);
             this.textBox_timer_refresh_interval.Name = "textBox_timer_refresh_interval";
             this.textBox_timer_refresh_interval.Size = new System.Drawing.Size(39, 20);
             this.textBox_timer_refresh_interval.TabIndex = 4;
@@ -229,7 +229,7 @@
             // label_timer_send_ms
             // 
             this.label_timer_send_ms.AutoSize = true;
-            this.label_timer_send_ms.Location = new System.Drawing.Point(155, 6);
+            this.label_timer_send_ms.Location = new System.Drawing.Point(232, 6);
             this.label_timer_send_ms.Name = "label_timer_send_ms";
             this.label_timer_send_ms.Size = new System.Drawing.Size(20, 13);
             this.label_timer_send_ms.TabIndex = 5;
@@ -260,7 +260,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(155, 32);
+            this.label2.Location = new System.Drawing.Point(232, 32);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(20, 13);
             this.label2.TabIndex = 13;
@@ -268,7 +268,7 @@
             // 
             // textBox_timer_log_interval
             // 
-            this.textBox_timer_log_interval.Location = new System.Drawing.Point(110, 29);
+            this.textBox_timer_log_interval.Location = new System.Drawing.Point(187, 29);
             this.textBox_timer_log_interval.Name = "textBox_timer_log_interval";
             this.textBox_timer_log_interval.Size = new System.Drawing.Size(39, 20);
             this.textBox_timer_log_interval.TabIndex = 12;
@@ -279,9 +279,9 @@
             this.label_timer_log.AutoSize = true;
             this.label_timer_log.Location = new System.Drawing.Point(7, 32);
             this.label_timer_log.Name = "label_timer_log";
-            this.label_timer_log.Size = new System.Drawing.Size(61, 13);
+            this.label_timer_log.Size = new System.Drawing.Size(107, 13);
             this.label_timer_log.TabIndex = 11;
-            this.label_timer_log.Text = "log interval:";
+            this.label_timer_log.Text = "interval Get Request:";
             // 
             // checkBox_expert_mode
             // 
@@ -332,7 +332,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(155, 57);
+            this.label1.Location = new System.Drawing.Point(232, 57);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(20, 13);
             this.label1.TabIndex = 28;
@@ -340,7 +340,7 @@
             // 
             // textBox_timer_refresh_controls_interval
             // 
-            this.textBox_timer_refresh_controls_interval.Location = new System.Drawing.Point(110, 54);
+            this.textBox_timer_refresh_controls_interval.Location = new System.Drawing.Point(187, 54);
             this.textBox_timer_refresh_controls_interval.Name = "textBox_timer_refresh_controls_interval";
             this.textBox_timer_refresh_controls_interval.Size = new System.Drawing.Size(39, 20);
             this.textBox_timer_refresh_controls_interval.TabIndex = 27;
@@ -351,9 +351,9 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(7, 57);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(79, 13);
+            this.label4.Size = new System.Drawing.Size(101, 13);
             this.label4.TabIndex = 26;
-            this.label4.Text = "refresh interval:";
+            this.label4.Text = "refresh GUI interval:";
             // 
             // label_change_expert_mode
             // 
@@ -519,6 +519,38 @@
             this.groupBox_aktors.TabIndex = 23;
             this.groupBox_aktors.TabStop = false;
             this.groupBox_aktors.Text = "device";
+            // 
+            // checkBox_plc
+            // 
+            this.checkBox_plc.AutoSize = true;
+            this.checkBox_plc.Location = new System.Drawing.Point(53, 125);
+            this.checkBox_plc.Name = "checkBox_plc";
+            this.checkBox_plc.Size = new System.Drawing.Size(46, 17);
+            this.checkBox_plc.TabIndex = 30;
+            this.checkBox_plc.Text = "PLC";
+            this.checkBox_plc.UseVisualStyleBackColor = true;
+            this.checkBox_plc.CheckedChanged += new System.EventHandler(this.checkBox_plc_CheckedChanged);
+            // 
+            // checkBox_aktorType
+            // 
+            this.checkBox_aktorType.AutoSize = true;
+            this.checkBox_aktorType.Location = new System.Drawing.Point(53, 99);
+            this.checkBox_aktorType.Name = "checkBox_aktorType";
+            this.checkBox_aktorType.Size = new System.Drawing.Size(77, 17);
+            this.checkBox_aktorType.TabIndex = 29;
+            this.checkBox_aktorType.Text = "aktor Type";
+            this.checkBox_aktorType.UseVisualStyleBackColor = true;
+            this.checkBox_aktorType.CheckedChanged += new System.EventHandler(this.checkBox_aktorType_CheckedChanged);
+            // 
+            // comboBox_listPlc
+            // 
+            this.comboBox_listPlc.Enabled = false;
+            this.comboBox_listPlc.FormattingEnabled = true;
+            this.comboBox_listPlc.Location = new System.Drawing.Point(147, 123);
+            this.comboBox_listPlc.Name = "comboBox_listPlc";
+            this.comboBox_listPlc.Size = new System.Drawing.Size(121, 21);
+            this.comboBox_listPlc.TabIndex = 28;
+            this.comboBox_listPlc.SelectedIndexChanged += new System.EventHandler(this.comboBox_listPlc_SelectedIndexChanged);
             // 
             // comboBox_aktorType
             // 
@@ -727,38 +759,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(368, 583);
             this.panel1.TabIndex = 27;
-            // 
-            // comboBox_listPlc
-            // 
-            this.comboBox_listPlc.Enabled = false;
-            this.comboBox_listPlc.FormattingEnabled = true;
-            this.comboBox_listPlc.Location = new System.Drawing.Point(147, 123);
-            this.comboBox_listPlc.Name = "comboBox_listPlc";
-            this.comboBox_listPlc.Size = new System.Drawing.Size(121, 21);
-            this.comboBox_listPlc.TabIndex = 28;
-            this.comboBox_listPlc.SelectedIndexChanged += new System.EventHandler(this.comboBox_listPlc_SelectedIndexChanged);
-            // 
-            // checkBox_aktorType
-            // 
-            this.checkBox_aktorType.AutoSize = true;
-            this.checkBox_aktorType.Location = new System.Drawing.Point(53, 99);
-            this.checkBox_aktorType.Name = "checkBox_aktorType";
-            this.checkBox_aktorType.Size = new System.Drawing.Size(77, 17);
-            this.checkBox_aktorType.TabIndex = 29;
-            this.checkBox_aktorType.Text = "aktor Type";
-            this.checkBox_aktorType.UseVisualStyleBackColor = true;
-            this.checkBox_aktorType.CheckedChanged += new System.EventHandler(this.checkBox_aktorType_CheckedChanged);
-            // 
-            // checkBox_plc
-            // 
-            this.checkBox_plc.AutoSize = true;
-            this.checkBox_plc.Location = new System.Drawing.Point(53, 125);
-            this.checkBox_plc.Name = "checkBox_plc";
-            this.checkBox_plc.Size = new System.Drawing.Size(46, 17);
-            this.checkBox_plc.TabIndex = 30;
-            this.checkBox_plc.Text = "PLC";
-            this.checkBox_plc.UseVisualStyleBackColor = true;
-            this.checkBox_plc.CheckedChanged += new System.EventHandler(this.checkBox_plc_CheckedChanged);
             // 
             // FrmParam
             // 

@@ -18,11 +18,7 @@ namespace AutoHome
 
         public void AddLog(string msg)
         {
-            try
-            {
-                richTextBox_log.AppendText(DateTime.Now.ToString("mm:ss:ms") + " -- " + msg + Environment.NewLine);
-            }
-            catch (Exception) { };
+            richTextBox_log.AppendText(DateTime.Now.ToString("mm:ss:ms") + " -- " + msg + Environment.NewLine);
         }
     }
 }

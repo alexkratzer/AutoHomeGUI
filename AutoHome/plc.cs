@@ -148,6 +148,14 @@ namespace AutoHome
         public Client getClient() {
             return client_udp;
         }
+
+        public void SetAktuatorData(Frame f) {
+            foreach (aktuator a in ListAktuator) {
+                if (f.isIOIndex(a.Index)) {
+                    a.ValueFrame = f;
+                }
+            }
+        }
     }
         
 }

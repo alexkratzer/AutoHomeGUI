@@ -41,6 +41,8 @@ namespace AutoHome
 
         [NonSerialized]//nicht serialisieren da sonst keine referenz auf das aktuelle objekt vorhanden ist sondern mit alten kopien gearbeitet wird
         public plc _plc;
+        [NonSerialized]
+        public Frame ValueFrame; //nur tämporere werte
 
         #region serialize
         //notwendig um nach deserialisieren eine referenz auf aktuelle plc zu erzeugen

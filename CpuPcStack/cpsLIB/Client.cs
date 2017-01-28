@@ -53,7 +53,9 @@ namespace cpsLIB
 
         /// <summary>
         /// check if RemoteIP and RemotePort is equal
+        /// ####################################################
         /// hint: port of send and received frame is NOT equal
+        /// ####################################################
         /// </summary>
         /// <param name="cc"></param>
         /// <returns></returns>
