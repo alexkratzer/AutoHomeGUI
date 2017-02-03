@@ -160,15 +160,9 @@ namespace AutoHome
             //TODO: überprüfen ob hash überhaupt noch verwendet wird
             //evtl nur noch von gui controlls aber nicht mehr zwischen plc und aktuator
             foreach (plc p in list)
-            {
-                //p.set_plc_hash();
                 foreach (aktuator a in p.ListAktuator)
-                {
-                    //a.serialize_init(); //mapped_hash der zugehörigen PLC speichern
                     a.set_aktor_hash(); //eigenen hash erzeugen
-                }
-            }
-
+            
             try
             {
                 IFormatter formatter = new BinaryFormatter();
@@ -178,7 +172,6 @@ namespace AutoHome
 
                 formatter.Serialize(stream, list);
                 stream.Close();
-                //log.msg("var", "serialize_plc() DONE");
             }
             catch (Exception e)
             {

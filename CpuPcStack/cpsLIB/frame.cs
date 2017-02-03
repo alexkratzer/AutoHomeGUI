@@ -28,6 +28,7 @@ namespace cpsLIB
     }
     public enum DataMngType { GetPlcTime=1, SetPlcTime=2, GetPlcSensorValues=10} //TODO: GetAllAktorIDs, GetAllSensorIDs usw
 
+    [Serializable]
     public class FrameRawData
     {
         #region vars
@@ -161,6 +162,7 @@ namespace cpsLIB
             else
                 return false;
         }
+
         #endregion
 
         #region getter
@@ -168,7 +170,14 @@ namespace cpsLIB
         {
             return FramePayloadByte;
         }
+        public Int16[] getPayload()
+        {
+            List<Int16> listPayload = new List<short>(FramePayloadByte.Length / 2);
+            for (int i = 0; i < FramePayloadByte.Length / 2; i++)
+                listPayload.Add(getPayload(i));
 
+            return listPayload.ToArray();
+        }
         public Int16 getPayload(int i)
         {
             int index = i * 2;
@@ -289,6 +298,7 @@ namespace cpsLIB
 
         #endregion
 
+        [Serializable]
         class FrameHeader
         {
             /// Telegram Structure:
@@ -438,27 +448,9 @@ namespace cpsLIB
             #endregion
         }
 
-        //class frameLog
-        //{
-        //    DateTime timestamp;
-        //    FrameWorkingState ws;
-        //    string msg;
-
-        //    public frameLog(FrameWorkingState ws, string msg)
-        //    {
-        //        this.ws = ws;
-        //        this.msg = msg;
-        //        timestamp = DateTime.Now;
-        //    }
-        //    public override string ToString()
-        //    {
-        //        return timestamp.ToString("HH:mm:ss:ffff") + " (" + ws.ToString() + ") " + msg;
-        //    }
-
-        //}
     }
 
-   
+    [Serializable]
     public class  Frame : FrameRawData{
         //public FrameRawData AnswerFrame = null;
 

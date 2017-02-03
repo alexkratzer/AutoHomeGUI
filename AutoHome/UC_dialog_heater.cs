@@ -20,36 +20,23 @@ namespace AutoHome
             akt = (aktuator)aktor;
             akt.plc_send_IO(cpsLIB.DataIOType.GetParam);
         }
-        public void LoadData(object frame)
+        public void LoadData(object _value)
         {
-            Frame f = (Frame)frame;
-            label_dbg_frame.Text = "->" + f.ToString();
+            //Frame f = (Frame)frame;
+            Int16[] value = (Int16[])_value;
 
-            if (f.isJob(DataIOType.GetState)) {
-                //checkBox_ctrl_manuel.Checked = Convert.ToBoolean(f.getPayload(3)); // -> override GUI input
-                //checkBox_ctrl_on.Checked = Convert.ToBoolean(f.getPayload(4)); // -> override GUI input
-                radioButton_state_on.Checked = Convert.ToBoolean(f.getPayload(2));
-                label_remaining_time.Text = f.getPayload(3).ToString("##") + f.getPayload(4).ToString("##");
-                label_temp_ist.Text = "temperatur:" + Environment.NewLine + (Convert.ToDouble( f.getPayload(5))/100).ToString("##.##");
-            }
-            else if (f.isJob(DataIOType.GetParam) || f.isJob(DataIOType.SetParam) )
-            {
-                checkBox_ctrl_manuel.Checked = Convert.ToBoolean(f.getPayload(2));
-                checkBox_ctrl_on.Checked = Convert.ToBoolean(f.getPayload(3));
-                textBox_time_on.Text = ((f.getPayload(4) * 60) + f.getPayload(5)).ToString();
-                textBox_time_off.Text = ((f.getPayload(6) * 60) + f.getPayload(7)).ToString();
-                textBox_start_h.Text = f.getPayload(8).ToString();
-                textBox_start_m.Text = f.getPayload(9).ToString();
-                textBox_stop_h.Text = f.getPayload(10).ToString();
-                textBox_stop_m.Text = f.getPayload(11).ToString();
-                textBox_stop_at_degree.Text = (Convert.ToDouble(f.getPayload(12)) / 100).ToString();
-                radioButton_state_on.Checked = Convert.ToBoolean(f.getPayload(13));
-                label_remaining_time.Text = f.getPayload(14).ToString("##") + f.getPayload(15).ToString("##");
-                button_send.Visible = false;
-            }else if(f.isJob(DataIOType.SetState))
-                MessageBox.Show("rcv frame with unknown job (DataIOType.SetState): " + f.getPayload(1) + " " + f.ToString());
-            else
-                MessageBox.Show("rcv frame with unknown job: " + f.getPayload(1) + " " + f.ToString());
+            checkBox_ctrl_manuel.Checked = Convert.ToBoolean(value[2]);
+            checkBox_ctrl_on.Checked = Convert.ToBoolean(value[3]);
+            textBox_time_on.Text = ((value[4] * 60) + value[5]).ToString();
+            textBox_time_off.Text = ((value[6] * 60) + value[7]).ToString();
+            textBox_start_h.Text = value[8].ToString();
+            textBox_start_m.Text = value[9].ToString();
+            textBox_stop_h.Text = value[10].ToString();
+            textBox_stop_m.Text = value[11].ToString();
+            textBox_stop_at_degree.Text = (Convert.ToDouble(value[12]) / 100).ToString();
+            radioButton_state_on.Checked = Convert.ToBoolean(value[13]);
+            label_remaining_time.Text = value[14].ToString("##") + value[15].ToString("##");
+            button_send.Visible = false;
         }
 
         private void button_send_Click(object sender, EventArgs e)

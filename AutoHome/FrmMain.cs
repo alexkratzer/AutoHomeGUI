@@ -11,6 +11,12 @@ using System.Runtime.InteropServices;
 
 //System.IO.File.AppendAllText(@"\\ATOM\alex\desktop\autohomedbg.txt", "" + Environment.NewLine);
 
+//**************************************************************************************
+//#################################### TODO ###########################################
+//rcv Frames nicht an gui sondern an plc zurückgeben
+//
+//
+//**************************************************************************************
 namespace AutoHome
 {
     public enum aktor_type { undef, jalousie, light, heater, sensor }
@@ -77,6 +83,7 @@ namespace AutoHome
             try
             {
                 timer_stop();
+                TimerUpdateGui.Stop();
                 CpsNet.cleanup();
             }
             catch (Exception ex)
@@ -245,6 +252,16 @@ namespace AutoHome
             FCP.ShowDialog();
         }
 
+        private void getRunningConfigToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string s = "";
+
+            foreach (plc p in list_plc)
+                s += p.get_plc_name() + Environment.NewLine + p.ShowRunningConfig();
+
+            MessageBox.Show(s, "running config");
+        }
+
         #endregion
 
         #region menue expert
@@ -277,28 +294,28 @@ namespace AutoHome
 
         private void managementToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (managementToolStripMenuItem.Text == "timer_GetRequestInterval [on]" || managementToolStripMenuItem.Text == "MngData")
+            if (managementToolStripMenuItem.Text == "Get Requests [on]" || managementToolStripMenuItem.Text == "Get Requests")
             {
                 timer_GetRequestInterval.Stop();
-                managementToolStripMenuItem.Text = "timer_GetRequestInterval [off]";
+                managementToolStripMenuItem.Text = "Get Requests [off]";
             }
             else
             {
                 timer_GetRequestInterval.Start();
-                managementToolStripMenuItem.Text = "timer_GetRequestInterval [on]";
+                managementToolStripMenuItem.Text = "Get Requests [on]";
             }
         }
         private void iODataToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (iODataToolStripMenuItem.Text == "PdataIO [on]" || iODataToolStripMenuItem.Text == "PdataIO")
+            if (iODataToolStripMenuItem.Text == "Update Gui [on]" || iODataToolStripMenuItem.Text == "Update Gui")
             {
-                timer_refresh_controls.Stop();
-                iODataToolStripMenuItem.Text = "PdataIO [off]";
+                TimerUpdateGui.Stop();
+                iODataToolStripMenuItem.Text = "Update Gui [off]";
             }
             else
             {
-                timer_refresh_controls.Start();
-                iODataToolStripMenuItem.Text = "PdataIO [on]";
+                TimerUpdateGui.Start();
+                iODataToolStripMenuItem.Text = "Update Gui [on]";
             }
         }
 
@@ -563,6 +580,10 @@ namespace AutoHome
         private ToolStripStatusLabel TSSL_connect;
         private ToolStripStatusLabel TSSL_ibs;
         private ToolStripStatusLabel TSSL_SetTime;
+        private ToolStripStatusLabel TSSL_ReadRunningConfig;
+        private ToolStripStatusLabel TSSL_GetRunningConfig;
+        
+
         private void make_status_bar()
         {
 
@@ -587,10 +608,20 @@ namespace AutoHome
                 TSSL_ibs.Click += new EventHandler(TSSL_OnClickIBS);
                 TSDDB.DropDownItems.Add(TSSL_ibs);
 
-                TSSL_SetTime = new ToolStripStatusLabel("set time " + DateTime.Now.ToString());
+                TSSL_SetTime = new ToolStripStatusLabel("set time ");
                 TSSL_SetTime.Tag = p;
                 TSSL_SetTime.Click += new EventHandler(TSSL_OnClickSetTime);
                 TSDDB.DropDownItems.Add(TSSL_SetTime);
+
+                TSSL_GetRunningConfig = new ToolStripStatusLabel("GetRunningConfig " );
+                TSSL_GetRunningConfig.Tag = p;
+                TSSL_GetRunningConfig.Click += new EventHandler(TSSL_OnClickGetRunningConfig);
+                TSDDB.DropDownItems.Add(TSSL_GetRunningConfig);
+
+                TSSL_ReadRunningConfig = new ToolStripStatusLabel("ReadRunningConfig ");
+                TSSL_ReadRunningConfig.Tag = p;
+                TSSL_ReadRunningConfig.Click += new EventHandler(TSSL_OnClickReadRunningConfig);
+                TSDDB.DropDownItems.Add(TSSL_ReadRunningConfig);
 
                 statusStrip_bottom.Items.Add(TSDDB);
                 //p.init_TSDDB(TSDDB);
@@ -671,6 +702,21 @@ namespace AutoHome
                 */
         
         }
+
+        //##################################### running config ############################################
+        void TSSL_OnClickReadRunningConfig(object sender, EventArgs e)
+        {
+            ToolStripLabel o = sender as ToolStripLabel;
+            plc p = (plc)o.Tag;
+            p.ReadRunningConfig();
+        }
+
+        void TSSL_OnClickGetRunningConfig(object sender, EventArgs e)
+        {
+            plc p = (plc)(sender as ToolStripLabel).Tag;
+            MessageBox.Show(p.ShowRunningConfig(), "running config: " + p.get_plc_name());
+        }
+
         #endregion
         #endregion
 
@@ -870,14 +916,14 @@ namespace AutoHome
 
         #region TIMER send/receive/refresh
         System.Windows.Forms.Timer timer_GetRequestInterval;
-        System.Windows.Forms.Timer timer_refresh_controls;
+        System.Windows.Forms.Timer TimerUpdateGui;
         System.Windows.Forms.Timer timer_footer_connection_status;
 
         private void init_timer()
-        {           
-            timer_refresh_controls = new System.Windows.Forms.Timer();
-            timer_refresh_controls.Interval = var.timer_refresh_GUI;
-            timer_refresh_controls.Tick += new EventHandler(timer_refresh_control_Tick);
+        {
+            TimerUpdateGui = new System.Windows.Forms.Timer();
+            TimerUpdateGui.Interval = var.timer_refresh_GUI;
+            TimerUpdateGui.Tick += new EventHandler(timer_refresh_control_Tick);
 
             timer_footer_connection_status = new System.Windows.Forms.Timer();
             timer_footer_connection_status.Interval = var.footer_connection_status;
@@ -887,6 +933,7 @@ namespace AutoHome
             timer_GetRequestInterval.Interval = var.timer_GetRequestInterval;
             timer_GetRequestInterval.Tick += new EventHandler(timer_GetRequestInterval_Tick);
 
+            TimerUpdateGui.Start();
             if (var.start_timers_at_start)
                 timer_start();
         }
@@ -894,13 +941,11 @@ namespace AutoHome
         private void timer_start()
         {
             timer_GetRequestInterval.Start();
-            timer_refresh_controls.Start();
             timer_footer_connection_status.Start();
         }
         private void timer_stop()
         {
             timer_GetRequestInterval.Stop();
-            timer_refresh_controls.Stop();
             timer_footer_connection_status.Stop();
         }
 
@@ -965,11 +1010,12 @@ namespace AutoHome
                 //********************************************************************************************************************
                 //show current aktuator value @GUI
                 //********************************************************************************************************************
-                
+
                 //[view platform] fill aktuator dialog box with values
                 //if (_FrmMain_controlDialog != null)
-                //    if (f.isIOIndex(_FrmMain_controlDialog.get_aktuator_id()))
-                //        _FrmMain_controlDialog.update_with_frame(f);
+                //    _FrmMain_controlDialog.update_dialog();
+                    //if (f.isIOIndex(_FrmMain_controlDialog.get_aktuator_id()))
+                    //    _FrmMain_controlDialog.update_with_frame(f);
                 //############################################################################################# TODO #################################
 
                 //update [view controls]
@@ -1016,30 +1062,36 @@ namespace AutoHome
             catch (Exception e)
             {
                 log.exception(this, "interprete_frame(); writing to GUI failed!", e);
-                if (var.display_exception)
-                    MessageBox.Show("interprete_frameCallback: " + e.Message, "writing to GUI failed");
             }
         }
 
         private void interprete_frame_fkt(object f)
         {
-            Frame _f = (Frame)f;
+            try
+            {
+                Frame _f = (Frame)f;
 
-            if (_f.GetHeaderFlag(FrameHeaderFlag.SYNC)) {
-                //sync frame empfangen -> statusanzeige "verbunden" in footer durch grün
-                foreach (ToolStripDropDownButton p in statusStrip_bottom.Items)
-                    //statusStrip_bottom contains CPSstatus Label with no p.Tag
-                    if (p.Tag != null && (_f.client.RemoteIp == ((plc)p.Tag).getClient().RemoteIp))
-                        p.BackColor = Color.GreenYellow;
+                if (_f.GetHeaderFlag(FrameHeaderFlag.SYNC))
+                {
+                    //sync frame empfangen -> statusanzeige "verbunden" in footer durch grün
+                    foreach (ToolStripDropDownButton p in statusStrip_bottom.Items)
+                        //statusStrip_bottom contains CPSstatus Label with no p.Tag
+                        if (p.Tag != null && (_f.client.RemoteIp == ((plc)p.Tag).getClient().RemoteIp))
+                            p.BackColor = Color.GreenYellow;
+                }
+                else if (_f.GetHeaderFlag(FrameHeaderFlag.MngData))
+                    interprete_MngData(_f);
+                else if (_f.GetHeaderFlag(FrameHeaderFlag.ACKN))
+                    FrmLog.AddLog("RCV: ACKN {" + _f.ToString() + "}");
+                else if (_f.GetHeaderFlag(FrameHeaderFlag.PdataIO))
+                    interprete_IOData(_f);
+                else
+                    FrmLog.AddLog("RCV: UNKNOWN {" + _f.ToString() + "}");
             }
-            else if (_f.GetHeaderFlag(FrameHeaderFlag.MngData))
-                interprete_MngData(_f);
-            else if (_f.GetHeaderFlag(FrameHeaderFlag.ACKN))
-                FrmLog.AddLog("RCV: ACKN {" + _f.ToString() + "}");
-            else if (_f.GetHeaderFlag(FrameHeaderFlag.PdataIO))
-                interprete_IOData(_f);
-            else
-                FrmLog.AddLog("RCV: UNKNOWN {" + _f.ToString() + "}");
+            catch (Exception e)
+            {
+                log.exception(this, "interprete_frame_fkt()", e);
+            }
         }
 
         private void interprete_MngData(Frame f) {
@@ -1167,7 +1219,6 @@ namespace AutoHome
             //            ac.interprete(f);
             //    }
             
-            else { } //TODO:globale log funktion einbauen
         }
 
         /// <summary>
@@ -1194,144 +1245,9 @@ namespace AutoHome
             //footer_CpsServerStatus.Text = s;
             FrmLog.AddLog(s);
         }
+
+
         #endregion
 
-
-        #region alt TCP [client callback (darstellung der werte in GUI)]
-        /// <summary>
-        /// auswertung des frames und manipulieren der oberfläche entsprechend den daten
-        /// </summary>
-        /// <param name="f"></param>
-        /// VERSCHOBEN
-        /*
-        private void interprete_frame_funkt_platform(Frame f)
-        {
-            if (_FrmMain_controlDialog != null)
-                if (f.isIndex(_FrmMain_controlDialog.get_aktuator_id()))
-                    _FrmMain_controlDialog.update_with_frame(f);
-
-            platform p_selected = (platform)comboBox_platform.SelectedItem;
-            if (p_selected != null)
-                p_selected.update_control(f);
-        }
-
-        private void interprete_frame_funkt_plc_management(Frame f) {
-            
-            //TODO in aktor auslagern
-                if (f.isIndex(cpu_net_management)) //sensorikwerte auf gui ausgeben
-                {
-
-                    if (f.isJob(DataIOType.GET_CPU_TIME))
-                    {
-                        
-                        plc _plc = list_plc.Find(x => x._ip.Equals(f.getIP()));
-                        if (_plc == list_plc[0])
-                            clockToolStripMenuItem.Text = "clock [" + f.getPayload(0) + "/" + f.getPayload(1) + "/" + f.getPayload(2) + " " + f.getPayload(3) + ":" + f.getPayload(4) + ":" + f.getPayload(5) + "]";
-                        else if (_plc == list_plc[1])
-                            clockToolStripMenuItem1.Text = "clock [" + f.getPayload(0) + "/" + f.getPayload(1) + "/" + f.getPayload(2) + " " + f.getPayload(3) + ":" + f.getPayload(4) + ":" + f.getPayload(5) + "]";
-                        //else
-                        //MessageBox.Show("FrmMain.cs -> interprete_frame_funkt", "unknown PLC: " + _plc._PLC_Name + " / " + _plc._ip);
-                      
-                    }
-                    else if (f.isJob(DataIOType.GET_WEATHER))
-                    {
-                        label_weather_temperature.Text = (Convert.ToDouble(f.getPayload(0)) / 100).ToString("0.0") + "° C";
-                        label_weather_sun_s.Text = f.getPayload(1).ToString() + " klux";
-                        label_weather_sun_w.Text = f.getPayload(2).ToString() + " klux";
-                        label_weather_sun_e.Text = f.getPayload(3).ToString() + " klux";
-                        label_weather_light.Text = f.getPayload(4).ToString() + " lux";
-                        double wind_speed = (Convert.ToDouble(f.getPayload(5)) / 100);
-                        label_weather_wind.Text = wind_speed.ToString("0.0") + " m/s";
-
-                        if (wind_speed < 0.2) label_desc_wind.Text = "Windstille";
-                        else if (wind_speed < 1.4) label_desc_wind.Text = "leiser Zug";
-                        else if (wind_speed < 3.4) label_desc_wind.Text = "leichte Brise";
-                        else if (wind_speed < 5.4) label_desc_wind.Text = "schwacher Wind";
-                        else if (wind_speed < 7.4) label_desc_wind.Text = "mäßiger Wind";
-                        else if (wind_speed < 10.4) label_desc_wind.Text = "frischer Wind";
-                        else if (wind_speed < 13.4) label_desc_wind.Text = "starker Wind";
-                        else if (wind_speed < 17.4) label_desc_wind.Text = "steifer Wind";
-                        else if (wind_speed < 20.4) label_desc_wind.Text = "stürmischer Wind";
-                        else if (wind_speed < 24.4) label_desc_wind.Text = "Sturm";
-                        else if (wind_speed < 28.4) label_desc_wind.Text = "schwerer Sturm";
-                        else if (wind_speed < 32.4) label_desc_wind.Text = "orkanartiger Sturm";
-                        else label_desc_wind.Text = "Orkan!!";
-
-                        if (f.getPayload(6) == 0) label_weather_rain.Text = "trocken";
-                        else label_weather_rain.Text = "es regnet";
-                        label_stairs_light.Text = f.getPayload(7).ToString("###") + " lux";
-                        label_stairs_temperature.Text = (Convert.ToDouble(f.getPayload(8)) / 100).ToString("0.0") + "° C";
-                        label_floor_temperature.Text = (Convert.ToDouble(f.getPayload(9)) / 100).ToString("0.0") + "° C";
-                        label_floor_humidity.Text = (Convert.ToDouble(f.getPayload(10)) / 100).ToString("0.0") + " %";
-                    }
-                    //else
-                    //    MessageBox.Show(f.ToString(),"rcv unknown job at ID_SENSOR");
-
-                }
-                else if (f.isIndex(ID_ETA))
-                {
-                    label_eta_kessel.Text = (Convert.ToDouble(f.getPayload(0)) / 10).ToString("0.0") + "° C";
-                    label_eta_kesselruecklauf.Text = (Convert.ToDouble(f.getPayload(1)) / 10).ToString("0.0") + "° C";
-                    label_eta_puffer_unten.Text = (Convert.ToDouble(f.getPayload(2)) / 10).ToString("0.0") + "° C";
-                    label_eta_puffer_mitte.Text = (Convert.ToDouble(f.getPayload(3)) / 10).ToString("0.0") + "° C";
-                    label_eta_puffer_oben.Text = (Convert.ToDouble(f.getPayload(4)) / 10).ToString("0.0") + "° C";
-                    label_eta_abgas.Text = (Convert.ToDouble(f.getPayload(5)) / 10).ToString("0.0") + "° C";
-                    label_eta_kollektor.Text = (Convert.ToDouble(f.getPayload(6)) / 10).ToString("0.0") + "° C";
-                    label_eta_solar_unten.Text = (Convert.ToDouble(f.getPayload(7)) / 10).ToString("0.0") + "° C";
-                    label_eta_vorlauf.Text = (Convert.ToDouble(f.getPayload(8)) / 10).ToString("0.0") + "° C";
-                    label_eta_aussentemperatur.Text = (Convert.ToDouble(f.getPayload(9)) / 10).ToString("0.0") + "° C";
-                    label_eta_pufferladezustand.Text = f.getPayload(10).ToString() + " %";
-                }
-                else if (f.isIndex(-1))
-                {TODO frame index -1 in cpu und autohome behandeln
-                        plc _plc = list_plc.Find(x => x._ip.Equals(f.getIP()));
-                        _plc.newlog("index not found: " + f.getPayload(0), list_aktuator);
-                        //##################################################################################################
-                        //TODO ########################################### TO - DO ##############################################
-                        MessageBox.Show(f.ToString(), "index not found: " + f.getPayload(0));
-                        //################################################################################################## 
-                        //list_plc_log_msg.Add(lg);
-                        //print_log_DS(lg);
-                   
-                }
-                else //logmeldungen als string interpretieren und anzeigen
-                {
-                    /*
-                    if (!f.isEmptyString())
-                    {
-                        string msg = System.Text.Encoding.ASCII.GetString(f.getNetworkOrderFrame(), 0, f.getNetworkOrderFrame().Length);
-                        plc _plc = list_plc.Find(x => x._ip.Equals(f.getIP()));
-                        _plc.newlog(msg, list_aktuator);
-                        _plc.new_message_count++;
-
-                        //##################################################################################################
-                        //TODO ########################################### TO - DO ##############################################
-                        //MessageBox.Show("FrmMain.cs -> interprete_frame_funkt", "TO-DO");
-                        //darstellung der Anzahl in PLC button
-                        if (_plc == list_plc[0])
-                            pLCEGToolStripMenuItem.Text = list_plc[0]._PLC_Name + "(" + list_plc[0].new_message_count.ToString() + ")";
-                        else if (_plc == list_plc[1])
-                            pLCOGToolStripMenuItem.Text = list_plc[1]._PLC_Name + "(" + list_plc[1].new_message_count.ToString() + ")";
-                        else
-                            MessageBox.Show("FrmMain.cs -> interprete_frame_funkt", "unknown PLC: " + _plc._PLC_Name + " / " + _plc._ip);
-                        //################################################################################################## 
-
-                        //nächsten log msg aufruf an plc senden
-                       // TODO log
-                        send_stack.put(new Frame(Frame.LOG_GET), f.getIP());
-                        
-                    // }
-
-                }
-                //else
-                //MessageBox.Show(f.getStringFrame(),"rcv unknown Index: " + f.getIndex().ToString());
-            
-            #endregion
-        }
-
-        */
-        #endregion
-
-        
     }
 }

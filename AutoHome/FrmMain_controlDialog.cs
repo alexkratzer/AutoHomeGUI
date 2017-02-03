@@ -17,11 +17,13 @@ namespace AutoHome
     public partial class FrmMain_controlDialog : Form
     {
         aktuator _akt;
-        UserControl ucdialog= null;
+        string ip;
+        private UserControl ucdialog= null;
         public FrmMain_controlDialog(object akt)
         {
             InitializeComponent();
             _akt = (aktuator)akt;
+            ip = _akt._plc.get_plc_ip();
 
             this.Text = _akt.Name;
             
@@ -43,39 +45,60 @@ namespace AutoHome
                     ucdialog = new UC_dialog_undef(_akt);
                     this.Controls.Add(ucdialog);
                     break;
+                case aktor_type.sensor:
+                    Label lsensor = new Label();
+                    lsensor.Text = "ERROR: aktor_type.sensor not implemented";
+                    this.Controls.Add(lsensor);
+                    break;
                 default:
-                    Label l = new Label();
-                    l.Text = "ERROR: unknown aktor_type";
-                    this.Controls.Add(l);
+                    Label lerror = new Label();
+                    lerror.Text = "ERROR: unknown aktor_type";
+                    this.Controls.Add(lerror);
                     break;
             }
-            this.Size = new Size(ucdialog.Size.Width + 6, ucdialog.Size.Height + 29);      
+            this.Size = new Size(ucdialog.Size.Width + 6, ucdialog.Size.Height + 29);
+
+            
+            TimerUpdateGui = new System.Windows.Forms.Timer();
+            TimerUpdateGui.Interval = var.timer_refresh_GUI;
+            TimerUpdateGui.Tick += new EventHandler(timer_refresh_control_Tick);
+            TimerUpdateGui.Start();
         }
 
-        
-        private void FrmMain_controlDialog_Load(object sender, EventArgs e)
+
+        private void FrmMain_controlDialog_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //dialog an position des mauszeigers setzen
-            //Point _point = new System.Drawing.Point(Cursor.Position.X, Cursor.Position.Y);
-            //Top = _point.Y;
-            //Left = _point.X;
+            TimerUpdateGui.Stop();
+        }
+
+        /// <summary>
+        /// weiterreichen des frames von der main callback an das user_control
+        /// </summary>
+        /// <param name="f"></param>
+        //public void update_with_frame(object f) {
+        //    this.Text = _akt.Name;
+
+        //    dynamic d = ucdialog;
+        //    d.LoadData(f);
+        //}
+
+        ///#################################### TODO: bei frame start timer zum gui update starten ####################################
+
+        System.Windows.Forms.Timer TimerUpdateGui;
+        /// alle controls in gui werden mit ihren aktual werten befüllt
+        void timer_refresh_control_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                    dynamic d = ucdialog;
+                    d.LoadData(_akt.ConfigAktuatorValues);
+            }
+            catch (Exception ex)
+            {
+                log.exception(this, "timer_refresh_control_Tick", ex);
+            }
         }
         
-        public int get_aktuator_id() {
-            return _akt.Index;
-        }
-
-         /// <summary>
-         /// weiterreichen des frames von der main callback an das user_control
-         /// </summary>
-         /// <param name="f"></param>
-        public void update_with_frame(object f) {
-            this.Text = _akt.Name;
-
-            dynamic d = ucdialog;
-            d.LoadData(f);
-        }
-
         private void FrmMain_controlDialog_Leave(object sender, EventArgs e)
         {
             Text = Text + "::-- leave";
@@ -85,5 +108,6 @@ namespace AutoHome
         {
             Text = Text + "::mouse leave";
         }
+
     }
 }

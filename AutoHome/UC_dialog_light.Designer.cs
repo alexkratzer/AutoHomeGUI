@@ -40,7 +40,6 @@
             this.textBox_light_lux_off = new System.Windows.Forms.TextBox();
             this.label_light_lux = new System.Windows.Forms.Label();
             this.checkBox_light_enable_lux = new System.Windows.Forms.CheckBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.label_remaining_on_desc = new System.Windows.Forms.Label();
             this.label_remaining_on = new System.Windows.Forms.Label();
             this.label_current_state = new System.Windows.Forms.Label();
@@ -157,15 +156,6 @@
             this.checkBox_light_enable_lux.UseVisualStyleBackColor = true;
             this.checkBox_light_enable_lux.CheckedChanged += new System.EventHandler(this.checkBox_light_enable_lux_CheckedChanged);
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 125);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 42;
-            this.label1.Text = "label1";
-            // 
             // label_remaining_on_desc
             // 
             this.label_remaining_on_desc.AutoSize = true;
@@ -200,7 +190,6 @@
             this.Controls.Add(this.label_current_state);
             this.Controls.Add(this.label_remaining_on);
             this.Controls.Add(this.label_remaining_on_desc);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.button_set_param);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label4);
@@ -234,7 +223,6 @@
         private System.Windows.Forms.TextBox textBox_light_lux_off;
         private System.Windows.Forms.Label label_light_lux;
         private System.Windows.Forms.CheckBox checkBox_light_enable_lux;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label_remaining_on_desc;
         private System.Windows.Forms.Label label_remaining_on;
         private System.Windows.Forms.Label label_current_state;

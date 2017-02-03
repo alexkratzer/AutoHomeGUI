@@ -10,7 +10,7 @@ using cpsLIB; //frames
 
 namespace AutoHome
 {
-    public partial class UC_dialog_jalousie : UserControl
+    public partial class UC_dialog_jalousie : UserControl, IdialogUpdate
     {
         aktuator _aktor = null;
 
@@ -23,26 +23,39 @@ namespace AutoHome
             init_event();
         }
 
-        public void LoadData(object frame)
+        public void LoadData(object _value)
         {
-            Frame f = (Frame)frame;
-            label1.Text = "frame: " + f.ToString();
+            //Frame f = (Frame)frame;
+            Int16[] value = (Int16[])_value;
+            //label1.Text = "frame: " + f.ToString();
 
-            if (f.isJob(DataIOType.GetState) || f.isJob(DataIOType.SetState))
-            {
+                textBox_wind_go_up.Text = (Convert.ToDouble(value[2]) / 100).ToString("0.0");
+                checkBox_initJalousie.Checked = Convert.ToBoolean(value[3]);
+            
+            //reagiert nur auf GetState
                 this.BackColor = Control.DefaultBackColor;
-                textBox_position.Text = f.getPayload(2).ToString();
-                textBox_angle.Text = f.getPayload(3).ToString();
+                textBox_position.Text = value[4].ToString();
+                textBox_angle.Text = value[5].ToString();
+
+            if (value.Length < 70) {
+                log.msg(this, "UC_dialog_jalousie LoadData() with no event data");
+                return;
             }
-            else if (f.isJob(DataIOType.GetParam) || f.isJob(DataIOType.SetParam))
-            {
-                textBox_wind_go_up.Text = (Convert.ToDouble(f.getPayload(2)) / 100).ToString("0.0");
-                checkBox_initJalousie.Checked = Convert.ToBoolean(f.getPayload(3));
+            log.msg(this, "value length: " + value.Length.ToString());
+
+            for (int i = 0; i < 10; i++) {
+                Int16[] extractValue = new Int16[7];
+                for (int x = 0; x < 7; x++) {
+                    int index = 7 * i + x;
+                    log.msg(this, "index: " + index.ToString() + " value:" + value[index]);
+                    extractValue[x] = value[index];
+                }
+                list_UC_jalousie[i].print_data(extractValue);
             }
-            else if (f.isJob(DataIOType.GetParamJalousieEvent) || f.isJob(DataIOType.SetParamJalousieEvent))
-                LoadData_event(f);
-            else
-                MessageBox.Show("rcv frame with unknown job: " + f.getPayload(1) + " " + f.ToString());
+
+            //list_UC_jalousie[value[2]].print_data(_value);
+            
+
         }
 
         #region event
@@ -57,11 +70,6 @@ namespace AutoHome
             }
         }
 
-        public void LoadData_event(object _f)
-        {
-            Frame f = (Frame)_f;
-            list_UC_jalousie[f.getPayload(2)].print_data(f);
-        }
         #endregion
 
         private void button_jal_drive_to_Click(object sender, EventArgs e)

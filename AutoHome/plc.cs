@@ -152,9 +152,43 @@ namespace AutoHome
         public void SetAktuatorData(Frame f) {
             foreach (aktuator a in ListAktuator) {
                 if (f.isIOIndex(a.Index)) {
-                    a.ValueFrame = f;
+                    if (f.getPayload(1) == (int)DataIOType.GetState)
+                        a.ValueFrame = f;
+                    else if (f.getPayload(1) == (int)DataIOType.GetParam)
+                        a.ConfigAktuatorValues = f.getPayload();
+                    else
+                        log.msg(this, "SetAktuatorData(), plc.cs: unknown DataIOType: [" + f.getPayload(2).ToString() + "]");
                 }
             }
+        }
+
+
+        public string ShowRunningConfig()
+        {
+            string s= "ShowRunningConfig @" + _PLC_Name + Environment.NewLine;
+            //string text = "";
+            foreach (aktuator a in ListAktuator)
+            {
+                s += a._type.ToString() + " / " + a.Name + " [" ;
+                if (a.ConfigAktuatorValues != null)
+                    foreach (Int16 i in a.ConfigAktuatorValues)
+                        s += i.ToString() + ", ";
+                else
+                    s +="XX, ";
+                s += "]" + Environment.NewLine;
+            }
+            //s += text + Environment.NewLine;
+            return s;
+        }
+        /// <summary>
+        /// send get request to all aktuators
+        /// </summary>
+        public void ReadRunningConfig() {
+            foreach (aktuator a in ListAktuator) {
+                Frame f = new Frame(getClient(), new Int16[] { a.Index, (int)DataIOType.GetParam });
+                f.SetHeaderFlag(FrameHeaderFlag.PdataIO);
+                send(f);
+            } 
         }
     }
         

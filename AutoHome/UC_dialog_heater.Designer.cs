@@ -30,6 +30,7 @@
         {
             this.radioButton_state_on = new System.Windows.Forms.RadioButton();
             this.panel_ctrl_auto = new System.Windows.Forms.Panel();
+            this.label_temp_ist = new System.Windows.Forms.Label();
             this.label_remaining_time = new System.Windows.Forms.Label();
             this.label_remaining_dsc = new System.Windows.Forms.Label();
             this.textBox_stop_at_degree = new System.Windows.Forms.TextBox();
@@ -49,8 +50,6 @@
             this.checkBox_ctrl_on = new System.Windows.Forms.CheckBox();
             this.checkBox_ctrl_manuel = new System.Windows.Forms.CheckBox();
             this.button_send = new System.Windows.Forms.Button();
-            this.label_dbg_frame = new System.Windows.Forms.Label();
-            this.label_temp_ist = new System.Windows.Forms.Label();
             this.panel_ctrl_auto.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -88,6 +87,15 @@
             this.panel_ctrl_auto.Name = "panel_ctrl_auto";
             this.panel_ctrl_auto.Size = new System.Drawing.Size(163, 109);
             this.panel_ctrl_auto.TabIndex = 93;
+            // 
+            // label_temp_ist
+            // 
+            this.label_temp_ist.AutoSize = true;
+            this.label_temp_ist.Location = new System.Drawing.Point(90, 78);
+            this.label_temp_ist.Name = "label_temp_ist";
+            this.label_temp_ist.Size = new System.Drawing.Size(60, 13);
+            this.label_temp_ist.TabIndex = 89;
+            this.label_temp_ist.Text = "temperatur:";
             // 
             // label_remaining_time
             // 
@@ -268,29 +276,10 @@
             this.button_send.Visible = false;
             this.button_send.Click += new System.EventHandler(this.button_send_Click);
             // 
-            // label_dbg_frame
-            // 
-            this.label_dbg_frame.AutoSize = true;
-            this.label_dbg_frame.Location = new System.Drawing.Point(3, 171);
-            this.label_dbg_frame.Name = "label_dbg_frame";
-            this.label_dbg_frame.Size = new System.Drawing.Size(33, 13);
-            this.label_dbg_frame.TabIndex = 95;
-            this.label_dbg_frame.Text = "frame";
-            // 
-            // label_temp_ist
-            // 
-            this.label_temp_ist.AutoSize = true;
-            this.label_temp_ist.Location = new System.Drawing.Point(90, 78);
-            this.label_temp_ist.Name = "label_temp_ist";
-            this.label_temp_ist.Size = new System.Drawing.Size(60, 13);
-            this.label_temp_ist.TabIndex = 89;
-            this.label_temp_ist.Text = "temperatur:";
-            // 
             // UC_dialog_heater
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.label_dbg_frame);
             this.Controls.Add(this.radioButton_state_on);
             this.Controls.Add(this.panel_ctrl_auto);
             this.Controls.Add(this.checkBox_ctrl_on);
@@ -326,7 +315,6 @@
         private System.Windows.Forms.CheckBox checkBox_ctrl_on;
         private System.Windows.Forms.CheckBox checkBox_ctrl_manuel;
         private System.Windows.Forms.Button button_send;
-        private System.Windows.Forms.Label label_dbg_frame;
         private System.Windows.Forms.Label label_remaining_time;
         private System.Windows.Forms.Label label_remaining_dsc;
         private System.Windows.Forms.Label label_temp_ist;

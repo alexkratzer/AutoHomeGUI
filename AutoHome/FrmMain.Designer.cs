@@ -39,6 +39,7 @@
             this.startupConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.writeInPlcToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.getRunningConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.expertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openWorkingDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openDebugConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -134,7 +135,8 @@
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.editParamsToolStripMenuItem,
             this.platformToolStripMenuItem,
-            this.startupConfigToolStripMenuItem});
+            this.startupConfigToolStripMenuItem,
+            this.getRunningConfigToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "edit";
@@ -142,14 +144,14 @@
             // editParamsToolStripMenuItem
             // 
             this.editParamsToolStripMenuItem.Name = "editParamsToolStripMenuItem";
-            this.editParamsToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.editParamsToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.editParamsToolStripMenuItem.Text = "parameter";
             this.editParamsToolStripMenuItem.Click += new System.EventHandler(this.editParamsToolStripMenuItem_Click);
             // 
             // platformToolStripMenuItem
             // 
             this.platformToolStripMenuItem.Name = "platformToolStripMenuItem";
-            this.platformToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.platformToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.platformToolStripMenuItem.Text = "platform";
             this.platformToolStripMenuItem.Click += new System.EventHandler(this.platformToolStripMenuItem_Click);
             // 
@@ -159,7 +161,7 @@
             this.editToolStripMenuItem1,
             this.writeInPlcToolStripMenuItem});
             this.startupConfigToolStripMenuItem.Name = "startupConfigToolStripMenuItem";
-            this.startupConfigToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.startupConfigToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.startupConfigToolStripMenuItem.Text = "startup config";
             // 
             // editToolStripMenuItem1
@@ -175,6 +177,13 @@
             this.writeInPlcToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
             this.writeInPlcToolStripMenuItem.Text = "write in plc";
             this.writeInPlcToolStripMenuItem.Click += new System.EventHandler(this.writeInPlcToolStripMenuItem_Click);
+            // 
+            // getRunningConfigToolStripMenuItem
+            // 
+            this.getRunningConfigToolStripMenuItem.Name = "getRunningConfigToolStripMenuItem";
+            this.getRunningConfigToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.getRunningConfigToolStripMenuItem.Text = "get running config";
+            this.getRunningConfigToolStripMenuItem.Click += new System.EventHandler(this.getRunningConfigToolStripMenuItem_Click);
             // 
             // expertToolStripMenuItem
             // 
@@ -216,29 +225,29 @@
             // startToolStripMenuItem
             // 
             this.startToolStripMenuItem.Name = "startToolStripMenuItem";
-            this.startToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.startToolStripMenuItem.Text = "start";
             this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
             // 
             // stopToolStripMenuItem
             // 
             this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.stopToolStripMenuItem.Text = "stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
             // managementToolStripMenuItem
             // 
             this.managementToolStripMenuItem.Name = "managementToolStripMenuItem";
-            this.managementToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
-            this.managementToolStripMenuItem.Text = "MngData";
+            this.managementToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.managementToolStripMenuItem.Text = "Get Requests";
             this.managementToolStripMenuItem.Click += new System.EventHandler(this.managementToolStripMenuItem_Click);
             // 
             // iODataToolStripMenuItem
             // 
             this.iODataToolStripMenuItem.Name = "iODataToolStripMenuItem";
-            this.iODataToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
-            this.iODataToolStripMenuItem.Text = "PdataIO";
+            this.iODataToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.iODataToolStripMenuItem.Text = "Update Gui";
             this.iODataToolStripMenuItem.Click += new System.EventHandler(this.iODataToolStripMenuItem_Click);
             // 
             // eTAToolStripMenuItem
@@ -635,6 +644,7 @@
         private System.Windows.Forms.ToolStripMenuItem dBGFrmToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem managementToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem iODataToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem getRunningConfigToolStripMenuItem;
     }
 }
 

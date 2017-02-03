@@ -26,10 +26,11 @@ namespace AutoHome
                 label_plc.Text = "ERROR: plc = null";
         }
 
-        public void LoadData(object frame)
+        public void LoadData(object _value)
         {
-            Frame f = (Frame)frame;
-            label_frame.Text = "frame: " + f.ToString();
+            Int16[] value = (Int16[])_value;
+            
+            label_frame.Text = "frame: " + value.ToString();
         }
     }
 }

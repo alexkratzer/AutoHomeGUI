@@ -43,7 +43,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "FrmMain_controlDialog";
-            this.Load += new System.EventHandler(this.FrmMain_controlDialog_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMain_controlDialog_FormClosing);
             this.Leave += new System.EventHandler(this.FrmMain_controlDialog_Leave);
             this.MouseLeave += new System.EventHandler(this.FrmMain_controlDialog_MouseLeave);
             this.ResumeLayout(false);

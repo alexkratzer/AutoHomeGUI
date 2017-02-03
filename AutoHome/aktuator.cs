@@ -39,11 +39,13 @@ namespace AutoHome
         private string mapped_plc_hash = "";
         private string aktuator_hash = "";
 
+        public Int16[] ConfigAktuatorValues; //running config of aktuator
+
         [NonSerialized]//nicht serialisieren da sonst keine referenz auf das aktuelle objekt vorhanden ist sondern mit alten kopien gearbeitet wird
         public plc _plc;
         [NonSerialized]
         public Frame ValueFrame; //nur tämporere werte
-
+        
         #region serialize
         //notwendig um nach deserialisieren eine referenz auf aktuelle plc zu erzeugen
         //public void serialize_init() {

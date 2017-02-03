@@ -40,7 +40,6 @@
             this.textBox_position = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.panel_event = new System.Windows.Forms.Panel();
             this.checkBox_initJalousie = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
@@ -170,15 +169,6 @@
             this.label6.TabIndex = 64;
             this.label6.Text = "position:";
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 633);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
-            this.label1.TabIndex = 76;
-            this.label1.Text = "label1";
-            // 
             // panel_event
             // 
             this.panel_event.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -203,7 +193,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.checkBox_initJalousie);
             this.Controls.Add(this.panel_event);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.label_wind_speed);
             this.Controls.Add(this.button_set_wind_goup_speed);
             this.Controls.Add(this.textBox_wind_go_up);
@@ -237,7 +226,6 @@
         private System.Windows.Forms.TextBox textBox_position;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panel_event;
         private System.Windows.Forms.CheckBox checkBox_initJalousie;
     }
