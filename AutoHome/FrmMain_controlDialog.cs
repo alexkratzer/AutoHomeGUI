@@ -83,8 +83,6 @@ namespace AutoHome
         //    d.LoadData(f);
         //}
 
-        ///#################################### TODO: bei frame start timer zum gui update starten ####################################
-
         System.Windows.Forms.Timer TimerUpdateGui;
         /// alle controls in gui werden mit ihren aktual werten befüllt
         void timer_refresh_control_Tick(object sender, EventArgs e)
@@ -92,7 +90,7 @@ namespace AutoHome
             try
             {
                     dynamic d = ucdialog;
-                    d.LoadData(_akt.ConfigAktuatorValues);
+                    d.LoadData(_akt.ConfigAktuatorValuesRunning);
             }
             catch (Exception ex)
             {

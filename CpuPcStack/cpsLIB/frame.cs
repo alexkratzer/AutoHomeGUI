@@ -11,7 +11,7 @@ using System.Net;
 namespace cpsLIB
 {
     public enum FrameSender { SEND, RCVE, unknown }
-    public enum FrameState { UNDEF, ERROR, IS_OK}
+    //public enum FrameState { UNDEF, ERROR, IS_OK}
     //public enum FrameWorkingState { created, inWork, finish, error, warning, received, send}
     
         //public static Int16[] SET_STATE(int index, string position, string angle) { return new Int16[] { Convert.ToInt16(index), 2, Convert.ToInt16(position), Convert.ToInt16(angle), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; }
@@ -32,7 +32,7 @@ namespace cpsLIB
     public class FrameRawData
     {
         #region vars
-        FrameState frameState = FrameState.UNDEF;
+        //FrameState frameState = FrameState.UNDEF;
         //constanten
         public const int FrameHeaderByteLength = 6; //Länge des Headers in Byte
 

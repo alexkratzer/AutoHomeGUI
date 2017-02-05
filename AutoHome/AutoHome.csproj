@@ -75,6 +75,12 @@
     <Compile Include="FrmMain_controlDialog.Designer.cs">
       <DependentUpon>FrmMain_controlDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmStartupRunningConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmStartupRunningConfig.Designer.cs">
+      <DependentUpon>FrmStartupRunningConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="log.cs" />
     <Compile Include="PBplatformControl.cs">
       <SubType>Component</SubType>
@@ -178,6 +184,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmParam.resx">
       <DependentUpon>FrmParam.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmStartupRunningConfig.resx">
+      <DependentUpon>FrmStartupRunningConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

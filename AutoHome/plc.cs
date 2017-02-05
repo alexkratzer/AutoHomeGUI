@@ -155,7 +155,7 @@ namespace AutoHome
                     if (f.getPayload(1) == (int)DataIOType.GetState)
                         a.ValueFrame = f;
                     else if (f.getPayload(1) == (int)DataIOType.GetParam)
-                        a.ConfigAktuatorValues = f.getPayload();
+                        a.ConfigAktuatorValuesRunning = f.getPayload();
                     else
                         log.msg(this, "SetAktuatorData(), plc.cs: unknown DataIOType: [" + f.getPayload(2).ToString() + "]");
                 }
@@ -170,8 +170,8 @@ namespace AutoHome
             foreach (aktuator a in ListAktuator)
             {
                 s += a._type.ToString() + " / " + a.Name + " [" ;
-                if (a.ConfigAktuatorValues != null)
-                    foreach (Int16 i in a.ConfigAktuatorValues)
+                if (a.ConfigAktuatorValuesRunning != null)
+                    foreach (Int16 i in a.ConfigAktuatorValuesRunning)
                         s += i.ToString() + ", ";
                 else
                     s +="XX, ";
@@ -189,6 +189,11 @@ namespace AutoHome
                 f.SetHeaderFlag(FrameHeaderFlag.PdataIO);
                 send(f);
             } 
+        }
+
+        public void copyRunningToStartConfig() {
+            foreach (aktuator a in ListAktuator)
+                a.copyRunningToStartConfig();
         }
     }
         

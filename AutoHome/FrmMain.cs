@@ -262,6 +262,15 @@ namespace AutoHome
             MessageBox.Show(s, "running config");
         }
 
+        private void copyRunningToStartConfigToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (plc p in list_plc)
+                p.copyRunningToStartConfig();
+
+            FrmStartupRunningConfig FSRC = new FrmStartupRunningConfig(list_plc);
+            FSRC.Show();
+        }
+
         #endregion
 
         #region menue expert
@@ -1025,9 +1034,6 @@ namespace AutoHome
                     //        ac.interprete(f);
                     //}
                 }
-
-
-
             }
             catch (Exception ex) {
                 log.exception(this, "timer_refresh_control_Tick", ex);
@@ -1240,6 +1246,7 @@ namespace AutoHome
 
 
         #endregion
+
 
     }
 }

@@ -86,6 +86,7 @@
             this.comboBox_aktor_type = new System.Windows.Forms.ComboBox();
             this.comboBox_aktor_cpu = new System.Windows.Forms.ComboBox();
             this.pictureBox_platform = new System.Windows.Forms.PictureBox();
+            this.copyRunningToStartConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip_main.SuspendLayout();
             this.statusStrip_bottom.SuspendLayout();
             this.panel_controls.SuspendLayout();
@@ -136,7 +137,8 @@
             this.editParamsToolStripMenuItem,
             this.platformToolStripMenuItem,
             this.startupConfigToolStripMenuItem,
-            this.getRunningConfigToolStripMenuItem});
+            this.getRunningConfigToolStripMenuItem,
+            this.copyRunningToStartConfigToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "edit";
@@ -181,8 +183,8 @@
             // getRunningConfigToolStripMenuItem
             // 
             this.getRunningConfigToolStripMenuItem.Name = "getRunningConfigToolStripMenuItem";
-            this.getRunningConfigToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
-            this.getRunningConfigToolStripMenuItem.Text = "get running config";
+            this.getRunningConfigToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.getRunningConfigToolStripMenuItem.Text = "show running config";
             this.getRunningConfigToolStripMenuItem.Click += new System.EventHandler(this.getRunningConfigToolStripMenuItem_Click);
             // 
             // expertToolStripMenuItem
@@ -560,6 +562,13 @@
             this.pictureBox_platform.TabStop = false;
             this.pictureBox_platform.SizeChanged += new System.EventHandler(this.pictureBox_platform_SizeChanged);
             // 
+            // copyRunningToStartConfigToolStripMenuItem
+            // 
+            this.copyRunningToStartConfigToolStripMenuItem.Name = "copyRunningToStartConfigToolStripMenuItem";
+            this.copyRunningToStartConfigToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.copyRunningToStartConfigToolStripMenuItem.Text = "copy running to start config";
+            this.copyRunningToStartConfigToolStripMenuItem.Click += new System.EventHandler(this.copyRunningToStartConfigToolStripMenuItem_Click);
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -645,6 +654,7 @@
         private System.Windows.Forms.ToolStripMenuItem managementToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem iODataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem getRunningConfigToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copyRunningToStartConfigToolStripMenuItem;
     }
 }
 
