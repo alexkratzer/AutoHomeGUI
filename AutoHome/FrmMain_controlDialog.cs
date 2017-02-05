@@ -16,8 +16,9 @@ namespace AutoHome
 
     public partial class FrmMain_controlDialog : Form
     {
-        aktuator _akt;
+        
         string ip;
+        aktuator _akt;
         private UserControl ucdialog= null;
         public FrmMain_controlDialog(object akt)
         {

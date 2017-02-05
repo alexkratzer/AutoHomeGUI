@@ -13,6 +13,7 @@ namespace AutoHome
     public partial class UC_dialog_jalousie : UserControl, IdialogUpdate
     {
         aktuator _aktor = null;
+        private const int EVENT_COUNT = 10;
 
         public UC_dialog_jalousie(object aktor)
         {
@@ -25,51 +26,75 @@ namespace AutoHome
 
         public void LoadData(object _value)
         {
-            //Frame f = (Frame)frame;
-            Int16[] value = (Int16[])_value;
-            //label1.Text = "frame: " + f.ToString();
+            if (!checkBox_EditLock.Checked)
+            {
+                //Frame f = (Frame)frame;
+                Int16[] value = (Int16[])_value;
+                //label1.Text = "frame: " + f.ToString();
 
                 textBox_wind_go_up.Text = (Convert.ToDouble(value[2]) / 100).ToString("0.0");
                 checkBox_initJalousie.Checked = Convert.ToBoolean(value[3]);
-            
-            //reagiert nur auf GetState
+
                 this.BackColor = Control.DefaultBackColor;
                 textBox_position.Text = value[4].ToString();
                 textBox_angle.Text = value[5].ToString();
 
-            if (value.Length < 70) {
-                log.msg(this, "UC_dialog_jalousie LoadData() with no event data");
-                return;
-            }
-            log.msg(this, "value length: " + value.Length.ToString());
-
-            for (int i = 0; i < 10; i++) {
-                Int16[] extractValue = new Int16[7];
-                for (int x = 0; x < 7; x++) {
-                    int index = 7 * i + x;
-                    log.msg(this, "index: " + index.ToString() + " value:" + value[index]);
-                    extractValue[x] = value[index];
+                if (value.Length < 79)
+                {
+                    log.msg(this, "UC_dialog_jalousie LoadData() with no event data; Length: " + value.Length.ToString());
+                    return;
                 }
-                list_UC_jalousie[i].print_data(extractValue);
+                //log.msg(this, "value length: " + value.Length.ToString());
+
+                for (int i = 0; i < EVENT_COUNT; i++)
+                {
+                    Int16[] extractValue = new Int16[7];
+                    for (int x = 0; x < 7; x++)
+                    {
+                        int index = 7 * i + x + 6;
+                        //log.msg(this, "index: " + index.ToString() + " value:" + value[index]);
+                        extractValue[x] = value[index];
+                    }
+                    //string tmp = "";
+                    //foreach (Int16 y in extractValue)
+                    //    tmp += y.ToString() + ", ";
+                    //log.msg(this, "extractValue: " + tmp);
+                    list_UC_jalousie[i].print_data(extractValue);
+                }
             }
-
-            //list_UC_jalousie[value[2]].print_data(_value);
             
-
         }
 
         #region event
         List<UC_jalousieEvent> list_UC_jalousie = new List<UC_jalousieEvent>();
         private void init_event()
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < EVENT_COUNT; i++)
             {
                 list_UC_jalousie.Add(new UC_jalousieEvent(_aktor, Convert.ToInt16(i)));
                 list_UC_jalousie[i].Location = new Point(10, i * 60);
+                list_UC_jalousie[i].Enabled = false;
                 panel_event.Controls.Add(list_UC_jalousie[i]);
             }
         }
 
+
+        private void checkBox_EditLock_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_EditLock.Checked)
+            {
+                panel_params.Enabled = true;
+                for (int i = 0; i < EVENT_COUNT; i++)
+                    list_UC_jalousie[i].Enabled = true;
+            }
+            else
+            {
+                panel_params.Enabled = false;
+                for (int i = 0; i < EVENT_COUNT; i++)
+                    list_UC_jalousie[i].Enabled = false;
+                _aktor.plc_send_IO(cpsLIB.DataIOType.GetParam);
+            }
+        }
         #endregion
 
         private void button_jal_drive_to_Click(object sender, EventArgs e)
@@ -120,7 +145,6 @@ namespace AutoHome
         {
             button_set_wind_goup_speed.Visible = true;
         }
-
 
     }
 }

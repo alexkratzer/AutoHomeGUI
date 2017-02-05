@@ -42,12 +42,15 @@
             this.label6 = new System.Windows.Forms.Label();
             this.panel_event = new System.Windows.Forms.Panel();
             this.checkBox_initJalousie = new System.Windows.Forms.CheckBox();
+            this.checkBox_EditLock = new System.Windows.Forms.CheckBox();
+            this.panel_params = new System.Windows.Forms.Panel();
+            this.panel_params.SuspendLayout();
             this.SuspendLayout();
             // 
             // label_wind_speed
             // 
             this.label_wind_speed.AutoSize = true;
-            this.label_wind_speed.Location = new System.Drawing.Point(112, 117);
+            this.label_wind_speed.Location = new System.Drawing.Point(52, 10);
             this.label_wind_speed.Name = "label_wind_speed";
             this.label_wind_speed.Size = new System.Drawing.Size(25, 13);
             this.label_wind_speed.TabIndex = 75;
@@ -55,7 +58,7 @@
             // 
             // button_set_wind_goup_speed
             // 
-            this.button_set_wind_goup_speed.Location = new System.Drawing.Point(147, 110);
+            this.button_set_wind_goup_speed.Location = new System.Drawing.Point(87, 3);
             this.button_set_wind_goup_speed.Name = "button_set_wind_goup_speed";
             this.button_set_wind_goup_speed.Size = new System.Drawing.Size(40, 23);
             this.button_set_wind_goup_speed.TabIndex = 74;
@@ -66,7 +69,7 @@
             // 
             // textBox_wind_go_up
             // 
-            this.textBox_wind_go_up.Location = new System.Drawing.Point(63, 113);
+            this.textBox_wind_go_up.Location = new System.Drawing.Point(3, 6);
             this.textBox_wind_go_up.Name = "textBox_wind_go_up";
             this.textBox_wind_go_up.Size = new System.Drawing.Size(48, 20);
             this.textBox_wind_go_up.TabIndex = 73;
@@ -180,22 +183,43 @@
             // checkBox_initJalousie
             // 
             this.checkBox_initJalousie.AutoSize = true;
-            this.checkBox_initJalousie.Location = new System.Drawing.Point(63, 139);
+            this.checkBox_initJalousie.Location = new System.Drawing.Point(6, 32);
             this.checkBox_initJalousie.Name = "checkBox_initJalousie";
             this.checkBox_initJalousie.Size = new System.Drawing.Size(113, 17);
             this.checkBox_initJalousie.TabIndex = 78;
             this.checkBox_initJalousie.Text = "init default position";
             this.checkBox_initJalousie.UseVisualStyleBackColor = true;
             // 
+            // checkBox_EditLock
+            // 
+            this.checkBox_EditLock.AutoSize = true;
+            this.checkBox_EditLock.Location = new System.Drawing.Point(17, 110);
+            this.checkBox_EditLock.Name = "checkBox_EditLock";
+            this.checkBox_EditLock.Size = new System.Drawing.Size(44, 17);
+            this.checkBox_EditLock.TabIndex = 79;
+            this.checkBox_EditLock.Text = "Edit";
+            this.checkBox_EditLock.UseVisualStyleBackColor = true;
+            this.checkBox_EditLock.CheckedChanged += new System.EventHandler(this.checkBox_EditLock_CheckedChanged);
+            // 
+            // panel_params
+            // 
+            this.panel_params.Controls.Add(this.checkBox_initJalousie);
+            this.panel_params.Controls.Add(this.textBox_wind_go_up);
+            this.panel_params.Controls.Add(this.button_set_wind_goup_speed);
+            this.panel_params.Controls.Add(this.label_wind_speed);
+            this.panel_params.Enabled = false;
+            this.panel_params.Location = new System.Drawing.Point(17, 133);
+            this.panel_params.Name = "panel_params";
+            this.panel_params.Size = new System.Drawing.Size(154, 61);
+            this.panel_params.TabIndex = 80;
+            // 
             // UC_dialog_jalousie
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.checkBox_initJalousie);
+            this.Controls.Add(this.panel_params);
+            this.Controls.Add(this.checkBox_EditLock);
             this.Controls.Add(this.panel_event);
-            this.Controls.Add(this.label_wind_speed);
-            this.Controls.Add(this.button_set_wind_goup_speed);
-            this.Controls.Add(this.textBox_wind_go_up);
             this.Controls.Add(this.comboBox_new_angle);
             this.Controls.Add(this.comboBox_new_position);
             this.Controls.Add(this.label3);
@@ -207,6 +231,8 @@
             this.Controls.Add(this.label6);
             this.Name = "UC_dialog_jalousie";
             this.Size = new System.Drawing.Size(698, 646);
+            this.panel_params.ResumeLayout(false);
+            this.panel_params.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -228,5 +254,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Panel panel_event;
         private System.Windows.Forms.CheckBox checkBox_initJalousie;
+        private System.Windows.Forms.CheckBox checkBox_EditLock;
+        private System.Windows.Forms.Panel panel_params;
     }
 }

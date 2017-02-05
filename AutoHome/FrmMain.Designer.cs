@@ -119,14 +119,14 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openToolStripMenuItem.Text = "open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem1
             // 
             this.saveToolStripMenuItem1.Name = "saveToolStripMenuItem1";
-            this.saveToolStripMenuItem1.Size = new System.Drawing.Size(101, 22);
+            this.saveToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.saveToolStripMenuItem1.Text = "save";
             this.saveToolStripMenuItem1.Click += new System.EventHandler(this.saveToolStripMenuItem1_Click);
             // 
@@ -167,14 +167,14 @@
             // editToolStripMenuItem1
             // 
             this.editToolStripMenuItem1.Name = "editToolStripMenuItem1";
-            this.editToolStripMenuItem1.Size = new System.Drawing.Size(132, 22);
+            this.editToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.editToolStripMenuItem1.Text = "edit";
             this.editToolStripMenuItem1.Click += new System.EventHandler(this.editToolStripMenuItem1_Click);
             // 
             // writeInPlcToolStripMenuItem
             // 
             this.writeInPlcToolStripMenuItem.Name = "writeInPlcToolStripMenuItem";
-            this.writeInPlcToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.writeInPlcToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.writeInPlcToolStripMenuItem.Text = "write in plc";
             this.writeInPlcToolStripMenuItem.Click += new System.EventHandler(this.writeInPlcToolStripMenuItem_Click);
             // 
@@ -225,28 +225,28 @@
             // startToolStripMenuItem
             // 
             this.startToolStripMenuItem.Name = "startToolStripMenuItem";
-            this.startToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.startToolStripMenuItem.Text = "start";
             this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
             // 
             // stopToolStripMenuItem
             // 
             this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.stopToolStripMenuItem.Text = "stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
             // managementToolStripMenuItem
             // 
             this.managementToolStripMenuItem.Name = "managementToolStripMenuItem";
-            this.managementToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.managementToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.managementToolStripMenuItem.Text = "Get Requests";
             this.managementToolStripMenuItem.Click += new System.EventHandler(this.managementToolStripMenuItem_Click);
             // 
             // iODataToolStripMenuItem
             // 
             this.iODataToolStripMenuItem.Name = "iODataToolStripMenuItem";
-            this.iODataToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.iODataToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.iODataToolStripMenuItem.Text = "Update Gui";
             this.iODataToolStripMenuItem.Click += new System.EventHandler(this.iODataToolStripMenuItem_Click);
             // 

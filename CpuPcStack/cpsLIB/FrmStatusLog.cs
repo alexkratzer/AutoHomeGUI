@@ -84,17 +84,18 @@ namespace cpsLIB
             DGVtbcHeader.ReadOnly = true;
             dGV_Log.Columns.Add(DGVtbcHeader);
 
-            DataGridViewTextBoxColumn DGVtbcPayload = new DataGridViewTextBoxColumn();
-            DGVtbcPayload.Name = "payload";
-            DGVtbcPayload.DataPropertyName = "Payload";
-            DGVtbcPayload.ReadOnly = true;
-            dGV_Log.Columns.Add(DGVtbcPayload);
-
             DataGridViewTextBoxColumn DGVtbcPayloadInt = new DataGridViewTextBoxColumn();
             DGVtbcPayloadInt.Name = "payloadInt";
             DGVtbcPayloadInt.DataPropertyName = "PayloadInt";
             DGVtbcPayloadInt.ReadOnly = true;
             dGV_Log.Columns.Add(DGVtbcPayloadInt);
+
+            DataGridViewTextBoxColumn DGVtbcPayload = new DataGridViewTextBoxColumn();
+            DGVtbcPayload.Name = "payload";
+            DGVtbcPayload.DataPropertyName = "Payload";
+            DGVtbcPayload.ReadOnly = true;
+            dGV_Log.Columns.Add(DGVtbcPayload);
+            
         }
         #endregion
 

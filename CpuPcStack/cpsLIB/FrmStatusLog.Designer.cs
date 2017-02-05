@@ -35,11 +35,11 @@
             this.autoScrollToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.freezeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
+            this.filterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel_filter = new System.Windows.Forms.Panel();
+            this.button_hide_filter = new System.Windows.Forms.Button();
             this.cLB_msgType = new System.Windows.Forms.CheckedListBox();
             this.cLB_filter_clients = new System.Windows.Forms.CheckedListBox();
-            this.filterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.button_hide_filter = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.footer_TSSL_filtered = new System.Windows.Forms.ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)(this.dGV_Log)).BeginInit();
@@ -52,7 +52,7 @@
             // 
             this.dGV_Log.AllowUserToOrderColumns = true;
             this.dGV_Log.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dGV_Log.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dGV_Log.Dock = System.Windows.Forms.DockStyle.Top;
             this.dGV_Log.Location = new System.Drawing.Point(0, 27);
             this.dGV_Log.Name = "dGV_Log";
             this.dGV_Log.Size = new System.Drawing.Size(1094, 557);
@@ -106,6 +106,13 @@
             this.toolStripComboBox1.Name = "toolStripComboBox1";
             this.toolStripComboBox1.Size = new System.Drawing.Size(121, 23);
             // 
+            // filterToolStripMenuItem
+            // 
+            this.filterToolStripMenuItem.Name = "filterToolStripMenuItem";
+            this.filterToolStripMenuItem.Size = new System.Drawing.Size(43, 23);
+            this.filterToolStripMenuItem.Text = "filter";
+            this.filterToolStripMenuItem.Click += new System.EventHandler(this.filterToolStripMenuItem_Click);
+            // 
             // panel_filter
             // 
             this.panel_filter.BackColor = System.Drawing.Color.Transparent;
@@ -117,6 +124,17 @@
             this.panel_filter.Name = "panel_filter";
             this.panel_filter.Size = new System.Drawing.Size(369, 236);
             this.panel_filter.TabIndex = 5;
+            // 
+            // button_hide_filter
+            // 
+            this.button_hide_filter.BackColor = System.Drawing.Color.Tomato;
+            this.button_hide_filter.Location = new System.Drawing.Point(341, 3);
+            this.button_hide_filter.Name = "button_hide_filter";
+            this.button_hide_filter.Size = new System.Drawing.Size(23, 23);
+            this.button_hide_filter.TabIndex = 2;
+            this.button_hide_filter.Text = "X";
+            this.button_hide_filter.UseVisualStyleBackColor = false;
+            this.button_hide_filter.Click += new System.EventHandler(this.button_hide_filter_Click);
             // 
             // cLB_msgType
             // 
@@ -134,24 +152,6 @@
             this.cLB_filter_clients.Size = new System.Drawing.Size(137, 109);
             this.cLB_filter_clients.TabIndex = 0;
             // 
-            // filterToolStripMenuItem
-            // 
-            this.filterToolStripMenuItem.Name = "filterToolStripMenuItem";
-            this.filterToolStripMenuItem.Size = new System.Drawing.Size(43, 23);
-            this.filterToolStripMenuItem.Text = "filter";
-            this.filterToolStripMenuItem.Click += new System.EventHandler(this.filterToolStripMenuItem_Click);
-            // 
-            // button_hide_filter
-            // 
-            this.button_hide_filter.BackColor = System.Drawing.Color.Tomato;
-            this.button_hide_filter.Location = new System.Drawing.Point(341, 3);
-            this.button_hide_filter.Name = "button_hide_filter";
-            this.button_hide_filter.Size = new System.Drawing.Size(23, 23);
-            this.button_hide_filter.TabIndex = 2;
-            this.button_hide_filter.Text = "X";
-            this.button_hide_filter.UseVisualStyleBackColor = false;
-            this.button_hide_filter.Click += new System.EventHandler(this.button_hide_filter_Click);
-            // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -167,7 +167,6 @@
             this.footer_TSSL_filtered.Name = "footer_TSSL_filtered";
             this.footer_TSSL_filtered.Size = new System.Drawing.Size(81, 17);
             this.footer_TSSL_filtered.Text = "msg filtered: x";
-            
             // 
             // FrmStatusLog
             // 

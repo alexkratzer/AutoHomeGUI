@@ -1010,14 +1010,6 @@ namespace AutoHome
                 //********************************************************************************************************************
                 //show current aktuator value @GUI
                 //********************************************************************************************************************
-
-                //[view platform] fill aktuator dialog box with values
-                //if (_FrmMain_controlDialog != null)
-                //    _FrmMain_controlDialog.update_dialog();
-                    //if (f.isIOIndex(_FrmMain_controlDialog.get_aktuator_id()))
-                    //    _FrmMain_controlDialog.update_with_frame(f);
-                //############################################################################################# TODO #################################
-
                 //update [view controls]
                 if (pictureBox_platform.Visible)
                 {
