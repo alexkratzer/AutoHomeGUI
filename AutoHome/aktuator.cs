@@ -40,6 +40,20 @@ namespace AutoHome
         private string aktuator_hash = "";
 
         public Int16[] ConfigAktuatorValuesRunning; //running config of aktuator
+        //public Int16[] ConfigAktuatorValuesRunning
+        //{
+        //    get { return _ConfigAktuatorValuesRunning; }
+        //    set { _ConfigAktuatorValuesRunning = value; }
+        //}
+        public string ShowConfigAktuatorValuesRunning() {
+            string s = "";
+            foreach (int i in ConfigAktuatorValuesRunning)
+                s += i.ToString() + ", ";
+            return s;
+        }
+
+
+
         public Int16[] ConfigAktuatorValuesStartup; //startup config of aktuator
 
         [NonSerialized]//nicht serialisieren da sonst keine referenz auf das aktuelle objekt vorhanden ist sondern mit alten kopien gearbeitet wird

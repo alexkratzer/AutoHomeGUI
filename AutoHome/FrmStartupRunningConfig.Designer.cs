@@ -28,42 +28,46 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.listBox_plcs = new System.Windows.Forms.ListBox();
-            this.listBox_aktors = new System.Windows.Forms.ListBox();
+            this.dataGridView_plcs = new System.Windows.Forms.DataGridView();
+            this.dataGridView_aktuators = new System.Windows.Forms.DataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView_plcs)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView_aktuators)).BeginInit();
             this.SuspendLayout();
             // 
-            // listBox_plcs
+            // dataGridView_plcs
             // 
-            this.listBox_plcs.FormattingEnabled = true;
-            this.listBox_plcs.Location = new System.Drawing.Point(12, 32);
-            this.listBox_plcs.Name = "listBox_plcs";
-            this.listBox_plcs.Size = new System.Drawing.Size(127, 511);
-            this.listBox_plcs.TabIndex = 1;
-            this.listBox_plcs.SelectedIndexChanged += new System.EventHandler(this.listBox_plcs_SelectedIndexChanged);
+            this.dataGridView_plcs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView_plcs.Location = new System.Drawing.Point(12, 12);
+            this.dataGridView_plcs.Name = "dataGridView_plcs";
+            this.dataGridView_plcs.Size = new System.Drawing.Size(239, 509);
+            this.dataGridView_plcs.TabIndex = 3;
+            this.dataGridView_plcs.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_plcs_CellClick);
             // 
-            // listBox_aktors
+            // dataGridView_aktuators
             // 
-            this.listBox_aktors.FormattingEnabled = true;
-            this.listBox_aktors.Location = new System.Drawing.Point(178, 32);
-            this.listBox_aktors.Name = "listBox_aktors";
-            this.listBox_aktors.Size = new System.Drawing.Size(333, 498);
-            this.listBox_aktors.TabIndex = 2;
+            this.dataGridView_aktuators.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView_aktuators.Location = new System.Drawing.Point(257, 12);
+            this.dataGridView_aktuators.Name = "dataGridView_aktuators";
+            this.dataGridView_aktuators.Size = new System.Drawing.Size(537, 509);
+            this.dataGridView_aktuators.TabIndex = 4;
             // 
             // FrmStartupRunningConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(855, 567);
-            this.Controls.Add(this.listBox_aktors);
-            this.Controls.Add(this.listBox_plcs);
+            this.Controls.Add(this.dataGridView_aktuators);
+            this.Controls.Add(this.dataGridView_plcs);
             this.Name = "FrmStartupRunningConfig";
             this.Text = "Startup- Running Config";
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView_plcs)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView_aktuators)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-        private System.Windows.Forms.ListBox listBox_plcs;
-        private System.Windows.Forms.ListBox listBox_aktors;
+        private System.Windows.Forms.DataGridView dataGridView_plcs;
+        private System.Windows.Forms.DataGridView dataGridView_aktuators;
     }
 }

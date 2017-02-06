@@ -275,7 +275,7 @@ namespace AutoHome
                 textBox_edit_name.Text = selected_aktuator.Name;
                 comboBox_edit_type.Text = selected_aktuator._type.ToString();
                 if(selected_aktuator._plc != null)
-                    comboBox_edit_plc.Text = selected_aktuator._plc.get_plc_name();
+                    comboBox_edit_plc.Text = selected_aktuator._plc.NamePlc;
                 else
                     comboBox_edit_plc.Text = "SELECT PLC";
             }
@@ -390,9 +390,9 @@ namespace AutoHome
             selected_plc = (plc)listBox_plc.SelectedItem;
             if (selected_plc != null)
             {
-                textBox_plcip.Text = selected_plc.get_plc_ip();
-                textBox_plc_name.Text = selected_plc.get_plc_name();
-                textBox_plc_port.Text = selected_plc.get_plc_port();
+                textBox_plcip.Text = selected_plc.IPplc;
+                textBox_plc_name.Text = selected_plc.NamePlc;
+                textBox_plc_port.Text = selected_plc.PortPlc;
             }
         }
         
@@ -436,9 +436,9 @@ namespace AutoHome
             {
                 int nr = _list_plc.IndexOf(selected_plc);
                 
-                _list_plc[nr].set_plc_ip(textBox_plcip.Text);
-                _list_plc[nr].set_plc_port(textBox_plc_port.Text);
-                _list_plc[nr].set_plc_name(textBox_plc_name.Text);
+                _list_plc[nr].IPplc = textBox_plcip.Text;
+                _list_plc[nr].PortPlc = textBox_plc_port.Text;
+                _list_plc[nr].NamePlc = textBox_plc_name.Text;
             }
 
             listBox_plc_refresh();

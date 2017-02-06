@@ -24,7 +24,7 @@ namespace AutoHome
         {
             InitializeComponent();
             _akt = (aktuator)akt;
-            ip = _akt._plc.get_plc_ip();
+            ip = _akt._plc.IPplc;
 
             this.Text = _akt.Name;
             

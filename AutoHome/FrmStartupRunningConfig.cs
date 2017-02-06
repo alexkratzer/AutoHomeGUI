@@ -12,36 +12,89 @@ namespace AutoHome
     public partial class FrmStartupRunningConfig : Form
     {
         List<plc> ListPlc;
+        BindingList<aktuator> ListAktuatorTmp;
+
         public FrmStartupRunningConfig(object _ListPlc)
         {
             InitializeComponent();
             ListPlc = (List<plc>)_ListPlc;
-            UpdateListPlc();
+            ListAktuatorTmp = new BindingList<aktuator>();
+            InitDataGridView_plcs();
+            InitDataGridView_aktuators();
         }
 
-        private void UpdateListPlc() {
-            listBox_plcs.Items.Clear();
-            
-            foreach (plc p in ListPlc)
-                listBox_plcs.Items.Add(p);
-            //p.ShowRunningConfig()
-        }
-
-        private void updateAktuators() {
-            listBox_aktors.Items.Clear();
-            if (listBox_plcs.SelectedItem != null)
-            {
-                plc p = (plc)listBox_plcs.SelectedItem;
-
-                foreach (aktuator a in p.ListAktuator)
-                    listBox_aktors.Items.Add(a);
-            }
-            else { MessageBox.Show("listBox_plcs.SelectedItem == null", "ERROR"); }
-        }
-
-        private void listBox_plcs_SelectedIndexChanged(object sender, EventArgs e)
+        private void InitDataGridView_plcs()
         {
-            updateAktuators();
+            //ListPlc = new List<plc>();
+            dataGridView_plcs.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+
+            BindingSource bindingSource = new BindingSource();
+            bindingSource.DataSource = ListPlc;
+            dataGridView_plcs.AutoGenerateColumns = false;
+            dataGridView_plcs.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            dataGridView_plcs.DataSource = bindingSource;
+
+            DataGridViewTextBoxColumn DGVtbtimestamp = new DataGridViewTextBoxColumn();
+            DGVtbtimestamp.Name = "Name";
+            DGVtbtimestamp.DataPropertyName = "NamePlc";
+            DGVtbtimestamp.ReadOnly = true;
+            dataGridView_plcs.Columns.Add(DGVtbtimestamp);
+
+            DataGridViewTextBoxColumn DGVtbcPrio = new DataGridViewTextBoxColumn();
+            DGVtbcPrio.Name = "IP address";
+            DGVtbcPrio.DataPropertyName = "IPplc";
+            DGVtbcPrio.ReadOnly = true;
+
+            dataGridView_plcs.Columns.Add(DGVtbcPrio);
+
+            DataGridViewTextBoxColumn DGVtbMsg = new DataGridViewTextBoxColumn();
+            DGVtbMsg.Name = "port";
+            DGVtbMsg.DataPropertyName = "PortPlc";
+            //DGVtbMsg.ValueType = typeof(string);
+            dataGridView_plcs.Columns.Add(DGVtbMsg);
+        }
+
+        private void InitDataGridView_aktuators()
+        {
+            dataGridView_aktuators.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+
+            BindingSource bindingSource = new BindingSource();
+            bindingSource.DataSource = ListAktuatorTmp;
+            dataGridView_aktuators.AutoGenerateColumns = false;
+            dataGridView_aktuators.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            dataGridView_aktuators.DataSource = bindingSource;
+
+            DataGridViewTextBoxColumn DGVtbtimestamp = new DataGridViewTextBoxColumn();
+            DGVtbtimestamp.Name = "akt Name";
+            DGVtbtimestamp.DataPropertyName = "Name";
+            DGVtbtimestamp.ReadOnly = true;
+            dataGridView_aktuators.Columns.Add(DGVtbtimestamp);
+
+            DataGridViewTextBoxColumn DGVtbcPrio = new DataGridViewTextBoxColumn();
+            DGVtbcPrio.Name = "Index";
+            DGVtbcPrio.DataPropertyName = "Index";
+            DGVtbcPrio.ReadOnly = true;
+            dataGridView_aktuators.Columns.Add(DGVtbcPrio);
+
+            DataGridViewTextBoxColumn DGVtbMsg = new DataGridViewTextBoxColumn();
+            DGVtbMsg.Name = "ShowConfigAktuatorValuesRunning";
+            DGVtbMsg.DataPropertyName = "ShowConfigAktuatorValuesRunning";
+            //DGVtbMsg.ValueType = typeof(Int16[]);
+            DGVtbMsg.ReadOnly = true;
+            dataGridView_aktuators.Columns.Add(DGVtbMsg);
+        }
+
+        private void updateDataGridView_aktuators() {
+            ListAktuatorTmp.Clear();
+            plc plc = dataGridView_plcs.SelectedRows[0].DataBoundItem as plc;
+
+            foreach (aktuator a in plc.ListAktuator)
+                ListAktuatorTmp.Add(a);
+        }
+        
+        private void dataGridView_plcs_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            updateDataGridView_aktuators();
         }
     }
 }

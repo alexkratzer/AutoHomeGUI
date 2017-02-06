@@ -257,7 +257,7 @@ namespace AutoHome
             string s = "";
 
             foreach (plc p in list_plc)
-                s += p.get_plc_name() + Environment.NewLine + p.ShowRunningConfig();
+                s += p.NamePlc + Environment.NewLine + p.ShowRunningConfig();
 
             MessageBox.Show(s, "running config");
         }
@@ -598,7 +598,7 @@ namespace AutoHome
 
             foreach (plc p in list_plc)
             {
-                ToolStripDropDownButton TSDDB = new ToolStripDropDownButton("->" + p.get_plc_name(), null, null, "->" + p.get_plc_name());
+                ToolStripDropDownButton TSDDB = new ToolStripDropDownButton("->" + p.NamePlc, null, null, "->" + p.NamePlc);
                 TSDDB.Tag = p;
                 TSDDB.BackColor = Color.Yellow;
 
@@ -723,7 +723,7 @@ namespace AutoHome
         void TSSL_OnClickGetRunningConfig(object sender, EventArgs e)
         {
             plc p = (plc)(sender as ToolStripLabel).Tag;
-            MessageBox.Show(p.ShowRunningConfig(), "running config: " + p.get_plc_name());
+            MessageBox.Show(p.ShowRunningConfig(), "running config: " + p.NamePlc);
         }
 
         #endregion
@@ -1192,7 +1192,7 @@ namespace AutoHome
             //speichere frame in zugehörigem aktuator
             //über time_tick wird wert in gui angezeigt
             foreach (plc p in list_plc) 
-                if (p.get_plc_ip()==f.client.RemoteIp) 
+                if (p.IPplc==f.client.RemoteIp) 
                     p.SetAktuatorData(f);
                 
             

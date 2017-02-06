@@ -13,10 +13,54 @@ namespace AutoHome
     class plc
     {
         private const string plc_default_name = "PLC not named";
+
         private string _ip;
+        public string IPplc
+        {
+            get
+            {
+                if (_ip != null)
+                    return _ip;
+                else
+                    return "no IP set jet";
+            }
+            set
+            {
+                System.Net.IPAddress valid_ip;
+                if (System.Net.IPAddress.TryParse(value, out valid_ip))
+                    _ip = valid_ip.ToString();
+            }
+        }
+
         private int _port;
-        private string _PLC_Name = plc_default_name;
+        public string PortPlc
+        {
+            get
+            {
+                if (_ip != null)
+                    return _port.ToString();
+                else
+                    return "no port set jet";
+                
+            }
+            set
+            {
+                int valid_port;
+                if (int.TryParse(value, out valid_port))
+                    _port = valid_port;
+            }
+        }
         
+        private string _PLC_Name = plc_default_name;
+        public string NamePlc
+        {
+            get
+            {
+                return _PLC_Name;
+            }
+            set { _PLC_Name = value; }
+        }
+
         public int new_message_count = 0;
         //private string plc_hash; //wird zum deserialisieren verwendet um objekte eindeutig zu identifizieren
 
@@ -78,40 +122,11 @@ namespace AutoHome
         //{
         //    return plc_hash;
         //}
-        public void set_plc_name(string name) {
-            _PLC_Name = name;
-            //set_plc_hash();
-        }
-        public string get_plc_name()
-        {
-            return _PLC_Name;
-        }
-        public void set_plc_ip(string ip) {
-            System.Net.IPAddress valid_ip;
-            if (System.Net.IPAddress.TryParse(ip, out valid_ip))
-            {
-                _ip = valid_ip.ToString();
-                //set_plc_hash();
-            }
-        }
-        public string get_plc_ip() {
-            return _ip;
-        }
-        public void set_plc_port(string port)
-        {
-            int valid_port;
-            if (int.TryParse(port, out valid_port))
-            {
-                _port = valid_port;
-                //set_plc_hash();
-            }
-        }
-        public string get_plc_port()
-        {
-            return _port.ToString();
-        }
+
+
         #endregion
-  
+
+        #region functions
         public bool send(Frame f, FrmLogPCS frm) 
         {
             if (client_udp == null){    
@@ -161,7 +176,9 @@ namespace AutoHome
                 }
             }
         }
+        #endregion
 
+        #region running startup config
 
         public string ShowRunningConfig()
         {
@@ -195,8 +212,9 @@ namespace AutoHome
             foreach (aktuator a in ListAktuator)
                 a.copyRunningToStartConfig();
         }
+        #endregion
     }
-        
+
 }
 
 
