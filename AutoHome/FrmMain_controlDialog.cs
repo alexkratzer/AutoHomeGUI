@@ -28,7 +28,7 @@ namespace AutoHome
 
             this.Text = _akt.Name;
             
-            switch (_akt._type)
+            switch (_akt.AktorType)
             {
                 case aktor_type.jalousie:
                     ucdialog = new UC_dialog_jalousie(_akt);

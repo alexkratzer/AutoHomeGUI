@@ -19,7 +19,7 @@ namespace AutoHome
             _aktor = (aktuator)aktor;
             label_index.Text = _aktor.Index.ToString();
             label_name.Text = _aktor.Name;
-            label_type.Text = _aktor._type.ToString();
+            label_type.Text = _aktor.AktorType.ToString();
             if (_aktor._plc != null)
                 label_plc.Text = _aktor._plc.ToString();
             else

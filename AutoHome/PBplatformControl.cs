@@ -32,7 +32,7 @@ namespace AutoHome
         {
             _platform_control = platform_control;
             Location = new Point(pos_x, pos_y);
-            pic_set_edit_pic(_platform_control._aktuator.GetAktType());
+            pic_set_edit_pic(_platform_control._aktuator.AktorType);
 
             update_label_text();
         }
@@ -80,7 +80,7 @@ namespace AutoHome
 
             this.BackColor = Color.Transparent;
             this.Controls.Remove(l);
-            switch (_platform_control._aktuator.GetAktType())
+            switch (_platform_control._aktuator.AktorType)
             {
                 case aktor_type.light:
                     if (Convert.ToBoolean(f.getPayload(2)))

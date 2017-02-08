@@ -51,7 +51,7 @@ namespace AutoHome
             textBox_timer_log_interval.Text = var.timer_GetRequestInterval.ToString();
             textBox_timer_refresh_controls_interval.Text = var.timer_refresh_GUI.ToString();
             checkBox_display_exception.Checked = var.display_exception;
-            checkBox_display_hash.Checked = var.expert_display_hash;
+            
             checkBox_connect_at_start.Checked = var.connect_to_plc_at_start;
             checkBox_expert_mode.Checked = var.show_expert_mode;
             panel_expert.Visible = var.show_expert_mode;
@@ -169,7 +169,7 @@ namespace AutoHome
 
         private void checkBox_display_hash_CheckedChanged(object sender, EventArgs e)
         {
-            var.expert_display_hash = checkBox_display_hash.Checked;
+           
         }
         
         private void checkBox_start_timers_at_startup_CheckedChanged(object sender, EventArgs e)
@@ -236,7 +236,7 @@ namespace AutoHome
                     foreach (aktuator a in selectedPlc.ListAktuator)
                         if (checkBox_aktorType.Checked)
                         {
-                            if (a.GetAktType() == (aktor_type)comboBox_aktorType.SelectedItem)
+                            if (a.AktorType == (aktor_type)comboBox_aktorType.SelectedItem)
                                 tmp_list_aktor.Add(a);
                         }
                         else
@@ -247,7 +247,7 @@ namespace AutoHome
                     {
                         if (checkBox_aktorType.Checked)
                         {
-                            if (a.GetAktType() == (aktor_type)comboBox_aktorType.SelectedItem)
+                            if (a.AktorType == (aktor_type)comboBox_aktorType.SelectedItem)
                                 tmp_list_aktor.Add(a);
                         }else
                             tmp_list_aktor.Add(a);
@@ -273,7 +273,7 @@ namespace AutoHome
             {
                 textBox_akt_id.Text = selected_aktuator.Index.ToString();
                 textBox_edit_name.Text = selected_aktuator.Name;
-                comboBox_edit_type.Text = selected_aktuator._type.ToString();
+                comboBox_edit_type.Text = selected_aktuator.AktorType.ToString();
                 if(selected_aktuator._plc != null)
                     comboBox_edit_plc.Text = selected_aktuator._plc.NamePlc;
                 else
@@ -326,7 +326,7 @@ namespace AutoHome
                         aktuator a = (aktuator)listBox_aktors.SelectedItem;
                         //plc.ListAktuator.FindIndex(a)
                         if (comboBox_edit_type.SelectedItem != null)
-                            a._type = (aktor_type)Enum.Parse(typeof(aktor_type), comboBox_edit_type.Text);
+                            a.AktorType = (aktor_type)Enum.Parse(typeof(aktor_type), comboBox_edit_type.Text);
                         if (comboBox_edit_plc.SelectedItem != null)
                             a.change_plc((plc)comboBox_edit_plc.SelectedItem);
                         if (textBox_akt_id.Text != "")
@@ -357,7 +357,7 @@ namespace AutoHome
                 ListBox.SelectedObjectCollection collection = new ListBox.SelectedObjectCollection(listBox_aktors);
                 foreach (aktuator akt in collection){
                     if(comboBox_edit_type.SelectedItem != null)
-                        akt._type = (aktor_type)Enum.Parse(typeof(aktor_type), comboBox_edit_type.Text);
+                        akt.AktorType = (aktor_type)Enum.Parse(typeof(aktor_type), comboBox_edit_type.Text);
                     if (comboBox_edit_plc.SelectedItem != null)
                         akt.change_plc((plc)comboBox_edit_plc.SelectedItem);
                     }

@@ -47,7 +47,7 @@ namespace AutoHome
             //sollte erst passieren nachdem der aktuator zugewiesen ist da sonst die label info nicht vorhanden ist
             if (_aktuator != null)
             {
-                if (_aktuator.GetAktType() == aktor_type.sensor)
+                if (_aktuator.AktorType == aktor_type.sensor)
                     _UCsensorValue = new UC_SensorValue(this, _pos_x, _pos_y);
                 else
                     _PictureBox = new PBplatformControl(this, _pos_x, _pos_y);
@@ -71,7 +71,7 @@ namespace AutoHome
         public void change_aktuator(aktuator a)
         {
             _aktuator = a;
-            if (_aktuator.GetAktType() == aktor_type.sensor)
+            if (_aktuator.AktorType == aktor_type.sensor)
                 _UCsensorValue.update_label_text();
             else
                 _PictureBox.update_label_text();

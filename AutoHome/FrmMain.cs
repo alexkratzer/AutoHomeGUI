@@ -252,7 +252,21 @@ namespace AutoHome
             FCP.ShowDialog();
         }
 
-        private void getRunningConfigToolStripMenuItem_Click(object sender, EventArgs e)
+
+
+        private void copyRunningToStartConfigToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FrmStartupRunningConfig FSRC = new FrmStartupRunningConfig(list_plc);
+            FSRC.Show();
+        }
+
+        private void copyRunnintToStartupToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (plc p in list_plc)
+                p.copyRunningToStartConfig();
+        }
+
+        private void showMsgBoxToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string s = "";
 
@@ -262,14 +276,17 @@ namespace AutoHome
             MessageBox.Show(s, "running config");
         }
 
-        private void copyRunningToStartConfigToolStripMenuItem_Click(object sender, EventArgs e)
+        private void copyStartupToRunningToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            foreach (plc p in list_plc)
-                p.copyRunningToStartConfig();
-
-            FrmStartupRunningConfig FSRC = new FrmStartupRunningConfig(list_plc);
-            FSRC.Show();
+            foreach (plc p in list_plc) {
+                foreach (aktuator a in p.ListAktuator) {
+                    if (a.AktorType != aktor_type.sensor && a.ConfigAktuatorValuesStartup!=null) {
+                        a.plc_send_IO(DataIOType.SetParam, a.ConfigAktuatorValuesStartup);
+                    }
+                }
+            }
         }
+
 
         #endregion
 
@@ -767,7 +784,7 @@ namespace AutoHome
             panel_aktors.Controls.Clear();
             
             foreach (aktuator a in ((plc)comboBox_aktor_cpu.SelectedItem).ListAktuator) {
-                if (a.GetAktType() == (aktor_type)comboBox_aktor_type.SelectedItem)
+                if (a.AktorType == (aktor_type)comboBox_aktor_type.SelectedItem)
                 {
                     aktuator_control ac = new aktuator_control(a);
                     list_aktuator_controls.Add(ac); 
@@ -873,7 +890,7 @@ namespace AutoHome
             PBplatformControl c = (PBplatformControl)sender;
 
             aktuator a = c._platform_control._aktuator;
-            switch (a._type)
+            switch (a.AktorType)
             {
                 case aktor_type.light:
                     if (e.Button == MouseButtons.Right)
@@ -975,7 +992,7 @@ namespace AutoHome
                             //controlls denen kein aktor zugewiesen ist nicht beachten
                             if (pc._aktuator != null && pc._aktuator._plc != null)
                                 //sensor controlls sammeln und in einzelnen management frame versenden
-                                if (pc._aktuator.GetAktType() == aktor_type.sensor) //nur sensoren beachten
+                                if (pc._aktuator.AktorType == aktor_type.sensor) //nur sensoren beachten
                                     pc._aktuator._plc.ListSensorIDs.Add(pc._aktuator.Index);
                                 else
                                     //alle aktoren anfragen werden einzeln ein eigenem frame versendet
@@ -1245,8 +1262,9 @@ namespace AutoHome
         }
 
 
+
+
         #endregion
 
-
-    }
+      }
 }

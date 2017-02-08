@@ -59,7 +59,7 @@ namespace AutoHome
 
         private void fill_content(aktuator a) {
             label_id.Text = a.Index.ToString();
-            label_type.Text = a._type.ToString(); 
+            label_type.Text = a.AktorType.ToString(); 
             label_aktuator_name.Text = a.Name;
             this.WindowTitle = "edit: " + a.Name;
             _platform_control._aktuator = a;
@@ -76,7 +76,7 @@ namespace AutoHome
             comboBox_aktor_name.Items.Clear();
             foreach (aktuator akt in ((plc)comboBox_plc.SelectedItem).ListAktuator)
             {
-                if (akt._type == _platform_control._type)
+                if (akt.AktorType == _platform_control._type)
                     if (comboBox_plc.SelectedItem != null)
                     {
                         if (comboBox_plc.SelectedItem == akt._plc)

@@ -37,18 +37,19 @@
             // dataGridView_plcs
             // 
             this.dataGridView_plcs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView_plcs.Location = new System.Drawing.Point(12, 12);
+            this.dataGridView_plcs.Location = new System.Drawing.Point(0, 12);
             this.dataGridView_plcs.Name = "dataGridView_plcs";
-            this.dataGridView_plcs.Size = new System.Drawing.Size(239, 509);
+            this.dataGridView_plcs.Size = new System.Drawing.Size(312, 188);
             this.dataGridView_plcs.TabIndex = 3;
             this.dataGridView_plcs.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_plcs_CellClick);
             // 
             // dataGridView_aktuators
             // 
             this.dataGridView_aktuators.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView_aktuators.Location = new System.Drawing.Point(257, 12);
+            this.dataGridView_aktuators.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.dataGridView_aktuators.Location = new System.Drawing.Point(0, 206);
             this.dataGridView_aktuators.Name = "dataGridView_aktuators";
-            this.dataGridView_aktuators.Size = new System.Drawing.Size(537, 509);
+            this.dataGridView_aktuators.Size = new System.Drawing.Size(855, 361);
             this.dataGridView_aktuators.TabIndex = 4;
             // 
             // FrmStartupRunningConfig

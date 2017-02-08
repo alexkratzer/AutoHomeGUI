@@ -110,7 +110,7 @@ namespace AutoHome
                 foreach (platform_control pc in _list_platform_control)
                     if (pc._aktuator != null && pc._aktuator._plc.getClient().RemoteIp == f.client.RemoteIp )
                         if (pc._aktuator.Index == f.getPayload(i))
-                            if (pc._aktuator._type == aktor_type.sensor)
+                            if (pc._aktuator.AktorType == aktor_type.sensor)
                                 {
                                     pc.update_SensorControl(SensorValue);
                                     break;

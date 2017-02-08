@@ -77,11 +77,19 @@ namespace AutoHome
             dataGridView_aktuators.Columns.Add(DGVtbcPrio);
 
             DataGridViewTextBoxColumn DGVtbMsg = new DataGridViewTextBoxColumn();
-            DGVtbMsg.Name = "ShowConfigAktuatorValuesRunning";
-            DGVtbMsg.DataPropertyName = "ShowConfigAktuatorValuesRunning";
+            DGVtbMsg.Name = "Running Config";
+            DGVtbMsg.DataPropertyName = "AktuatorRunningConfig";
             //DGVtbMsg.ValueType = typeof(Int16[]);
             DGVtbMsg.ReadOnly = true;
             dataGridView_aktuators.Columns.Add(DGVtbMsg);
+
+            DataGridViewTextBoxColumn DGVtbSC = new DataGridViewTextBoxColumn();
+            DGVtbSC.Name = "Startup Config";
+            DGVtbSC.DataPropertyName = "AktuatorStartupConfig";
+            DGVtbSC.ReadOnly = true;
+            dataGridView_aktuators.Columns.Add(DGVtbSC);
+
+
         }
 
         private void updateDataGridView_aktuators() {

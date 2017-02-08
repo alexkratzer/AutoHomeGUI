@@ -47,7 +47,7 @@ namespace AutoHome
             label_sensorValue.Font = new Font(label_sensorName.Font, FontStyle.Bold); //besser lesbar mit hintergrundbild
 
             if (_platform_control != null && _platform_control._aktuator != null)
-                label_sensorName.Text = _platform_control._aktuator.name();
+                label_sensorName.Text = _platform_control._aktuator.Name;
             else
                 label_sensorName.Text = "choose";
             label_sensorValue.Text = "0";

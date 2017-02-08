@@ -43,7 +43,6 @@ namespace AutoHome
         public static int timer_GetRequestInterval = 1000; //refresh timer der ManagementDaten aus cpu
         public static int timer_refresh_GUI = 1000; //refresh timer der aktualisierung von control elementen
         public static bool show_expert_mode = false;
-        public static bool expert_display_hash = false; //zeigt den hash wert von plc/aktuator an
         public static int connect_error_retrys = 5; //anzahl der fehler bei verbindungsproblemen bis abbruch
         //public static bool make_connection_OnRcvUnknownFrame = true;
 

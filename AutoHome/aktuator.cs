@@ -14,6 +14,16 @@ namespace AutoHome
     [Serializable]
     class aktuator
     {
+        public aktuator(Int16 index, string name, plc plc, aktor_type type)
+        {
+            _index = index;
+            _name = name;
+            _plc = plc;
+            _type = type;
+        }
+
+        #region vars
+
         private Int16 _index;
         public Int16 Index
         {
@@ -25,7 +35,13 @@ namespace AutoHome
             }
         }
 
-        public aktor_type _type;
+        private aktor_type _type;
+        public aktor_type AktorType
+        {
+            get { return _type; }
+            set
+            { _type = value; }
+        }
 
         private string _name;
         public string Name
@@ -35,32 +51,65 @@ namespace AutoHome
                 set_aktor_hash();
             }
         }
-
-        private string mapped_plc_hash = "";
+        //private string mapped_plc_hash = "";
         private string aktuator_hash = "";
 
-        public Int16[] ConfigAktuatorValuesRunning; //running config of aktuator
-        //public Int16[] ConfigAktuatorValuesRunning
-        //{
-        //    get { return _ConfigAktuatorValuesRunning; }
-        //    set { _ConfigAktuatorValuesRunning = value; }
-        //}
-        public string ShowConfigAktuatorValuesRunning() {
-            string s = "";
-            foreach (int i in ConfigAktuatorValuesRunning)
-                s += i.ToString() + ", ";
-            return s;
+
+
+        private Int16[] _ConfigAktuatorValuesStartup; //startup config of aktuator
+        public Int16[] ConfigAktuatorValuesStartup
+        {
+            get
+            {
+                if (_ConfigAktuatorValuesStartup == null)
+                    return new Int16[] { 0 };
+                else
+                    return _ConfigAktuatorValuesStartup;
+            }
+            set { _ConfigAktuatorValuesStartup = value; }
+        }
+        public string AktuatorStartupConfig
+        {
+            get
+            {
+                string s = "";
+                foreach (int i in ConfigAktuatorValuesStartup)
+                    s += i.ToString() + ", ";
+                return s;
+            }
         }
 
-
-
-        public Int16[] ConfigAktuatorValuesStartup; //startup config of aktuator
+        [NonSerialized]//aktuelle config in cpu muss immer neu ausgelesen werden
+        private Int16[] _ConfigAktuatorValuesRunning; //running config of aktuator
+        public Int16[] ConfigAktuatorValuesRunning
+        {
+            get
+            {
+                if (_ConfigAktuatorValuesRunning == null)
+                    return new Int16[] { 0 };
+                else
+                    return _ConfigAktuatorValuesRunning;
+            }
+            set { _ConfigAktuatorValuesRunning = value; }
+        }
+        public string AktuatorRunningConfig
+        {
+            get
+            {
+                string s = "";
+                foreach (int i in ConfigAktuatorValuesRunning)
+                    s += i.ToString() + ", ";
+                return s;
+            }
+        }
 
         [NonSerialized]//nicht serialisieren da sonst keine referenz auf das aktuelle objekt vorhanden ist sondern mit alten kopien gearbeitet wird
         public plc _plc;
         [NonSerialized]
         public Frame ValueFrame; //nur tämporere werte
+        #endregion
 
+        #region functions
         public void copyRunningToStartConfig() {
             ConfigAktuatorValuesStartup = ConfigAktuatorValuesRunning;
         }
@@ -82,28 +131,13 @@ namespace AutoHome
 
         public void set_aktor_hash()
         {
-            aktuator_hash = _index.ToString() + ":" + _name ;
+            aktuator_hash = _index.ToString() + ":" + _name;
         }
         public string get_aktor_hash()
         {
             return aktuator_hash;
         }
         #endregion
-
-        //temporäre type spezifische daten -> TODO: in abgeleiteten klassen verwalten
-        //private bool light_switch_state; 
-        //public bool Light_switch_state
-        //{
-        //  get { return light_switch_state; }
-        //  set { light_switch_state = value; }
-        //}
-        public aktuator(Int16 index, string name, plc plc, aktor_type type)
-        {
-            _index = index;
-            _name = name;
-            _plc = plc;
-            _type = type;
-        }
 
 
         //wurde beim löschen aufgerufen -> jetzt gibt es für jede plc einie eigene aktuator liste -> wird nicht mehr 
@@ -112,31 +146,8 @@ namespace AutoHome
             _plc = plc_new;
         }
         
-
-        public string name()
-        {
-            return _name;
-        }
-        public aktor_type GetAktType()
-        {
-            return _type;
-        }
-        public bool isType(aktor_type t)
-        {
-            if (_type == t)
-                return true;
-            else
-                return false;
-        }
-
-        public bool isPlc(plc name) {
-            if (name == _plc)
-                return true;
-            else
-                return false;
-        }
         public void plc_send(Frame f) {
-            if (_plc != null) //abfrage später nicht mehr notwendig da jeder aktor eine plc haben sollte
+            //if (_plc != null) //abfrage später nicht mehr notwendig da jeder aktor eine plc haben sollte
                 _plc.send(f);
         }
         public void plc_send_IO(DataIOType diot)
@@ -177,13 +188,9 @@ namespace AutoHome
             else
                 s += "[NO PLC SELECTED] : ";
             s += _type.ToString() + " : " + _name;
-            if(var.expert_display_hash)
-                if (mapped_plc_hash != null)
-                    s += "[" + mapped_plc_hash.ToString() + "]";
-                else s += "[ NO PLC ]";
-
             return s;
         }
+        #endregion
     }
 
     //class light : aktuator {
@@ -193,6 +200,6 @@ namespace AutoHome
     //    int lux_off_at;
     //    bool enable_off_timer;
     //    //off timer timespan
-        
+
     //}
 }

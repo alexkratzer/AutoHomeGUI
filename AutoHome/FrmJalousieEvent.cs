@@ -19,7 +19,7 @@ namespace AutoHome
             InitializeComponent();
             _a = (aktuator)a;
             init();
-            this.Text = "Jalousie: " + _a.name();
+            this.Text = "Jalousie: " + _a.Name;
         }
 
         private void init() {

@@ -186,7 +186,7 @@ namespace AutoHome
             //string text = "";
             foreach (aktuator a in ListAktuator)
             {
-                s += a._type.ToString() + " / " + a.Name + " [" ;
+                s += a.AktorType.ToString() + " / " + a.Name + " [" ;
                 if (a.ConfigAktuatorValuesRunning != null)
                     foreach (Int16 i in a.ConfigAktuatorValuesRunning)
                         s += i.ToString() + ", ";
