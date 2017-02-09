@@ -93,7 +93,7 @@ namespace AutoHome
             _TSSDDB_Status = TSSDDB_Status;
         }
 
-        public void connect(CpsNet _cpsNet, FrmLogPCS frm)
+        public void connect(CpsNet _cpsNet)
         {
             cpsNet = _cpsNet;
             if (client_udp != null)
@@ -108,34 +108,12 @@ namespace AutoHome
 
             Frame f = new Frame(client_udp);
             f.SetHeaderFlag(FrameHeaderFlag.SYNC);
-            send(f, frm);
+            send(f);
         }
-
-        #endregion
-
-        #region vars
-        //public void set_plc_hash()
-        //{
-        //    plc_hash = _PLC_Name + ":" + _ip + ":" + _port.ToString();
-        //}
-        //public string get_plc_hash()
-        //{
-        //    return plc_hash;
-        //}
-
 
         #endregion
 
         #region functions
-        public bool send(Frame f, FrmLogPCS frm) 
-        {
-            if (client_udp == null){    
-                frm.AddLog("send frame with no client! " + f.ToString());
-                return false;
-            }
-            frm.AddLog("send: " + f.ToString());
-            return cpsNet.send(f);
-        }
         public bool send(Frame f)
         {
             if (client_udp == null)

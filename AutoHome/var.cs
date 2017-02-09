@@ -50,6 +50,7 @@ namespace AutoHome
         public static int CpsServerPort = 50000;
         public static int MngData_AcceptedClockDelay = 5;//tollerierte Uhrzeitabweichung in sekunden zwischen pc und plc bis wann die differenz angezeigt wird
         public static bool ClientSendOnlyIfConnected = false;
+        public static bool CpsNet_FrmStatusLog = false;
 
         //Datenbank Verbindung
         public static string DBServerIP;

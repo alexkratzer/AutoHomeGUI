@@ -10,7 +10,7 @@ using cpsLIB; //frames
 
 namespace AutoHome
 {
-    public partial class UC_dialog_heater : UserControl, IdialogUpdate
+    public partial class UC_dialog_heater : UserControl
     {
 
         aktuator akt = null;
@@ -20,12 +20,13 @@ namespace AutoHome
             akt = (aktuator)aktor;
             akt.plc_send_IO(cpsLIB.DataIOType.GetParam);
         }
-        public void LoadData(object _value)
+        public UC_dialog_heater LoadData(object _value)
         {
             //Frame f = (Frame)frame;
             Int16[] value = (Int16[])_value;
-
-            checkBox_ctrl_manuel.Checked = Convert.ToBoolean(value[2]);
+            if (value.Length > 1)
+            {
+                checkBox_ctrl_manuel.Checked = Convert.ToBoolean(value[2]);
             checkBox_ctrl_on.Checked = Convert.ToBoolean(value[3]);
             textBox_time_on.Text = ((value[4] * 60) + value[5]).ToString();
             textBox_time_off.Text = ((value[6] * 60) + value[7]).ToString();
@@ -37,6 +38,10 @@ namespace AutoHome
             radioButton_state_on.Checked = Convert.ToBoolean(value[13]);
             label_remaining_time.Text = value[14].ToString("##") + value[15].ToString("##");
             button_send.Visible = false;
+            }
+            else
+                log.msg(this, "LoadData with empty value @RunningConfig");
+            return this;
         }
 
         private void button_send_Click(object sender, EventArgs e)

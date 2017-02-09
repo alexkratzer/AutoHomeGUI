@@ -69,6 +69,7 @@ namespace AutoHome
 
             textBox_cpsServerPort.Text = var.CpsServerPort.ToString();
             textBox_MngData_AcceptedClockDelay.Text = var.MngData_AcceptedClockDelay.ToString();
+            checkBox_CpsNet_FrmStatusLog.Checked = var.CpsNet_FrmStatusLog;
 
             checkBoxFooterShowPlcTime.Checked = var.FooterShowPlcTime;
         }
@@ -519,8 +520,12 @@ namespace AutoHome
                 listBox_aktors_refresh();
             }
         }
+
         #endregion
 
-      
+        private void checkBox_CpsNet_FrmStatusLog_CheckedChanged(object sender, EventArgs e)
+        {
+            var.CpsNet_FrmStatusLog = checkBox_CpsNet_FrmStatusLog.Checked;
+        }
     }
 }

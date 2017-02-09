@@ -93,6 +93,7 @@
             this.label_cps_server_port = new System.Windows.Forms.Label();
             this.textBox_cpsServerPort = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.checkBox_CpsNet_FrmStatusLog = new System.Windows.Forms.CheckBox();
             this.panel_edit_plc.SuspendLayout();
             this.panel_expert.SuspendLayout();
             this.panel_edit_aktuator.SuspendLayout();
@@ -703,13 +704,14 @@
             // 
             // groupBox_cps_settings
             // 
+            this.groupBox_cps_settings.Controls.Add(this.checkBox_CpsNet_FrmStatusLog);
             this.groupBox_cps_settings.Controls.Add(this.textBox_MngData_AcceptedClockDelay);
             this.groupBox_cps_settings.Controls.Add(this.label_MngData_AcceptedClockDelay);
             this.groupBox_cps_settings.Controls.Add(this.label_cps_server_port);
             this.groupBox_cps_settings.Controls.Add(this.textBox_cpsServerPort);
             this.groupBox_cps_settings.Location = new System.Drawing.Point(1, 457);
             this.groupBox_cps_settings.Name = "groupBox_cps_settings";
-            this.groupBox_cps_settings.Size = new System.Drawing.Size(160, 94);
+            this.groupBox_cps_settings.Size = new System.Drawing.Size(160, 118);
             this.groupBox_cps_settings.TabIndex = 26;
             this.groupBox_cps_settings.TabStop = false;
             this.groupBox_cps_settings.Text = "cps settings";
@@ -759,6 +761,17 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(368, 583);
             this.panel1.TabIndex = 27;
+            // 
+            // checkBox_CpsNet_FrmStatusLog
+            // 
+            this.checkBox_CpsNet_FrmStatusLog.AutoSize = true;
+            this.checkBox_CpsNet_FrmStatusLog.Location = new System.Drawing.Point(9, 87);
+            this.checkBox_CpsNet_FrmStatusLog.Name = "checkBox_CpsNet_FrmStatusLog";
+            this.checkBox_CpsNet_FrmStatusLog.Size = new System.Drawing.Size(96, 17);
+            this.checkBox_CpsNet_FrmStatusLog.TabIndex = 4;
+            this.checkBox_CpsNet_FrmStatusLog.Text = "Show Log GUI";
+            this.checkBox_CpsNet_FrmStatusLog.UseVisualStyleBackColor = true;
+            this.checkBox_CpsNet_FrmStatusLog.CheckedChanged += new System.EventHandler(this.checkBox_CpsNet_FrmStatusLog_CheckedChanged);
             // 
             // FrmParam
             // 
@@ -859,5 +872,6 @@
         private System.Windows.Forms.ComboBox comboBox_listPlc;
         private System.Windows.Forms.CheckBox checkBox_plc;
         private System.Windows.Forms.CheckBox checkBox_aktorType;
+        private System.Windows.Forms.CheckBox checkBox_CpsNet_FrmStatusLog;
     }
 }

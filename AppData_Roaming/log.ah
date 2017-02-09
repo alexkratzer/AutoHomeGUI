@@ -1,51 +1,13 @@
-16.01.2017 21:53:33 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-16.01.2017 22:03:26 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-16.01.2017 22:06:21 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-16.01.2017 22:11:21 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-16.01.2017 22:12:02 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-16.01.2017 22:24:35 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-16.01.2017 22:26:54 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-16.01.2017 22:29:13 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-16.01.2017 22:30:01 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-16.01.2017 22:30:55 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-16.01.2017 22:36:13 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-16.01.2017 22:45:01 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-16.01.2017 22:49:53 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-16.01.2017 22:55:21 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-16.01.2017 23:00:16 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-16.01.2017 23:02:08 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-16.01.2017 23:05:15 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-17.01.2017 01:30:37 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-17.01.2017 20:23:46 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-17.01.2017 20:27:33 [AutoHome.UC_SensorValue] label_sensorName.Width: 107
-17.01.2017 20:27:49 [AutoHome.UC_SensorValue] label_sensorName.Width: 119
-17.01.2017 20:38:40 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-17.01.2017 20:40:49 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-17.01.2017 21:08:33 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-17.01.2017 21:13:38 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-17.01.2017 21:23:32 +++ EXCEPTION +++ [var] deserialize_plc() -> System.Runtime.Serialization.SerializationException: The ObjectManager found an invalid number of fixups. This usually indicates a problem in the Formatter.
-   at System.Runtime.Serialization.ObjectManager.DoFixups()
-   at System.Runtime.Serialization.Formatters.Binary.ObjectReader.Deserialize(HeaderHandler handler, __BinaryParser serParser, Boolean fCheck, Boolean isCrossAppDomain, IMethodCallMessage methodCallMessage)
-   at System.Runtime.Serialization.Formatters.Binary.BinaryFormatter.Deserialize(Stream serializationStream, HeaderHandler handler, Boolean fCheck, Boolean isCrossAppDomain, IMethodCallMessage methodCallMessage)
-   at System.Runtime.Serialization.Formatters.Binary.BinaryFormatter.Deserialize(Stream serializationStream)
-   at AutoHome.var.deserialize_plc() in C:\Users\alex\Source\Repos\AutoHomeGUI\AutoHome\var.cs:line 265
-17.01.2017 21:23:32 +++ EXCEPTION +++ [var] deserialize_platform() -> System.Runtime.Serialization.SerializationException: The ObjectManager found an invalid number of fixups. This usually indicates a problem in the Formatter.
-   at System.Runtime.Serialization.ObjectManager.DoFixups()
-   at System.Runtime.Serialization.Formatters.Binary.ObjectReader.Deserialize(HeaderHandler handler, __BinaryParser serParser, Boolean fCheck, Boolean isCrossAppDomain, IMethodCallMessage methodCallMessage)
-   at System.Runtime.Serialization.Formatters.Binary.BinaryFormatter.Deserialize(Stream serializationStream, HeaderHandler handler, Boolean fCheck, Boolean isCrossAppDomain, IMethodCallMessage methodCallMessage)
-   at System.Runtime.Serialization.Formatters.Binary.BinaryFormatter.Deserialize(Stream serializationStream)
-   at AutoHome.var.deserialize_platform(List`1 list_aktuator) in C:\Users\alex\Source\Repos\AutoHomeGUI\AutoHome\var.cs:line 325
-17.01.2017 21:23:32 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-17.01.2017 21:30:52 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-17.01.2017 22:23:05 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-18.01.2017 18:55:10 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-18.01.2017 18:59:18 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-18.01.2017 20:48:53 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-18.01.2017 21:30:40 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-18.01.2017 21:35:18 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-18.01.2017 21:48:49 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-18.01.2017 21:59:58 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-18.01.2017 22:00:48 [AutoHome.UC_SensorValue] label_sensorName.Width: 90
-24.01.2017 18:06:41 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-24.01.2017 20:11:35 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
-24.01.2017 20:47:04 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
+08.02.2017 21:20:56 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
+08.02.2017 21:30:00 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
+08.02.2017 21:36:43 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
+08.02.2017 21:38:18 +++ EXCEPTION +++ [AutoHome.FrmMain, Text: ] interprete_frame(); writing to GUI failed! -> System.ObjectDisposedException: Cannot access a disposed object.
+Object name: 'FrmMain'.
+   at System.Windows.Forms.Control.MarshaledInvoke(Control caller, Delegate method, Object[] args, Boolean synchronous)
+   at System.Windows.Forms.Control.Invoke(Delegate method, Object[] args)
+   at AutoHome.FrmMain.cpsLIB.IcpsLIB.interprete_frame(Object o) in C:\Users\alex\Source\Repos\AutoHomeGUI\AutoHome\FrmMain.cs:line 1056
+08.02.2017 21:39:08 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
+08.02.2017 21:41:07 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
+08.02.2017 21:42:31 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
+08.02.2017 21:44:46 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###
+08.02.2017 21:59:46 [AutoHome.FrmMain, Text: AutoHome] ### start AutoHome GUI V0.0.3 ###

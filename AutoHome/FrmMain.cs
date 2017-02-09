@@ -30,18 +30,15 @@ namespace AutoHome
         List<platform> list_platform = new List<platform>();
         List<floor_plan> list_floor_plan = new List<floor_plan>();
         List<aktuator_control> list_aktuator_controls = new List<aktuator_control>(); //list to store userControls of aktuator
+        List<string> ListLogMsg = new List<string>();
 
         cpsLIB.CpsNet CpsNet;
-        FrmLogPCS FrmLog; 
 
         #region init / connect / close
         public FrmMain()
         {
             InitializeComponent();
             load_projekt_data();
-
-            FrmLog = new FrmLogPCS();
-            FrmLog.Show();
 
             init_gui();
             make_status_bar();
@@ -57,6 +54,7 @@ namespace AutoHome
             list_plc = var.deserialize_plc();
             list_platform = var.deserialize_platform(list_plc);
             log.msg(this, "### start AutoHome GUI " + tool_version + " ###");
+            ListLogMsg.Add("start");
         }
 
         private void safe_projekt_data()
@@ -67,14 +65,14 @@ namespace AutoHome
         }
         private void initCps()
         {
-            CpsNet = new cpsLIB.CpsNet(this, true);
+            CpsNet = new cpsLIB.CpsNet(this, var.CpsNet_FrmStatusLog);
             CpsNet.serverSTART(var.CpsServerPort);
 
             if (var.connect_to_plc_at_start)
             {
                 //try to connect (send SYNC frame) with all projected plc´s
                 foreach (plc p in list_plc)
-                    p.connect(CpsNet,FrmLog);
+                    p.connect(CpsNet);
             }
         }
 
@@ -95,6 +93,7 @@ namespace AutoHome
                 list_plc.Clear();
                 Thread.Sleep(150);
             }
+            log.msg(this, "### close AutoHome GUI ###");
         }
         #endregion
 
@@ -252,9 +251,7 @@ namespace AutoHome
             FCP.ShowDialog();
         }
 
-
-
-        private void copyRunningToStartConfigToolStripMenuItem_Click(object sender, EventArgs e)
+        private void showMsgBoxToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FrmStartupRunningConfig FSRC = new FrmStartupRunningConfig(list_plc);
             FSRC.Show();
@@ -266,15 +263,7 @@ namespace AutoHome
                 p.copyRunningToStartConfig();
         }
 
-        private void showMsgBoxToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            string s = "";
 
-            foreach (plc p in list_plc)
-                s += p.NamePlc + Environment.NewLine + p.ShowRunningConfig();
-
-            MessageBox.Show(s, "running config");
-        }
 
         private void copyStartupToRunningToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -494,11 +483,6 @@ namespace AutoHome
             ft.Show();
         }
 
-        private void cPSLIBGUIToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void verifyDB()
         {
             try
@@ -549,6 +533,13 @@ namespace AutoHome
         }
         #endregion
 
+        private void logMsgToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string s = "";
+            foreach (string st in ListLogMsg)
+                s += st + Environment.NewLine;
+            MessageBox.Show(s, "Number Log Msg: " + ListLogMsg.Count);
+        }
         #endregion
 
         #region footer - status bar
@@ -571,7 +562,7 @@ namespace AutoHome
         {
             //try to connect (send SYNC frame) with all projected plc´s
             foreach (plc p in list_plc)
-                p.connect(CpsNet, FrmLog);
+                p.connect(CpsNet);
         }
         private void logHideToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -659,7 +650,7 @@ namespace AutoHome
         {
             ToolStripLabel o = sender as ToolStripLabel;
             if (o != null && o.Tag != null)
-                ((plc)o.Tag).connect(CpsNet, FrmLog);
+                ((plc)o.Tag).connect(CpsNet);
             else
                 MessageBox.Show("sender == null", "ERROR TSSL_OnClickConnect");
         }
@@ -682,7 +673,7 @@ namespace AutoHome
             f.SetHeaderFlag(FrameHeaderFlag.MngData);
 
             if (o != null)
-                ((plc)o.Tag).send(f, FrmLog);
+                ((plc)o.Tag).send(f);
             else
                 MessageBox.Show("TSSL_OnClickSetTime()", "ToolStripLabel o == null");
         }
@@ -696,7 +687,7 @@ namespace AutoHome
             {
                 Frame f3 = new Frame(((plc)o.Tag).getClient(), new Int16[] { 1 });
                 f3.SetHeaderFlag(FrameHeaderFlag.MngData);
-                ((plc)o.Tag).send(f3, FrmLog);
+                ((plc)o.Tag).send(f3);
             }
             else
             {
@@ -1020,7 +1011,9 @@ namespace AutoHome
 
         void footer_connection_status_Tick(object sender, EventArgs e)
         {
-            this.Text = "AutoHome " + CpsNet.GetStatus();
+            //this.Text = "AutoHome " + CpsNet.GetStatus();
+            footer_CpsServerStatus.Text = "Server Status " + CpsNet.GetStatus();
+            logMsgToolStripMenuItem.Text = "Log Msg [" + ListLogMsg.Count.ToString() + "]";
         }
 
 
@@ -1045,6 +1038,9 @@ namespace AutoHome
                 }
                 else if (panel_controls.Visible)
                 {
+                    //foreach (aktuator_control ac in list_aktuator_controls)
+                    //    ac.interprete
+                    
                     //foreach (aktuator_control ac in list_aktuator_controls)
                     //{
                     //    if (f.isIOIndex(ac.aktuatorIndex))
@@ -1097,11 +1093,11 @@ namespace AutoHome
                 else if (_f.GetHeaderFlag(FrameHeaderFlag.MngData))
                     interprete_MngData(_f);
                 else if (_f.GetHeaderFlag(FrameHeaderFlag.ACKN))
-                    FrmLog.AddLog("RCV: ACKN {" + _f.ToString() + "}");
+                    ListLogMsg.Add("RCV: ACKN {" + _f.ToString() + "}");
                 else if (_f.GetHeaderFlag(FrameHeaderFlag.PdataIO))
                     interprete_IOData(_f);
                 else
-                    FrmLog.AddLog("RCV: UNKNOWN {" + _f.ToString() + "}");
+                    ListLogMsg.Add("RCV: UNKNOWN {" + _f.ToString() + "}");
             }
             catch (Exception e)
             {
@@ -1110,7 +1106,7 @@ namespace AutoHome
         }
 
         private void interprete_MngData(Frame f) {
-            //FrmLog.AddLog("RCV: MngData {" + f.ToString() + "}");
+            //ListLogMsg.Add("RCV: MngData {" + f.ToString() + "}");
 
             foreach (ToolStripDropDownButton p in statusStrip_bottom.Items)
             {
@@ -1150,7 +1146,7 @@ namespace AutoHome
                                 platform p_selected = (platform)comboBox_platform.SelectedItem;
                                 if (p_selected != null)
                                 {
-                                    FrmLog.AddLog("SensorVal: " + f.ShowPayloadInt());
+                                    //FrmLog.AddLog("SensorVal: " + f.ShowPayloadInt());
 
                                     //Dictionary<Int16, float> dicSensorVal = new Dictionary<short, float>();
                                     ////dicSensorVal.Clear();
@@ -1204,7 +1200,7 @@ namespace AutoHome
 
         private void interprete_IOData(Frame f) {
             /// DBG -  display all IOData in Log Form
-            FrmLog.AddLog("IOData {" + f.client.RemoteIp + " " + f.ToString() + "} " + f.getPayloadHex() + " / " + f.ShowPayloadInt());
+            //FrmLog.AddLog("IOData {" + f.client.RemoteIp + " " + f.ToString() + "} " + f.getPayloadHex() + " / " + f.ShowPayloadInt());
 
             //speichere frame in zugehörigem aktuator
             //über time_tick wird wert in gui angezeigt
@@ -1257,14 +1253,14 @@ namespace AutoHome
         }
         private void srv_msg_funkt(string s)
         {
-            //footer_CpsServerStatus.Text = s;
-            FrmLog.AddLog(s);
+            ListLogMsg.Add(DateTime.Now.ToString("mm:ss:ms") + " -- " + s);
         }
-
-
-
 
         #endregion
 
-      }
+        private void footer_CpsServerStatus_Click(object sender, EventArgs e)
+        {
+
+        }
+    }
 }

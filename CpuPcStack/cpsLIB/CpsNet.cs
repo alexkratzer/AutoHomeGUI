@@ -78,6 +78,8 @@ namespace cpsLIB
         }
 
         public void FrmLogShow(bool visible) {
+            if(LogFSL==null)
+                LogFSL = new FrmStatusLog();
             LogFSL.Visible = visible;
         }
     

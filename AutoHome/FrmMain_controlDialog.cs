@@ -89,8 +89,13 @@ namespace AutoHome
         {
             try
             {
+                if (_akt.ConfigAktuatorValuesRunning.Length > 1)
+                {
                     dynamic d = ucdialog;
                     d.LoadData(_akt.ConfigAktuatorValuesRunning);
+                }
+                else
+                    log.msg(this, "timer_refresh_control_Tick() with LoadData < 1");
             }
             catch (Exception ex)
             {

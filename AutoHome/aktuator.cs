@@ -54,8 +54,6 @@ namespace AutoHome
         //private string mapped_plc_hash = "";
         private string aktuator_hash = "";
 
-
-
         private Int16[] _ConfigAktuatorValuesStartup; //startup config of aktuator
         public Int16[] ConfigAktuatorValuesStartup
         {

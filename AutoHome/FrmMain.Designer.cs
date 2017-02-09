@@ -40,6 +40,9 @@
             this.editToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.writeInPlcToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyRunningToStartConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showMsgBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyRunnintToStartupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyStartupToRunningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.expertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openWorkingDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openDebugConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,6 +76,7 @@
             this.dataLoggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.tableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.logMsgToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel_aktors = new System.Windows.Forms.Panel();
             this.statusStrip_bottom = new System.Windows.Forms.StatusStrip();
             this.footer_CpsServerStatus = new System.Windows.Forms.ToolStripDropDownButton();
@@ -86,9 +90,6 @@
             this.comboBox_aktor_type = new System.Windows.Forms.ComboBox();
             this.comboBox_aktor_cpu = new System.Windows.Forms.ComboBox();
             this.pictureBox_platform = new System.Windows.Forms.PictureBox();
-            this.copyRunnintToStartupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showMsgBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.copyStartupToRunningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip_main.SuspendLayout();
             this.statusStrip_bottom.SuspendLayout();
             this.panel_controls.SuspendLayout();
@@ -103,7 +104,8 @@
             this.expertToolStripMenuItem,
             this.cMDToolStripMenuItem,
             this.viewToolStripMenuItem,
-            this.dataLoggerToolStripMenuItem});
+            this.dataLoggerToolStripMenuItem,
+            this.logMsgToolStripMenuItem});
             this.menuStrip_main.Location = new System.Drawing.Point(0, 0);
             this.menuStrip_main.Name = "menuStrip_main";
             this.menuStrip_main.Size = new System.Drawing.Size(1133, 24);
@@ -147,14 +149,14 @@
             // editParamsToolStripMenuItem
             // 
             this.editParamsToolStripMenuItem.Name = "editParamsToolStripMenuItem";
-            this.editParamsToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.editParamsToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
             this.editParamsToolStripMenuItem.Text = "parameter";
             this.editParamsToolStripMenuItem.Click += new System.EventHandler(this.editParamsToolStripMenuItem_Click);
             // 
             // platformToolStripMenuItem
             // 
             this.platformToolStripMenuItem.Name = "platformToolStripMenuItem";
-            this.platformToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.platformToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
             this.platformToolStripMenuItem.Text = "platform";
             this.platformToolStripMenuItem.Click += new System.EventHandler(this.platformToolStripMenuItem_Click);
             // 
@@ -166,7 +168,7 @@
             this.startupConfigToolStripMenuItem.Name = "startupConfigToolStripMenuItem";
             this.startupConfigToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
             this.startupConfigToolStripMenuItem.Text = "-not used- startup config ";
-            
+            this.startupConfigToolStripMenuItem.Visible = false;
             // 
             // editToolStripMenuItem1
             // 
@@ -185,13 +187,33 @@
             // copyRunningToStartConfigToolStripMenuItem
             // 
             this.copyRunningToStartConfigToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.copyRunnintToStartupToolStripMenuItem,
             this.showMsgBoxToolStripMenuItem,
+            this.copyRunnintToStartupToolStripMenuItem,
             this.copyStartupToRunningToolStripMenuItem});
             this.copyRunningToStartConfigToolStripMenuItem.Name = "copyRunningToStartConfigToolStripMenuItem";
             this.copyRunningToStartConfigToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
             this.copyRunningToStartConfigToolStripMenuItem.Text = "running startup config";
-            this.copyRunningToStartConfigToolStripMenuItem.Click += new System.EventHandler(this.copyRunningToStartConfigToolStripMenuItem_Click);
+            // 
+            // showMsgBoxToolStripMenuItem
+            // 
+            this.showMsgBoxToolStripMenuItem.Name = "showMsgBoxToolStripMenuItem";
+            this.showMsgBoxToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.showMsgBoxToolStripMenuItem.Text = "show GUI";
+            this.showMsgBoxToolStripMenuItem.Click += new System.EventHandler(this.showMsgBoxToolStripMenuItem_Click);
+            // 
+            // copyRunnintToStartupToolStripMenuItem
+            // 
+            this.copyRunnintToStartupToolStripMenuItem.Name = "copyRunnintToStartupToolStripMenuItem";
+            this.copyRunnintToStartupToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.copyRunnintToStartupToolStripMenuItem.Text = "copy running to startup";
+            this.copyRunnintToStartupToolStripMenuItem.Click += new System.EventHandler(this.copyRunnintToStartupToolStripMenuItem_Click);
+            // 
+            // copyStartupToRunningToolStripMenuItem
+            // 
+            this.copyStartupToRunningToolStripMenuItem.Name = "copyStartupToRunningToolStripMenuItem";
+            this.copyStartupToRunningToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.copyStartupToRunningToolStripMenuItem.Text = "copy startup to running";
+            this.copyStartupToRunningToolStripMenuItem.Click += new System.EventHandler(this.copyStartupToRunningToolStripMenuItem_Click);
             // 
             // expertToolStripMenuItem
             // 
@@ -453,6 +475,13 @@
             this.tableToolStripMenuItem.Text = "table";
             this.tableToolStripMenuItem.Click += new System.EventHandler(this.tableToolStripMenuItem_Click);
             // 
+            // logMsgToolStripMenuItem
+            // 
+            this.logMsgToolStripMenuItem.Name = "logMsgToolStripMenuItem";
+            this.logMsgToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
+            this.logMsgToolStripMenuItem.Text = "Log Msg";
+            this.logMsgToolStripMenuItem.Click += new System.EventHandler(this.logMsgToolStripMenuItem_Click);
+            // 
             // panel_aktors
             // 
             this.panel_aktors.AutoScroll = true;
@@ -485,6 +514,7 @@
             this.footer_CpsServerStatus.Name = "footer_CpsServerStatus";
             this.footer_CpsServerStatus.Size = new System.Drawing.Size(87, 20);
             this.footer_CpsServerStatus.Text = "Server Status";
+            this.footer_CpsServerStatus.Click += new System.EventHandler(this.footer_CpsServerStatus_Click);
             // 
             // stopServerToolStripMenuItem
             // 
@@ -567,27 +597,6 @@
             this.pictureBox_platform.TabIndex = 0;
             this.pictureBox_platform.TabStop = false;
             this.pictureBox_platform.SizeChanged += new System.EventHandler(this.pictureBox_platform_SizeChanged);
-            // 
-            // copyRunnintToStartupToolStripMenuItem
-            // 
-            this.copyRunnintToStartupToolStripMenuItem.Name = "copyRunnintToStartupToolStripMenuItem";
-            this.copyRunnintToStartupToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.copyRunnintToStartupToolStripMenuItem.Text = "copy running to startup";
-            this.copyRunnintToStartupToolStripMenuItem.Click += new System.EventHandler(this.copyRunnintToStartupToolStripMenuItem_Click);
-            // 
-            // showMsgBoxToolStripMenuItem
-            // 
-            this.showMsgBoxToolStripMenuItem.Name = "showMsgBoxToolStripMenuItem";
-            this.showMsgBoxToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.showMsgBoxToolStripMenuItem.Text = "show msg box";
-            this.showMsgBoxToolStripMenuItem.Click += new System.EventHandler(this.showMsgBoxToolStripMenuItem_Click);
-            // 
-            // copyStartupToRunningToolStripMenuItem
-            // 
-            this.copyStartupToRunningToolStripMenuItem.Name = "copyStartupToRunningToolStripMenuItem";
-            this.copyStartupToRunningToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.copyStartupToRunningToolStripMenuItem.Text = "copy startup to running";
-            this.copyStartupToRunningToolStripMenuItem.Click += new System.EventHandler(this.copyStartupToRunningToolStripMenuItem_Click);
             // 
             // FrmMain
             // 
@@ -677,6 +686,7 @@
         private System.Windows.Forms.ToolStripMenuItem copyRunnintToStartupToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showMsgBoxToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyStartupToRunningToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem logMsgToolStripMenuItem;
     }
 }
 
