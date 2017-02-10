@@ -329,7 +329,12 @@ namespace AutoHome
                         if (comboBox_edit_type.SelectedItem != null)
                             a.AktorType = (aktor_type)Enum.Parse(typeof(aktor_type), comboBox_edit_type.Text);
                         if (comboBox_edit_plc.SelectedItem != null)
-                            a.change_plc((plc)comboBox_edit_plc.SelectedItem);
+                        {
+                            if (a._plc != (plc)comboBox_edit_plc.SelectedItem) {
+                                ((plc)comboBox_edit_plc.SelectedItem).ListAktuator.Add(a);
+                                a._plc.ListAktuator.Remove(a);
+                            }
+                        }
                         if (textBox_akt_id.Text != "")
                             a.Index = Convert.ToInt16( textBox_akt_id.Text);
                         if (textBox_edit_name.Text != "")
@@ -356,12 +361,18 @@ namespace AutoHome
             else
             {
                 ListBox.SelectedObjectCollection collection = new ListBox.SelectedObjectCollection(listBox_aktors);
-                foreach (aktuator akt in collection){
+                foreach (aktuator a in collection){
                     if(comboBox_edit_type.SelectedItem != null)
-                        akt.AktorType = (aktor_type)Enum.Parse(typeof(aktor_type), comboBox_edit_type.Text);
+                        a.AktorType = (aktor_type)Enum.Parse(typeof(aktor_type), comboBox_edit_type.Text);
                     if (comboBox_edit_plc.SelectedItem != null)
-                        akt.change_plc((plc)comboBox_edit_plc.SelectedItem);
+                    {
+                        if (a._plc != (plc)comboBox_edit_plc.SelectedItem)
+                        {
+                            ((plc)comboBox_edit_plc.SelectedItem).ListAktuator.Add(a);
+                            a._plc.ListAktuator.Remove(a);
+                        }
                     }
+                }
             }
             
             listBox_aktors_refresh();

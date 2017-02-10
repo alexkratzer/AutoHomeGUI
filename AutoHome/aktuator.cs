@@ -112,21 +112,6 @@ namespace AutoHome
             ConfigAktuatorValuesStartup = ConfigAktuatorValuesRunning;
         }
         #region serialize
-        //notwendig um nach deserialisieren eine referenz auf aktuelle plc zu erzeugen
-        //public void serialize_init() {
-        //    if(_plc != null)
-        //        mapped_plc_hash = _plc.get_plc_hash();
-        //}
-
-        //public void deserialize_init(List<plc> list_plc) {
-        //    foreach (plc _plc_in_list in list_plc)
-        //        if (mapped_plc_hash == _plc_in_list.get_plc_hash())
-        //        {
-        //            _plc = _plc_in_list;
-        //            break;
-        //        }
-        //}
-
         public void set_aktor_hash()
         {
             aktuator_hash = _index.ToString() + ":" + _name;
