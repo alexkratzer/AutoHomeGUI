@@ -275,10 +275,6 @@
       <Project>{50677F71-1380-4708-8BFC-3C4812E85E2B}</Project>
       <Name>cpsLIB</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CpuPcStack\CpuPcStack\CpuPcStack.csproj">
-      <Project>{CEB4D561-F634-4573-AFE8-99280125AA5B}</Project>
-      <Name>CpuPcStack</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\img_sensor_default.bmp" />

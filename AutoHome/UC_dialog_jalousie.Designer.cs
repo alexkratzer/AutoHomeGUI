@@ -44,6 +44,8 @@
             this.checkBox_initJalousie = new System.Windows.Forms.CheckBox();
             this.checkBox_EditLock = new System.Windows.Forms.CheckBox();
             this.panel_params = new System.Windows.Forms.Panel();
+            this.button_drive_up = new System.Windows.Forms.Button();
+            this.button_drive_down = new System.Windows.Forms.Button();
             this.panel_params.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -193,7 +195,7 @@
             // checkBox_EditLock
             // 
             this.checkBox_EditLock.AutoSize = true;
-            this.checkBox_EditLock.Location = new System.Drawing.Point(17, 110);
+            this.checkBox_EditLock.Location = new System.Drawing.Point(23, 155);
             this.checkBox_EditLock.Name = "checkBox_EditLock";
             this.checkBox_EditLock.Size = new System.Drawing.Size(44, 17);
             this.checkBox_EditLock.TabIndex = 79;
@@ -208,15 +210,37 @@
             this.panel_params.Controls.Add(this.button_set_wind_goup_speed);
             this.panel_params.Controls.Add(this.label_wind_speed);
             this.panel_params.Enabled = false;
-            this.panel_params.Location = new System.Drawing.Point(17, 133);
+            this.panel_params.Location = new System.Drawing.Point(23, 178);
             this.panel_params.Name = "panel_params";
             this.panel_params.Size = new System.Drawing.Size(154, 61);
             this.panel_params.TabIndex = 80;
+            // 
+            // button_drive_up
+            // 
+            this.button_drive_up.Location = new System.Drawing.Point(23, 100);
+            this.button_drive_up.Name = "button_drive_up";
+            this.button_drive_up.Size = new System.Drawing.Size(75, 23);
+            this.button_drive_up.TabIndex = 81;
+            this.button_drive_up.Text = "UP";
+            this.button_drive_up.UseVisualStyleBackColor = true;
+            this.button_drive_up.Click += new System.EventHandler(this.button_drive_up_Click);
+            // 
+            // button_drive_down
+            // 
+            this.button_drive_down.Location = new System.Drawing.Point(112, 100);
+            this.button_drive_down.Name = "button_drive_down";
+            this.button_drive_down.Size = new System.Drawing.Size(75, 23);
+            this.button_drive_down.TabIndex = 82;
+            this.button_drive_down.Text = "DOWN";
+            this.button_drive_down.UseVisualStyleBackColor = true;
+            this.button_drive_down.Click += new System.EventHandler(this.button_drive_down_Click);
             // 
             // UC_dialog_jalousie
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.button_drive_down);
+            this.Controls.Add(this.button_drive_up);
             this.Controls.Add(this.panel_params);
             this.Controls.Add(this.checkBox_EditLock);
             this.Controls.Add(this.panel_event);
@@ -256,5 +280,7 @@
         private System.Windows.Forms.CheckBox checkBox_initJalousie;
         private System.Windows.Forms.CheckBox checkBox_EditLock;
         private System.Windows.Forms.Panel panel_params;
+        private System.Windows.Forms.Button button_drive_up;
+        private System.Windows.Forms.Button button_drive_down;
     }
 }

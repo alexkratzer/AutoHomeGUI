@@ -80,6 +80,10 @@ namespace AutoHome
 
             this.BackColor = Color.Transparent;
             this.Controls.Remove(l);
+
+            if (!f.isJob(DataIOType.GetState))
+                log.msg(this, "pic_update() with != DataIOType.GetState");
+            
             switch (_platform_control._aktuator.AktorType)
             {
                 case aktor_type.light:
@@ -90,8 +94,7 @@ namespace AutoHome
                         Image = new Bitmap(Properties.Resources.img_candle_off);
                     break;
                 case aktor_type.jalousie:
-                    if (f.isJob(DataIOType.GetState))
-                    {
+                    
                         if (f.getPayload(2) >= 0 && f.getPayload(2) < 33)
                             Image = new Bitmap(Properties.Resources.img_jalousie_up);
                         else if (f.getPayload(2) < 66)
@@ -101,11 +104,8 @@ namespace AutoHome
                         //PictureBox pbu = new PictureBox();
                         //pbu.Image = System.Drawing.Bitmap.FromFile(var.workingdir + "\\img_arrow_up.png");
                         //this.Controls.Add(pbu);
-                    }
                     break;
                 case aktor_type.heater:
-                    if (f.isJob(DataIOType.GetState))
-                    {
                         bool state_on = Convert.ToBoolean(f.getPayload(2));
                         bool ctrl_manual = Convert.ToBoolean(f.getPayload(3));
 
@@ -117,7 +117,6 @@ namespace AutoHome
                             Image = new Bitmap(Properties.Resources.img_heater_off);
                         else if (!state_on && ctrl_manual) //aus und manuell
                             Image = new Bitmap(Properties.Resources.img_heater_off_manual);
-                    }
                     break;
                 case aktor_type.sensor:
                     throw new Exception("pic_update() in FrmConfigPlatform for aktor_type.sensor (should be handled at UC_SensorValue)");

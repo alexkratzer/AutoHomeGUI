@@ -45,7 +45,6 @@
             this.copyStartupToRunningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.expertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openWorkingDirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openDebugConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -79,19 +78,12 @@
             this.logMsgToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel_aktors = new System.Windows.Forms.Panel();
             this.statusStrip_bottom = new System.Windows.Forms.StatusStrip();
-            this.footer_CpsServerStatus = new System.Windows.Forms.ToolStripDropDownButton();
-            this.stopServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.startServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.connectAllClientsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.logHideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dBGFrmToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.comboBox_platform = new System.Windows.Forms.ComboBox();
             this.panel_controls = new System.Windows.Forms.Panel();
             this.comboBox_aktor_type = new System.Windows.Forms.ComboBox();
             this.comboBox_aktor_cpu = new System.Windows.Forms.ComboBox();
             this.pictureBox_platform = new System.Windows.Forms.PictureBox();
             this.menuStrip_main.SuspendLayout();
-            this.statusStrip_bottom.SuspendLayout();
             this.panel_controls.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_platform)).BeginInit();
             this.SuspendLayout();
@@ -219,7 +211,6 @@
             // 
             this.expertToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openWorkingDirToolStripMenuItem,
-            this.openDebugConsoleToolStripMenuItem,
             this.timerToolStripMenuItem,
             this.eTAToolStripMenuItem,
             this.openLOGToolStripMenuItem});
@@ -230,16 +221,9 @@
             // openWorkingDirToolStripMenuItem
             // 
             this.openWorkingDirToolStripMenuItem.Name = "openWorkingDirToolStripMenuItem";
-            this.openWorkingDirToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.openWorkingDirToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.openWorkingDirToolStripMenuItem.Text = "open working dir";
             this.openWorkingDirToolStripMenuItem.Click += new System.EventHandler(this.openWorkingDirToolStripMenuItem_Click);
-            // 
-            // openDebugConsoleToolStripMenuItem
-            // 
-            this.openDebugConsoleToolStripMenuItem.Name = "openDebugConsoleToolStripMenuItem";
-            this.openDebugConsoleToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
-            this.openDebugConsoleToolStripMenuItem.Text = "open debug console";
-            this.openDebugConsoleToolStripMenuItem.Click += new System.EventHandler(this.openDebugConsoleToolStripMenuItem_Click);
             // 
             // timerToolStripMenuItem
             // 
@@ -249,7 +233,7 @@
             this.managementToolStripMenuItem,
             this.iODataToolStripMenuItem});
             this.timerToolStripMenuItem.Name = "timerToolStripMenuItem";
-            this.timerToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.timerToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.timerToolStripMenuItem.Text = "timer";
             // 
             // startToolStripMenuItem
@@ -289,7 +273,7 @@
             this.heizungTagToolStripMenuItem,
             this.heizungNachtToolStripMenuItem});
             this.eTAToolStripMenuItem.Name = "eTAToolStripMenuItem";
-            this.eTAToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.eTAToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.eTAToolStripMenuItem.Text = "ETA";
             // 
             // rcvSTARTToolStripMenuItem
@@ -333,7 +317,7 @@
             this.openToolStripMenuItem1,
             this.resetToolStripMenuItem});
             this.openLOGToolStripMenuItem.Name = "openLOGToolStripMenuItem";
-            this.openLOGToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.openLOGToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
             this.openLOGToolStripMenuItem.Text = "LOG";
             // 
             // openToolStripMenuItem1
@@ -492,64 +476,11 @@
             // 
             // statusStrip_bottom
             // 
-            this.statusStrip_bottom.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.footer_CpsServerStatus});
             this.statusStrip_bottom.Location = new System.Drawing.Point(0, 818);
             this.statusStrip_bottom.Name = "statusStrip_bottom";
             this.statusStrip_bottom.Size = new System.Drawing.Size(1133, 22);
             this.statusStrip_bottom.TabIndex = 34;
             this.statusStrip_bottom.Text = "statusStrip1";
-            // 
-            // footer_CpsServerStatus
-            // 
-            this.footer_CpsServerStatus.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.footer_CpsServerStatus.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.stopServerToolStripMenuItem,
-            this.startServerToolStripMenuItem,
-            this.connectAllClientsToolStripMenuItem,
-            this.logHideToolStripMenuItem,
-            this.dBGFrmToolStripMenuItem});
-            this.footer_CpsServerStatus.Image = ((System.Drawing.Image)(resources.GetObject("footer_CpsServerStatus.Image")));
-            this.footer_CpsServerStatus.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.footer_CpsServerStatus.Name = "footer_CpsServerStatus";
-            this.footer_CpsServerStatus.Size = new System.Drawing.Size(87, 20);
-            this.footer_CpsServerStatus.Text = "Server Status";
-            this.footer_CpsServerStatus.Click += new System.EventHandler(this.footer_CpsServerStatus_Click);
-            // 
-            // stopServerToolStripMenuItem
-            // 
-            this.stopServerToolStripMenuItem.Name = "stopServerToolStripMenuItem";
-            this.stopServerToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.stopServerToolStripMenuItem.Text = "stop server";
-            this.stopServerToolStripMenuItem.Click += new System.EventHandler(this.stopServerToolStripMenuItem_Click);
-            // 
-            // startServerToolStripMenuItem
-            // 
-            this.startServerToolStripMenuItem.Name = "startServerToolStripMenuItem";
-            this.startServerToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.startServerToolStripMenuItem.Text = "start server";
-            this.startServerToolStripMenuItem.Click += new System.EventHandler(this.startServerToolStripMenuItem_Click);
-            // 
-            // connectAllClientsToolStripMenuItem
-            // 
-            this.connectAllClientsToolStripMenuItem.Name = "connectAllClientsToolStripMenuItem";
-            this.connectAllClientsToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.connectAllClientsToolStripMenuItem.Text = "connect all clients";
-            this.connectAllClientsToolStripMenuItem.Click += new System.EventHandler(this.connectAllClientsToolStripMenuItem_Click);
-            // 
-            // logHideToolStripMenuItem
-            // 
-            this.logHideToolStripMenuItem.Name = "logHideToolStripMenuItem";
-            this.logHideToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.logHideToolStripMenuItem.Text = "Form Status Log [show]";
-            this.logHideToolStripMenuItem.Click += new System.EventHandler(this.logHideToolStripMenuItem_Click);
-            // 
-            // dBGFrmToolStripMenuItem
-            // 
-            this.dBGFrmToolStripMenuItem.Name = "dBGFrmToolStripMenuItem";
-            this.dBGFrmToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.dBGFrmToolStripMenuItem.Text = "DBG Frm";
-            this.dBGFrmToolStripMenuItem.Click += new System.EventHandler(this.dBGFrmToolStripMenuItem_Click);
             // 
             // comboBox_platform
             // 
@@ -615,8 +546,6 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMain_FormClosing);
             this.menuStrip_main.ResumeLayout(false);
             this.menuStrip_main.PerformLayout();
-            this.statusStrip_bottom.ResumeLayout(false);
-            this.statusStrip_bottom.PerformLayout();
             this.panel_controls.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_platform)).EndInit();
             this.ResumeLayout(false);
@@ -629,7 +558,6 @@
         private System.Windows.Forms.MenuStrip menuStrip_main;
         private System.Windows.Forms.ToolStripMenuItem expertToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openWorkingDirToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openDebugConsoleToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editParamsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem startupConfigToolStripMenuItem;
@@ -674,12 +602,6 @@
         private System.Windows.Forms.ToolStripMenuItem dataLoggerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem tableToolStripMenuItem;
-        private System.Windows.Forms.ToolStripDropDownButton footer_CpsServerStatus;
-        private System.Windows.Forms.ToolStripMenuItem stopServerToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem startServerToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem connectAllClientsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem logHideToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem dBGFrmToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem managementToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem iODataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyRunningToStartConfigToolStripMenuItem;

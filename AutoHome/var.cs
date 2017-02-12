@@ -60,6 +60,8 @@ namespace AutoHome
 
         //GUI vars
         public static bool FooterShowPlcTime = false;
+        public static int LastPlatformView = 0;
+        //public static bool LastShowFormFrameLog = false;
 
 
         //string conn_string = "Server=192.168.1.200;Database=auto_home;Uid=auto_home;Pwd=XuY98zjMce8VuWZP";

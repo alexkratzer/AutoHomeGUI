@@ -50,13 +50,16 @@
             this.checkBox_ctrl_on = new System.Windows.Forms.CheckBox();
             this.checkBox_ctrl_manuel = new System.Windows.Forms.CheckBox();
             this.button_send = new System.Windows.Forms.Button();
+            this.checkBox_EditLock = new System.Windows.Forms.CheckBox();
+            this.panel_edit = new System.Windows.Forms.Panel();
             this.panel_ctrl_auto.SuspendLayout();
+            this.panel_edit.SuspendLayout();
             this.SuspendLayout();
             // 
             // radioButton_state_on
             // 
             this.radioButton_state_on.AutoSize = true;
-            this.radioButton_state_on.Location = new System.Drawing.Point(3, 6);
+            this.radioButton_state_on.Location = new System.Drawing.Point(3, 3);
             this.radioButton_state_on.Name = "radioButton_state_on";
             this.radioButton_state_on.Size = new System.Drawing.Size(41, 17);
             this.radioButton_state_on.TabIndex = 94;
@@ -83,7 +86,7 @@
             this.panel_ctrl_auto.Controls.Add(this.label_stop);
             this.panel_ctrl_auto.Controls.Add(this.label_start);
             this.panel_ctrl_auto.Controls.Add(this.label1);
-            this.panel_ctrl_auto.Location = new System.Drawing.Point(3, 30);
+            this.panel_ctrl_auto.Location = new System.Drawing.Point(3, 28);
             this.panel_ctrl_auto.Name = "panel_ctrl_auto";
             this.panel_ctrl_auto.Size = new System.Drawing.Size(163, 109);
             this.panel_ctrl_auto.TabIndex = 93;
@@ -246,7 +249,7 @@
             // 
             this.checkBox_ctrl_on.AutoSize = true;
             this.checkBox_ctrl_on.Enabled = false;
-            this.checkBox_ctrl_on.Location = new System.Drawing.Point(107, 7);
+            this.checkBox_ctrl_on.Location = new System.Drawing.Point(107, 6);
             this.checkBox_ctrl_on.Name = "checkBox_ctrl_on";
             this.checkBox_ctrl_on.Size = new System.Drawing.Size(59, 17);
             this.checkBox_ctrl_on.TabIndex = 92;
@@ -257,7 +260,7 @@
             // checkBox_ctrl_manuel
             // 
             this.checkBox_ctrl_manuel.AutoSize = true;
-            this.checkBox_ctrl_manuel.Location = new System.Drawing.Point(48, 7);
+            this.checkBox_ctrl_manuel.Location = new System.Drawing.Point(3, 6);
             this.checkBox_ctrl_manuel.Name = "checkBox_ctrl_manuel";
             this.checkBox_ctrl_manuel.Size = new System.Drawing.Size(61, 17);
             this.checkBox_ctrl_manuel.TabIndex = 91;
@@ -267,28 +270,51 @@
             // 
             // button_send
             // 
-            this.button_send.Location = new System.Drawing.Point(3, 145);
+            this.button_send.Location = new System.Drawing.Point(1, 139);
             this.button_send.Name = "button_send";
-            this.button_send.Size = new System.Drawing.Size(135, 23);
+            this.button_send.Size = new System.Drawing.Size(165, 23);
             this.button_send.TabIndex = 89;
             this.button_send.Text = "send";
             this.button_send.UseVisualStyleBackColor = true;
             this.button_send.Visible = false;
             this.button_send.Click += new System.EventHandler(this.button_send_Click);
             // 
+            // checkBox_EditLock
+            // 
+            this.checkBox_EditLock.AutoSize = true;
+            this.checkBox_EditLock.Location = new System.Drawing.Point(127, 3);
+            this.checkBox_EditLock.Name = "checkBox_EditLock";
+            this.checkBox_EditLock.Size = new System.Drawing.Size(44, 17);
+            this.checkBox_EditLock.TabIndex = 95;
+            this.checkBox_EditLock.Text = "Edit";
+            this.checkBox_EditLock.UseVisualStyleBackColor = true;
+            this.checkBox_EditLock.CheckedChanged += new System.EventHandler(this.checkBox_EditLock_CheckedChanged);
+            // 
+            // panel_edit
+            // 
+            this.panel_edit.Controls.Add(this.panel_ctrl_auto);
+            this.panel_edit.Controls.Add(this.button_send);
+            this.panel_edit.Controls.Add(this.checkBox_ctrl_manuel);
+            this.panel_edit.Controls.Add(this.checkBox_ctrl_on);
+            this.panel_edit.Enabled = false;
+            this.panel_edit.Location = new System.Drawing.Point(0, 23);
+            this.panel_edit.Name = "panel_edit";
+            this.panel_edit.Size = new System.Drawing.Size(171, 168);
+            this.panel_edit.TabIndex = 96;
+            // 
             // UC_dialog_heater
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.panel_edit);
+            this.Controls.Add(this.checkBox_EditLock);
             this.Controls.Add(this.radioButton_state_on);
-            this.Controls.Add(this.panel_ctrl_auto);
-            this.Controls.Add(this.checkBox_ctrl_on);
-            this.Controls.Add(this.checkBox_ctrl_manuel);
-            this.Controls.Add(this.button_send);
             this.Name = "UC_dialog_heater";
             this.Size = new System.Drawing.Size(175, 191);
             this.panel_ctrl_auto.ResumeLayout(false);
             this.panel_ctrl_auto.PerformLayout();
+            this.panel_edit.ResumeLayout(false);
+            this.panel_edit.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -318,5 +344,7 @@
         private System.Windows.Forms.Label label_remaining_time;
         private System.Windows.Forms.Label label_remaining_dsc;
         private System.Windows.Forms.Label label_temp_ist;
+        private System.Windows.Forms.CheckBox checkBox_EditLock;
+        private System.Windows.Forms.Panel panel_edit;
     }
 }

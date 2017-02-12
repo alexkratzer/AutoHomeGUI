@@ -43,6 +43,9 @@
             this.label_remaining_on_desc = new System.Windows.Forms.Label();
             this.label_remaining_on = new System.Windows.Forms.Label();
             this.label_current_state = new System.Windows.Forms.Label();
+            this.checkBox_EditLock = new System.Windows.Forms.CheckBox();
+            this.panel_edit = new System.Windows.Forms.Panel();
+            this.panel_edit.SuspendLayout();
             this.SuspendLayout();
             // 
             // button_switch_on
@@ -78,7 +81,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(163, 77);
+            this.label3.Location = new System.Drawing.Point(157, 33);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(10, 13);
             this.label3.TabIndex = 40;
@@ -87,7 +90,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(131, 77);
+            this.label4.Location = new System.Drawing.Point(125, 33);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(10, 13);
             this.label4.TabIndex = 39;
@@ -96,7 +99,7 @@
             // textBox_light_time_s
             // 
             this.textBox_light_time_s.Enabled = false;
-            this.textBox_light_time_s.Location = new System.Drawing.Point(174, 74);
+            this.textBox_light_time_s.Location = new System.Drawing.Point(169, 74);
             this.textBox_light_time_s.Name = "textBox_light_time_s";
             this.textBox_light_time_s.Size = new System.Drawing.Size(20, 20);
             this.textBox_light_time_s.TabIndex = 38;
@@ -104,7 +107,7 @@
             // textBox_light_time_m
             // 
             this.textBox_light_time_m.Enabled = false;
-            this.textBox_light_time_m.Location = new System.Drawing.Point(142, 74);
+            this.textBox_light_time_m.Location = new System.Drawing.Point(136, 30);
             this.textBox_light_time_m.Name = "textBox_light_time_m";
             this.textBox_light_time_m.Size = new System.Drawing.Size(20, 20);
             this.textBox_light_time_m.TabIndex = 37;
@@ -112,7 +115,7 @@
             // textBox_light_time_h
             // 
             this.textBox_light_time_h.Enabled = false;
-            this.textBox_light_time_h.Location = new System.Drawing.Point(110, 74);
+            this.textBox_light_time_h.Location = new System.Drawing.Point(104, 30);
             this.textBox_light_time_h.Name = "textBox_light_time_h";
             this.textBox_light_time_h.Size = new System.Drawing.Size(20, 20);
             this.textBox_light_time_h.TabIndex = 36;
@@ -120,7 +123,7 @@
             // checkBox_light_enable_timer
             // 
             this.checkBox_light_enable_timer.AutoSize = true;
-            this.checkBox_light_enable_timer.Location = new System.Drawing.Point(6, 77);
+            this.checkBox_light_enable_timer.Location = new System.Drawing.Point(3, 33);
             this.checkBox_light_enable_timer.Name = "checkBox_light_enable_timer";
             this.checkBox_light_enable_timer.Size = new System.Drawing.Size(98, 17);
             this.checkBox_light_enable_timer.TabIndex = 35;
@@ -131,7 +134,7 @@
             // textBox_light_lux_off
             // 
             this.textBox_light_lux_off.Enabled = false;
-            this.textBox_light_lux_off.Location = new System.Drawing.Point(147, 45);
+            this.textBox_light_lux_off.Location = new System.Drawing.Point(144, 5);
             this.textBox_light_lux_off.Name = "textBox_light_lux_off";
             this.textBox_light_lux_off.Size = new System.Drawing.Size(26, 20);
             this.textBox_light_lux_off.TabIndex = 34;
@@ -139,7 +142,7 @@
             // label_light_lux
             // 
             this.label_light_lux.AutoSize = true;
-            this.label_light_lux.Location = new System.Drawing.Point(91, 48);
+            this.label_light_lux.Location = new System.Drawing.Point(88, 8);
             this.label_light_lux.Name = "label_light_lux";
             this.label_light_lux.Size = new System.Drawing.Size(50, 13);
             this.label_light_lux.TabIndex = 33;
@@ -148,7 +151,7 @@
             // checkBox_light_enable_lux
             // 
             this.checkBox_light_enable_lux.AutoSize = true;
-            this.checkBox_light_enable_lux.Location = new System.Drawing.Point(6, 45);
+            this.checkBox_light_enable_lux.Location = new System.Drawing.Point(3, 5);
             this.checkBox_light_enable_lux.Name = "checkBox_light_enable_lux";
             this.checkBox_light_enable_lux.Size = new System.Drawing.Size(74, 17);
             this.checkBox_light_enable_lux.TabIndex = 32;
@@ -159,7 +162,7 @@
             // label_remaining_on_desc
             // 
             this.label_remaining_on_desc.AutoSize = true;
-            this.label_remaining_on_desc.Location = new System.Drawing.Point(75, 106);
+            this.label_remaining_on_desc.Location = new System.Drawing.Point(69, 62);
             this.label_remaining_on_desc.Name = "label_remaining_on_desc";
             this.label_remaining_on_desc.Size = new System.Drawing.Size(55, 13);
             this.label_remaining_on_desc.TabIndex = 43;
@@ -168,7 +171,7 @@
             // label_remaining_on
             // 
             this.label_remaining_on.AutoSize = true;
-            this.label_remaining_on.Location = new System.Drawing.Point(141, 106);
+            this.label_remaining_on.Location = new System.Drawing.Point(135, 62);
             this.label_remaining_on.Name = "label_remaining_on";
             this.label_remaining_on.Size = new System.Drawing.Size(22, 13);
             this.label_remaining_on.TabIndex = 44;
@@ -183,27 +186,50 @@
             this.label_current_state.TabIndex = 45;
             this.label_current_state.Text = "state: ";
             // 
+            // checkBox_EditLock
+            // 
+            this.checkBox_EditLock.AutoSize = true;
+            this.checkBox_EditLock.Location = new System.Drawing.Point(161, 3);
+            this.checkBox_EditLock.Name = "checkBox_EditLock";
+            this.checkBox_EditLock.Size = new System.Drawing.Size(44, 17);
+            this.checkBox_EditLock.TabIndex = 80;
+            this.checkBox_EditLock.Text = "Edit";
+            this.checkBox_EditLock.UseVisualStyleBackColor = true;
+            this.checkBox_EditLock.CheckedChanged += new System.EventHandler(this.checkBox_EditLock_CheckedChanged);
+            // 
+            // panel_edit
+            // 
+            this.panel_edit.Controls.Add(this.label_remaining_on);
+            this.panel_edit.Controls.Add(this.label_remaining_on_desc);
+            this.panel_edit.Controls.Add(this.label3);
+            this.panel_edit.Controls.Add(this.label4);
+            this.panel_edit.Controls.Add(this.textBox_light_time_m);
+            this.panel_edit.Controls.Add(this.textBox_light_time_h);
+            this.panel_edit.Controls.Add(this.checkBox_light_enable_timer);
+            this.panel_edit.Controls.Add(this.textBox_light_lux_off);
+            this.panel_edit.Controls.Add(this.label_light_lux);
+            this.panel_edit.Controls.Add(this.checkBox_light_enable_lux);
+            this.panel_edit.Enabled = false;
+            this.panel_edit.Location = new System.Drawing.Point(0, 45);
+            this.panel_edit.Name = "panel_edit";
+            this.panel_edit.Size = new System.Drawing.Size(205, 97);
+            this.panel_edit.TabIndex = 81;
+            // 
             // UC_dialog_light
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.label_current_state);
-            this.Controls.Add(this.label_remaining_on);
-            this.Controls.Add(this.label_remaining_on_desc);
-            this.Controls.Add(this.button_set_param);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label4);
             this.Controls.Add(this.textBox_light_time_s);
-            this.Controls.Add(this.textBox_light_time_m);
-            this.Controls.Add(this.textBox_light_time_h);
-            this.Controls.Add(this.checkBox_light_enable_timer);
-            this.Controls.Add(this.textBox_light_lux_off);
-            this.Controls.Add(this.label_light_lux);
-            this.Controls.Add(this.checkBox_light_enable_lux);
+            this.Controls.Add(this.checkBox_EditLock);
+            this.Controls.Add(this.label_current_state);
+            this.Controls.Add(this.button_set_param);
             this.Controls.Add(this.button_switch_off);
             this.Controls.Add(this.button_switch_on);
+            this.Controls.Add(this.panel_edit);
             this.Name = "UC_dialog_light";
             this.Size = new System.Drawing.Size(208, 143);
+            this.panel_edit.ResumeLayout(false);
+            this.panel_edit.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -226,5 +252,7 @@
         private System.Windows.Forms.Label label_remaining_on_desc;
         private System.Windows.Forms.Label label_remaining_on;
         private System.Windows.Forms.Label label_current_state;
+        private System.Windows.Forms.CheckBox checkBox_EditLock;
+        private System.Windows.Forms.Panel panel_edit;
     }
 }

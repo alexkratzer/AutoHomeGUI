@@ -22,28 +22,30 @@ namespace AutoHome
         }
         public void LoadData(object _value)
         {
-            Int16[] value = (Int16[])_value;
-            if (value.Length > 1)
-            {                
-                if (Convert.ToBoolean(value[2]))
-                    label_current_state.Text = "state: ON";
-                else
-                    label_current_state.Text = "state: OFF";
-                checkBox_light_enable_lux.Checked = Convert.ToBoolean(value[3]);
-                textBox_light_lux_off.Text = value[4].ToString();
-                checkBox_light_enable_timer.Checked = Convert.ToBoolean(value[5]);
+            if (!checkBox_EditLock.Checked) { 
+                Int16[] value = (Int16[])_value;
+                if (value.Length > 1)
+                {
+                    if (Convert.ToBoolean(value[2]))
+                        label_current_state.Text = "state: ON";
+                    else
+                        label_current_state.Text = "state: OFF";
+                    checkBox_light_enable_lux.Checked = Convert.ToBoolean(value[3]);
+                    textBox_light_lux_off.Text = value[4].ToString();
+                    checkBox_light_enable_timer.Checked = Convert.ToBoolean(value[5]);
 
-                textBox_light_time_h.Text = value[6].ToString();
-                textBox_light_time_m.Text = value[7].ToString();
-                textBox_light_time_s.Text = value[8].ToString();
+                    textBox_light_time_h.Text = value[6].ToString();
+                    textBox_light_time_m.Text = value[7].ToString();
+                    textBox_light_time_s.Text = value[8].ToString();
 
-                label_remaining_on.Text =
-                    value[9].ToString("##") + ":" +
-                    value[10].ToString("##") + ":" +
-                    value[11].ToString("##");
+                    label_remaining_on.Text =
+                        value[9].ToString("##") + ":" +
+                        value[10].ToString("##") + ":" +
+                        value[11].ToString("##");
                 }
                 else
                     log.msg(this, "LoadData with empty value @RunningConfig");
+            }
         }
 
         private void button_switch_Click(object sender, EventArgs e)
@@ -81,6 +83,15 @@ namespace AutoHome
                 Convert.ToInt16(textBox_light_time_m.Text), 
                 Convert.ToInt16(textBox_light_time_s.Text) 
             });
+        }
+
+        private void checkBox_EditLock_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_EditLock.Checked)
+                panel_edit.Enabled = true;
+            else
+                panel_edit.Enabled = false;
+
         }
     }
 }

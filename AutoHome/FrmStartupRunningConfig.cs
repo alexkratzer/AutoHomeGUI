@@ -146,14 +146,12 @@ namespace AutoHome
                     break;
                 case aktor_type.sensor:
                     Label lsensor = new Label();
-                    lsensor.Text = "ERROR: aktor_type.sensor not implemented";
-                    //this.Controls.Add(lsensor);
+                    lsensor.Text = "aktor_type.sensor: " + _akt.Name;
                     panel_control.Controls.Add(lsensor);
                     break;
                 default:
                     Label lerror = new Label();
-                    lerror.Text = "ERROR: unknown aktor_type";
-                    //this.Controls.Add(lerror);
+                    lerror.Text = "ERROR unknown aktor_type";
                     panel_control.Controls.Add(lerror);
                     break;
                     

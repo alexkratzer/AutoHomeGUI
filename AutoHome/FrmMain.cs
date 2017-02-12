@@ -9,14 +9,13 @@ using Ionic.Zip;
 using cpsLIB;
 using System.Runtime.InteropServices;
 
-//System.IO.File.AppendAllText(@"\\ATOM\alex\desktop\autohomedbg.txt", "" + Environment.NewLine);
-
 //**************************************************************************************
 //#################################### TODO ###########################################
-//rcv Frames nicht an gui sondern an plc zurückgeben
-//
+//rcv Frames nicht an gui sondern direkt an plc zurückgeben
+//GUI update von PLC ListAktuator -> bereits umgesetzt
 //
 //**************************************************************************************
+
 namespace AutoHome
 {
     public enum aktor_type { undef, jalousie, light, heater, sensor }
@@ -80,6 +79,9 @@ namespace AutoHome
         {
             try
             {
+                var.LastPlatformView = comboBox_platform.SelectedIndex;
+                //if(FrmStatusLog!=null)
+                //var.LastShowFormFrameLog 
                 timer_stop();
                 TimerUpdateGui.Stop();
                 CpsNet.cleanup();
@@ -285,17 +287,6 @@ namespace AutoHome
             if (Directory.Exists(var.workingdir))
                 System.Diagnostics.Process.Start("explorer.exe", var.workingdir);
         }
-        private void openDebugConsoleToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //TODO: extract Form Dbg -> //
-            //if (frmdbg != null)
-            //    frmdbg.Visible = true;
-            //else
-            //    MessageBox.Show("restart " + var.tool_text + " in expert mode","error");
-
-            //plc_eg.log_dbg(frmdbg);
-            //plc_og.log_dbg(frmdbg);
-        }
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -346,18 +337,16 @@ namespace AutoHome
 
         private void rcvSTARTToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("todo -> not jet implemented in cpsLIB", "TODO");
-            //foreach(plc p in list_plc)
-            //    if (p.get_plc_ip() == var.tmp_PLC_EG_IP)
-            //        p.putFrameToStack(new Frame(Frame.SET_STATE(11, "2", "0")));
+            foreach (plc p in list_plc)
+                if (p.getClient().RemoteIp == var.tmp_PLC_EG_IP)
+                    p.send(Frame.MngData(p.getClient(), DataMngType.EtaCmdStart));
         }
 
         private void rcvSTOPToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("todo -> not jet implemented in cpsLIB", "TODO");
-            //foreach (plc p in list_plc)
-            //    if (p.get_plc_ip() == var.tmp_PLC_EG_IP)
-            //        p.putFrameToStack(new Frame(Frame.SET_STATE(11, "1", "0")));
+            foreach (plc p in list_plc)
+                if (p.getClient().RemoteIp == var.tmp_PLC_EG_IP)
+                    p.send(Frame.MngData(p.getClient(), DataMngType.EtaCmdStop));
         }
 
         private void heizungAutoToolStripMenuItem_Click(object sender, EventArgs e)
@@ -397,7 +386,6 @@ namespace AutoHome
         {
             if (File.Exists(var.file_log))
                 File.Delete(var.file_log);
-            //log.msg(this, "delete log file");
         }
 
         #endregion
@@ -538,58 +526,19 @@ namespace AutoHome
             string s = "";
             foreach (string st in ListLogMsg)
                 s += st + Environment.NewLine;
-            MessageBox.Show(s, "Number Log Msg: " + ListLogMsg.Count);
+            MessageBox.Show(s, "Log Msg: " + ListLogMsg.Count);
         }
         #endregion
 
         #region footer - status bar
-        #region server
-        private void startServerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (CpsNet != null)
-                CpsNet.serverSTART(var.CpsServerPort);
-            else
-                MessageBox.Show("CpsNet == null");
-        }
-        private void stopServerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (CpsNet != null)
-                CpsNet.serverSTOP();
-            else
-                MessageBox.Show("CpsNet == null");
-        }
-        private void connectAllClientsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //try to connect (send SYNC frame) with all projected plc´s
-            foreach (plc p in list_plc)
-                p.connect(CpsNet);
-        }
-        private void logHideToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (logHideToolStripMenuItem.Text == "Form Status Log [show]")
-            {
-                CpsNet.FrmLogShow(true);
-                logHideToolStripMenuItem.Text = "Form Status Log [hide]";
-            }
-            else {
-                CpsNet.FrmLogShow(false);
-                logHideToolStripMenuItem.Text = "Form Status Log [show]";
-            }
-        }
 
-        private void dBGFrmToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            CpuPcStack.FrmCPS fCPS = new CpuPcStack.FrmCPS(CpsNet);
-            fCPS.Show();
-        }
-        /*
-        private void footer_connection_status_Click(object sender, EventArgs e)
-        {
-            CpuPcStack.FrmCPS fCPS = new CpuPcStack.FrmCPS(CpsNet);
-            fCPS.Show();
-        }
-        */
-        #endregion
+
+
+
+        private ToolStripStatusLabel TSSLServer_stop;
+        private ToolStripStatusLabel TSSLServer_start;
+        private ToolStripStatusLabel TSSLServer_SYNCallClients;
+        private ToolStripStatusLabel TSSLServer_FormStatusLog;
 
         #region clients
         //List<ToolStripDropDownButton> list_TSDDB_plc = new List<ToolStripDropDownButton>();
@@ -599,11 +548,13 @@ namespace AutoHome
         private ToolStripStatusLabel TSSL_SetTime;
         private ToolStripStatusLabel TSSL_ReadRunningConfig;
         private ToolStripStatusLabel TSSL_GetRunningConfig;
-        
 
+
+        #region make_status_bar
+        private ToolStripDropDownButton TSDDB_server;
         private void make_status_bar()
         {
-
+            //################# client region ######################
             foreach (plc p in list_plc)
             {
                 ToolStripDropDownButton TSDDB = new ToolStripDropDownButton("->" + p.NamePlc, null, null, "->" + p.NamePlc);
@@ -641,11 +592,108 @@ namespace AutoHome
                 TSDDB.DropDownItems.Add(TSSL_ReadRunningConfig);
 
                 statusStrip_bottom.Items.Add(TSDDB);
-                //p.init_TSDDB(TSDDB);
-                //list_TSDDB_plc.Add(TSDDB);
             }
+
+
+            //################# server region ######################
+
+            TSDDB_server = new ToolStripDropDownButton("[server status]");
+
+            //TSDDB_server.BackColor = Color.Yellow;
+            
+            //TSDDB_server.Size = new Size(500, 500);
+
+            TSSLServer_stop = new ToolStripStatusLabel("STOP server");
+            TSSLServer_stop.Click += new EventHandler(TSSL_OnClickStop);
+            TSDDB_server.DropDownItems.Add(TSSLServer_stop);
+
+            TSSLServer_start = new ToolStripStatusLabel("START server");
+            TSSLServer_start.Click += new EventHandler(TSSL_OnClickStart);
+            TSDDB_server.DropDownItems.Add(TSSLServer_start);
+
+            TSSLServer_SYNCallClients = new ToolStripStatusLabel("connect all clients");
+            TSSLServer_SYNCallClients.Click += new EventHandler(TSSL_OnClickSYNCallClients);
+            TSDDB_server.DropDownItems.Add(TSSLServer_SYNCallClients);
+
+            TSSLServer_FormStatusLog = new ToolStripStatusLabel("Form Status Log");
+            TSSLServer_FormStatusLog.Click += new EventHandler(TSSL_OnClickFormStatusLog);
+            TSDDB_server.DropDownItems.Add(TSSLServer_FormStatusLog);
+
+            statusStrip_bottom.Items.Add(TSDDB_server);
+        }
+        #endregion
+
+
+        #region server
+        //############################## region server ##############################################
+
+
+        //private void startServerToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    if (CpsNet != null)
+        //        CpsNet.serverSTART(var.CpsServerPort);
+        //    else
+        //        MessageBox.Show("CpsNet == null");
+        //}
+        void TSSL_OnClickStart(object sender, EventArgs e)
+        {
+            if (CpsNet != null)
+                CpsNet.serverSTART(var.CpsServerPort);
+            else
+                MessageBox.Show("CpsNet == null");
+        }
+        void TSSL_OnClickStop(object sender, EventArgs e)
+        {
+            if (CpsNet != null)
+                CpsNet.serverSTOP();
+            else
+                MessageBox.Show("CpsNet == null");
+        }
+        //private void stopServerToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    if (CpsNet != null)
+        //        CpsNet.serverSTOP();
+        //    else
+        //        MessageBox.Show("CpsNet == null");
+        //}
+
+        void TSSL_OnClickSYNCallClients(object sender, EventArgs e)
+        {
+            //try to connect (send SYNC frame) with all projected plc´s
+            foreach (plc p in list_plc)
+                p.connect(CpsNet);
+        }
+        //private void connectAllClientsToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    //try to connect (send SYNC frame) with all projected plc´s
+        //    foreach (plc p in list_plc)
+        //        p.connect(CpsNet);
+        //}
+
+        void TSSL_OnClickFormStatusLog(object sender, EventArgs e)
+        {
+            CpsNet.FrmLogShow(true);
+        }
+        private void logHideToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CpsNet.FrmLogShow(true);
+            //if (logHideToolStripMenuItem.Text == "Form Status Log [show]")
+            //{
+            //    CpsNet.FrmLogShow(true);
+            //    logHideToolStripMenuItem.Text = "Form Status Log [hide]";
+            //}
+            //else
+            //{
+            //    CpsNet.FrmLogShow(false);
+            //    logHideToolStripMenuItem.Text = "Form Status Log [show]";
+            //}
+            
         }
 
+        #endregion
+
+        #region client
+        //############################## region client ##############################################
         void TSSL_OnClickConnect(object sender, EventArgs e)
         {
             ToolStripLabel o = sender as ToolStripLabel;
@@ -733,6 +781,7 @@ namespace AutoHome
             plc p = (plc)(sender as ToolStripLabel).Tag;
             MessageBox.Show(p.ShowRunningConfig(), "running config: " + p.NamePlc);
         }
+        #endregion
 
         #endregion
         #endregion
@@ -751,7 +800,8 @@ namespace AutoHome
             comboBox_aktor_cpu.DataSource = null;
             comboBox_aktor_cpu.DataSource = list_plc;
             comboBox_platform.DataSource = null;
-            comboBox_platform.DataSource = list_platform; 
+            comboBox_platform.DataSource = list_platform;
+            comboBox_platform.SelectedIndex = var.LastPlatformView;
             paint_platform();
         }
 
@@ -1012,7 +1062,7 @@ namespace AutoHome
         void footer_connection_status_Tick(object sender, EventArgs e)
         {
             //this.Text = "AutoHome " + CpsNet.GetStatus();
-            footer_CpsServerStatus.Text = "Server Status " + CpsNet.GetStatus();
+            TSDDB_server.Text = "[server status] " + CpsNet.GetStatus();
             logMsgToolStripMenuItem.Text = "Log Msg [" + ListLogMsg.Count.ToString() + "]";
         }
 
@@ -1258,9 +1308,6 @@ namespace AutoHome
 
         #endregion
 
-        private void footer_CpsServerStatus_Click(object sender, EventArgs e)
-        {
-
-        }
+      
     }
 }

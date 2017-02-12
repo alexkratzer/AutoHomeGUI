@@ -111,6 +111,16 @@ namespace AutoHome
             });
         }
 
+        private void button_drive_up_Click(object sender, EventArgs e)
+        {
+            _aktor.plc_send_IO(DataIOType.SetState, new Int16[]{0,0});
+        }
+
+        private void button_drive_down_Click(object sender, EventArgs e)
+        {
+            _aktor.plc_send_IO(DataIOType.SetState, new Int16[]{100,100});
+        }
+
         private void button_set_wind_goup_speed_Click(object sender, EventArgs e)
         {
             _aktor.plc_send_IO(DataIOType.SetParam, new Int16[] { Convert.ToInt16(Convert.ToDouble(textBox_wind_go_up.Text) * 100), Convert.ToInt16(checkBox_initJalousie.Checked) });
@@ -151,5 +161,6 @@ namespace AutoHome
             button_set_wind_goup_speed.Visible = true;
         }
 
+       
     }
 }

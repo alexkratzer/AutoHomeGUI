@@ -15,16 +15,13 @@ namespace AutoHome
         /// <summary>
         //TODO: alle benutzereingabe edit felder maskieren/ bzw auf fehlerhafte eingabe checken 
         
-        //List<aktuator> _list_aktuator;
         List<plc> _list_plc;
         List<platform> _list_platform;
         FrmMain _FrmMain; //notwendig um beim beenden die Main Form zu aktualisieren
         public FrmParam(FrmMain FrmMain, object list_plc, object list_platform)
         {
             InitializeComponent();
-                
             this.Text = var.tool_text + " : parameter";
-            //_list_aktuator = (List<aktuator>)list_aktuator;
             _list_plc = (List<plc>)list_plc;
             _list_platform = (List<platform>)list_platform;
             _FrmMain = FrmMain;
@@ -32,13 +29,13 @@ namespace AutoHome
 
             comboBox_aktorType.DataSource = Enum.GetValues(typeof(aktor_type));
             comboBox_aktorType.SelectedIndex = 0;
-            //foreach (aktor_type at in Enum.GetValues(typeof(aktor_type)))
-            //    checkedListBox1.Items.Add(at);
+
+            //listBox_aktors.DataSource = null;
+            //listBox_aktors.Items.Clear();
+            //listBox_aktors.DataSource = tmp_list_aktor;
+
             foreach (plc p in _list_plc)
-            {
-                //ListBoxCheck_plc.Items.Add(p,true);
                 comboBox_listPlc.Items.Add(p);
-            }
 
             listBox_aktors_refresh();
             listBox_plc_refresh();
@@ -223,10 +220,11 @@ namespace AutoHome
             }
         }
 
+        List<aktuator> tmp_list_aktor = new List<aktuator>();
         private void listBox_aktors_refresh()
         {
-            List<aktuator> tmp_list_aktor = new List<aktuator>();
-
+            //List<aktuator> tmp_list_aktor = new List<aktuator>();
+            tmp_list_aktor.Clear();
             //copy aktuator in display list depending on filter settings
 
             plc selectedPlc = (plc)comboBox_listPlc.SelectedItem;
@@ -255,8 +253,6 @@ namespace AutoHome
                     }
                 }
             }
-            
-
             
             tmp_list_aktor.Sort((x, y) => x.Index.CompareTo(y.Index));
 
@@ -307,7 +303,7 @@ namespace AutoHome
         private void button_save_actuator_Click(object sender, EventArgs e)
         {
             //ein item wird editiert
-            if (listBox_aktors.SelectedItems.Count == 1)
+            if (listBox_aktors.SelectedItems.Count == 1 || checkBox_add_new_aktuator.Checked)
             {
                 textBox_akt_id.BackColor = Color.White;
                 Int16 index;

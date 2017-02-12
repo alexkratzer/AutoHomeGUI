@@ -26,7 +26,7 @@ namespace cpsLIB
         GET_WEATHER = 11,
         NET_SET_LIGHT_CMD = 12
     }
-    public enum DataMngType { GetPlcTime=1, SetPlcTime=2, GetPlcSensorValues=10} //TODO: GetAllAktorIDs, GetAllSensorIDs usw
+    public enum DataMngType { GetPlcTime=1, SetPlcTime=2, GetPlcSensorValues=10, EtaCmdStart=100, EtaCmdStop=101} //TODO: GetAllAktorIDs, GetAllSensorIDs usw
 
     [Serializable]
     public class FrameRawData

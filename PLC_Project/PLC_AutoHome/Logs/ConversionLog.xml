@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type='text/xsl' href='ConversionLogFile.xsl'?>
+<LogFile projectName="AutoHome_V13_SP1" typeText="Typ" messageText="Meldung" timeText="Zeit">
+  <MessageCell ServiceId="80" MessageId="30" MessageClass="Information" Timestamp="25.05.2015 12:56:13">
+    <Number ServiceNumber="80" MessageNumber="30" />
+    <Text FeedbackText="Hochrüsten gestartet" />
+    <Help HelpId="-1" />
+  </MessageCell>
+  <MessageCell ServiceId="80" MessageId="30" MessageClass="Information" Timestamp="25.05.2015 12:56:14">
+    <Number ServiceNumber="80" MessageNumber="30" />
+    <Text FeedbackText="Projekt-/Bibliotheksinformation der Vorgänger-Version wird gelesen." />
+    <Help HelpId="-1" />
+  </MessageCell>
+  <MessageCell ServiceId="80" MessageId="30" MessageClass="Information" Timestamp="25.05.2015 12:56:18">
+    <Number ServiceNumber="80" MessageNumber="30" />
+    <Text FeedbackText="Neues Projekt/Neue Bibliothek wird aktualisiert." />
+    <Help HelpId="-1" />
+  </MessageCell>
+  <MessageCell ServiceId="80" MessageId="30" MessageClass="Information" Timestamp="25.05.2015 12:56:20">
+    <Number ServiceNumber="80" MessageNumber="30" />
+    <Text FeedbackText="Neues Projekt/Neue Bibliothek wird aktualisiert." />
+    <Help HelpId="-1" />
+  </MessageCell>
+  <Details ServiceId="80" MessageId="30" Timestamp="25.05.2015 12:56:21" Debug="false">
+    <Text>Die Konvertierung des S7-Programms für CPU "PLC_OG" wird vorbereitet.</Text>
+  </Details>
+  <Details ServiceId="80" MessageId="30" Timestamp="25.05.2015 12:56:22" Debug="false">
+    <Text>Konvertierung beendet.</Text>
+  </Details>
+  <Details ServiceId="80" MessageId="30" Timestamp="25.05.2015 12:56:22" Debug="false">
+    <Text>Die Konvertierung des S7-Programms für CPU "PLC_EG" wird vorbereitet.</Text>
+  </Details>
+  <Details ServiceId="80" MessageId="30" Timestamp="25.05.2015 12:56:22" Debug="false">
+    <Text>Konvertierung beendet.</Text>
+  </Details>
+  <Details ServiceId="80" MessageId="30" Timestamp="25.05.2015 12:56:32" Debug="false">
+    <Text>Das S7-Programm wird für CPU "PLC_OG" konvertiert.</Text>
+  </Details>
+  <Details ServiceId="80" MessageId="30" Timestamp="25.05.2015 12:56:40" Debug="false">
+    <Text>Konvertierung beendet.</Text>
+  </Details>
+  <Details ServiceId="80" MessageId="30" Timestamp="25.05.2015 12:56:40" Debug="false">
+    <Text>Das S7-Programm wird für CPU "PLC_EG" konvertiert.</Text>
+  </Details>
+  <Details ServiceId="80" MessageId="30" Timestamp="25.05.2015 12:56:43" Debug="false">
+    <Text>Konvertierung beendet.</Text>
+  </Details>
+  <MessageCell ServiceId="80" MessageId="30" MessageClass="Information" Timestamp="25.05.2015 12:56:47">
+    <Number ServiceNumber="80" MessageNumber="30" />
+    <Text FeedbackText="Neues Projekt/Neue Bibliothek wird aktualisiert." />
+    <Help HelpId="-1" />
+  </MessageCell>
+  <MessageCell ServiceId="80" MessageId="30" MessageClass="Information" Timestamp="25.05.2015 12:56:47">
+    <Number ServiceNumber="80" MessageNumber="30" />
+    <Text FeedbackText="Hochgerüstetes Projekt/Hochgerüstete Bibliothek wird gespeichert." />
+    <Help HelpId="-1" />
+  </MessageCell>
+  <MessageCell ServiceId="Automation-ObjectFrame-Feedbacks" MessageId="ConversionInfoTabProjectSucceeded" MessageClass="Success" Timestamp="25.05.2015 12:56:49">
+    <Number ServiceNumber="80" MessageNumber="34" />
+    <Text FeedbackText="Projekt 'AutoHome' wurde erfolgreich hochgerüstet und gespeichert als Projekt 'AutoHome_V13_SP1'." />
+    <Help HelpId="-1" HelpFile="" />
+  </MessageCell>
+</LogFile>

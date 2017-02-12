@@ -121,17 +121,9 @@ namespace AutoHome
             return aktuator_hash;
         }
         #endregion
-
-
-        //wurde beim löschen aufgerufen -> jetzt gibt es für jede plc einie eigene aktuator liste -> wird nicht mehr 
-        public void change_plc(plc plc_new)
-        {
-            _plc = plc_new;
-        }
         
         public void plc_send(Frame f) {
-            //if (_plc != null) //abfrage später nicht mehr notwendig da jeder aktor eine plc haben sollte
-                _plc.send(f);
+            _plc.send(f);
         }
         public void plc_send_IO(DataIOType diot)
         {
