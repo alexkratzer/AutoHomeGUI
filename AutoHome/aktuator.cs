@@ -111,7 +111,7 @@ namespace AutoHome
         public void copyRunningToStartConfig() {
             ConfigAktuatorValuesStartup = ConfigAktuatorValuesRunning;
         }
-        #region serialize
+
         public void set_aktor_hash()
         {
             aktuator_hash = _index.ToString() + ":" + _name;
@@ -120,7 +120,6 @@ namespace AutoHome
         {
             return aktuator_hash;
         }
-        #endregion
         
         public void plc_send(Frame f) {
             _plc.send(f);
@@ -167,14 +166,4 @@ namespace AutoHome
         }
         #endregion
     }
-
-    //class light : aktuator {
-    //    enum light_status {undef, on, off}
-    //    light_status status;
-    //    bool enable_lux;
-    //    int lux_off_at;
-    //    bool enable_off_timer;
-    //    //off timer timespan
-
-    //}
 }

@@ -54,7 +54,8 @@
             this.dataGridView_aktuators.Size = new System.Drawing.Size(981, 361);
             this.dataGridView_aktuators.TabIndex = 4;
             this.dataGridView_aktuators.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_aktuators_CellClick);
-            
+            this.dataGridView_aktuators.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView_aktuators_CellMouseClick);
+            this.dataGridView_aktuators.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView_aktuators_CellMouseDoubleClick);
             // 
             // panel_control
             // 

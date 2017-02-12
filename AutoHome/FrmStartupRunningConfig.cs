@@ -159,7 +159,20 @@ namespace AutoHome
             //EXCEPTION ucdialog==null  ->  this.Size = new Size(ucdialog.Size.Width + 6, ucdialog.Size.Height + 29);
             
         }
-        
 
+        private void dataGridView_aktuators_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+
+        }
+
+        private void dataGridView_aktuators_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            aktuator _akt = dataGridView_aktuators.SelectedRows[0].DataBoundItem as aktuator;
+            DialogResult dr = MessageBox.Show("Copy Running to Startup Config?", _akt.Name, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+            if (dr == DialogResult.OK) 
+                _akt.copyRunningToStartConfig();
+            
+            
+        }
     }
 }

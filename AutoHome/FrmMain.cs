@@ -531,26 +531,21 @@ namespace AutoHome
         #endregion
 
         #region footer - status bar
-
-
-
-
+        #region make_status_bar
         private ToolStripStatusLabel TSSLServer_stop;
         private ToolStripStatusLabel TSSLServer_start;
         private ToolStripStatusLabel TSSLServer_SYNCallClients;
         private ToolStripStatusLabel TSSLServer_FormStatusLog;
 
-        #region clients
         //List<ToolStripDropDownButton> list_TSDDB_plc = new List<ToolStripDropDownButton>();
         private ToolStripStatusLabel TSSL_diag;
         private ToolStripStatusLabel TSSL_connect;
         private ToolStripStatusLabel TSSL_ibs;
         private ToolStripStatusLabel TSSL_SetTime;
         private ToolStripStatusLabel TSSL_ReadRunningConfig;
-        private ToolStripStatusLabel TSSL_GetRunningConfig;
+        private ToolStripStatusLabel TSSL_CopyRunningToStartupConfig;
+        private ToolStripStatusLabel TSSL_CopyStartupToRunningConfig;
 
-
-        #region make_status_bar
         private ToolStripDropDownButton TSDDB_server;
         private void make_status_bar()
         {
@@ -581,15 +576,20 @@ namespace AutoHome
                 TSSL_SetTime.Click += new EventHandler(TSSL_OnClickSetTime);
                 TSDDB.DropDownItems.Add(TSSL_SetTime);
 
-                TSSL_GetRunningConfig = new ToolStripStatusLabel("GetRunningConfig " );
-                TSSL_GetRunningConfig.Tag = p;
-                TSSL_GetRunningConfig.Click += new EventHandler(TSSL_OnClickGetRunningConfig);
-                TSDDB.DropDownItems.Add(TSSL_GetRunningConfig);
-
                 TSSL_ReadRunningConfig = new ToolStripStatusLabel("ReadRunningConfig ");
                 TSSL_ReadRunningConfig.Tag = p;
                 TSSL_ReadRunningConfig.Click += new EventHandler(TSSL_OnClickReadRunningConfig);
                 TSDDB.DropDownItems.Add(TSSL_ReadRunningConfig);
+
+                TSSL_CopyRunningToStartupConfig = new ToolStripStatusLabel("CopyRunningToStartupConfig");
+                TSSL_CopyRunningToStartupConfig.Tag = p;
+                TSSL_CopyRunningToStartupConfig.Click += new EventHandler(TSSL_OnClickCopyRunningToStartupConfig);
+                TSDDB.DropDownItems.Add(TSSL_CopyRunningToStartupConfig);
+
+                TSSL_CopyStartupToRunningConfig = new ToolStripStatusLabel("CopyStartupToRunningConfig");
+                TSSL_CopyStartupToRunningConfig.Tag = p;
+                TSSL_CopyStartupToRunningConfig.Click += new EventHandler(TSSL_OnClickCopyStartupToRunningConfig);
+                TSDDB.DropDownItems.Add(TSSL_CopyStartupToRunningConfig);
 
                 statusStrip_bottom.Items.Add(TSDDB);
             }
@@ -598,9 +598,7 @@ namespace AutoHome
             //################# server region ######################
 
             TSDDB_server = new ToolStripDropDownButton("[server status]");
-
             //TSDDB_server.BackColor = Color.Yellow;
-            
             //TSDDB_server.Size = new Size(500, 500);
 
             TSSLServer_stop = new ToolStripStatusLabel("STOP server");
@@ -622,7 +620,6 @@ namespace AutoHome
             statusStrip_bottom.Items.Add(TSDDB_server);
         }
         #endregion
-
 
         #region server
         //############################## region server ##############################################
@@ -776,15 +773,23 @@ namespace AutoHome
             p.ReadRunningConfig();
         }
 
-        void TSSL_OnClickGetRunningConfig(object sender, EventArgs e)
+        void TSSL_OnClickCopyRunningToStartupConfig(object sender, EventArgs e)
         {
             plc p = (plc)(sender as ToolStripLabel).Tag;
-            MessageBox.Show(p.ShowRunningConfig(), "running config: " + p.NamePlc);
+            p.copyRunningToStartConfig();
+        }
+
+        private void TSSL_OnClickCopyStartupToRunningConfig(object sender, EventArgs e)
+        {
+            plc p = (plc)(sender as ToolStripLabel).Tag;
+            foreach (aktuator a in p.ListAktuator)
+                if (a.AktorType != aktor_type.sensor && a.ConfigAktuatorValuesStartup != null)
+                    a.plc_send_IO(DataIOType.SetParam, a.ConfigAktuatorValuesStartup);
         }
         #endregion
 
         #endregion
-        #endregion
+
 
         #region paint gui
         /// <summary>
