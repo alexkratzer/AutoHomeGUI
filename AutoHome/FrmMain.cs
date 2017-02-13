@@ -536,7 +536,7 @@ namespace AutoHome
         private ToolStripStatusLabel TSSLServer_start;
         private ToolStripStatusLabel TSSLServer_SYNCallClients;
         private ToolStripStatusLabel TSSLServer_FormStatusLog;
-
+        /*
         //List<ToolStripDropDownButton> list_TSDDB_plc = new List<ToolStripDropDownButton>();
         private ToolStripStatusLabel TSSL_diag;
         private ToolStripStatusLabel TSSL_connect;
@@ -545,17 +545,19 @@ namespace AutoHome
         private ToolStripStatusLabel TSSL_ReadRunningConfig;
         private ToolStripStatusLabel TSSL_CopyRunningToStartupConfig;
         private ToolStripStatusLabel TSSL_CopyStartupToRunningConfig;
-
+        */
         private ToolStripDropDownButton TSDDB_server;
         private void make_status_bar()
         {
+            
             //################# client region ######################
             foreach (plc p in list_plc)
             {
                 ToolStripDropDownButton TSDDB = new ToolStripDropDownButton("->" + p.NamePlc, null, null, "->" + p.NamePlc);
                 TSDDB.Tag = p;
                 TSDDB.BackColor = Color.Yellow;
-
+                TSDDB.Click += TSDDB_Click;
+                /*
                 TSSL_connect = new ToolStripStatusLabel("connect");
                 TSSL_connect.Tag = p;
                 TSSL_connect.Click += new EventHandler(TSSL_OnClickConnect);
@@ -590,7 +592,7 @@ namespace AutoHome
                 TSSL_CopyStartupToRunningConfig.Tag = p;
                 TSSL_CopyStartupToRunningConfig.Click += new EventHandler(TSSL_OnClickCopyStartupToRunningConfig);
                 TSDDB.DropDownItems.Add(TSSL_CopyStartupToRunningConfig);
-
+                */
                 statusStrip_bottom.Items.Add(TSDDB);
             }
 
@@ -618,6 +620,13 @@ namespace AutoHome
             TSDDB_server.DropDownItems.Add(TSSLServer_FormStatusLog);
 
             statusStrip_bottom.Items.Add(TSDDB_server);
+        }
+
+        private void TSDDB_Click(object sender, EventArgs e)
+        {
+            ToolStripDropDownButton o = sender as ToolStripDropDownButton;
+            FrmPlcClient Fpc = new FrmPlcClient((plc)o.Tag, CpsNet);
+            Fpc.Show();
         }
         #endregion
 
@@ -688,7 +697,7 @@ namespace AutoHome
         }
 
         #endregion
-
+        /*
         #region client
         //############################## region client ##############################################
         void TSSL_OnClickConnect(object sender, EventArgs e)
@@ -740,28 +749,28 @@ namespace AutoHome
                 return;
             }
 
-            /*
-            for (Int16 i = 0; i < Convert.ToInt16(textBox1.Text); i++)
-            {
-                if (o != null) { 
-                    //Frame f = new Frame(((plc)o.Tag).getClient(), new Int16[] { i, 1, 1, 1, 255, 255, 256, 257, -1, -1, -1 });
-                    //f.SetHeaderFlag(FrameHeaderFlag.ACKN);
-                    //((plc)o.Tag).send(f, FrmLog);
+            
+            //for (Int16 i = 0; i < Convert.ToInt16(textBox1.Text); i++)
+            //{
+            //    if (o != null) { 
+            //        //Frame f = new Frame(((plc)o.Tag).getClient(), new Int16[] { i, 1, 1, 1, 255, 255, 256, 257, -1, -1, -1 });
+            //        //f.SetHeaderFlag(FrameHeaderFlag.ACKN);
+            //        //((plc)o.Tag).send(f, FrmLog);
 
-                    //Frame f2 = new Frame(((plc)o.Tag).getClient(), new Int16[] { 999, 1, i });
-                    //f2.SetHeaderFlag(FrameHeaderFlag.PdataIO);
-                    //((plc)o.Tag).send(f2, FrmLog);
+            //        //Frame f2 = new Frame(((plc)o.Tag).getClient(), new Int16[] { 999, 1, i });
+            //        //f2.SetHeaderFlag(FrameHeaderFlag.PdataIO);
+            //        //((plc)o.Tag).send(f2, FrmLog);
 
-                    Frame f3 = new Frame(((plc)o.Tag).getClient(), new Int16[] { 1, i });
-                    f3.SetHeaderFlag(FrameHeaderFlag.MngData);
-                    ((plc)o.Tag).send(f3, FrmLog);
-                }
-                else
-                {
-                    MessageBox.Show("TSSL_OnClickIBS()", "ToolStripLabel o == null");
-                    return;
-                }
-                */
+            //        Frame f3 = new Frame(((plc)o.Tag).getClient(), new Int16[] { 1, i });
+            //        f3.SetHeaderFlag(FrameHeaderFlag.MngData);
+            //        ((plc)o.Tag).send(f3, FrmLog);
+            //    }
+            //    else
+            //    {
+            //        MessageBox.Show("TSSL_OnClickIBS()", "ToolStripLabel o == null");
+            //        return;
+            //    }
+                
         
         }
 
@@ -787,9 +796,8 @@ namespace AutoHome
                     a.plc_send_IO(DataIOType.SetParam, a.ConfigAktuatorValuesStartup);
         }
         #endregion
-
+        */
         #endregion
-
 
         #region paint gui
         /// <summary>
@@ -1049,7 +1057,7 @@ namespace AutoHome
                 //send GetRequest @PLC
                 //********************************************************************************************************************
                 foreach (plc p in list_plc)
-                    if (p.getClient().state == udp_state.connected)
+                    if (p.getClient()!=null && p.getClient().state == udp_state.connected)
                     {
                         //send get Time request @PLC
                         p.send(Frame.MngData(p.getClient(), DataMngType.GetPlcTime));

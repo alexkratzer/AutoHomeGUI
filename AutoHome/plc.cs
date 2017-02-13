@@ -76,7 +76,8 @@ namespace AutoHome
 
         //wird als temporäre variable in FrmMain benötigt
         public List<Int16> ListSensorIDs;
-        
+        public DateTime clockPlc;
+
 
         #region construktor / init / connect
         public plc(string ip, int port, string plc_name = "not named")
