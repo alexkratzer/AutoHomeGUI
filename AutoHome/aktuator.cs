@@ -100,6 +100,20 @@ namespace AutoHome
                 return s;
             }
         }
+        public bool ConfigsEqual
+        {
+            get
+            {
+                if ((_ConfigAktuatorValuesRunning != null && _ConfigAktuatorValuesRunning.Any()) && (_ConfigAktuatorValuesStartup != null && _ConfigAktuatorValuesStartup.Any()))
+                {
+                    if (_ConfigAktuatorValuesStartup == _ConfigAktuatorValuesRunning)
+                        return true;
+                    else
+                        return false;
+                }
+                return false;
+            }
+        }
 
         [NonSerialized]//nicht serialisieren da sonst keine referenz auf das aktuelle objekt vorhanden ist sondern mit alten kopien gearbeitet wird
         public plc _plc;

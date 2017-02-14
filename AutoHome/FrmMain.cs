@@ -53,7 +53,7 @@ namespace AutoHome
             list_plc = var.deserialize_plc();
             list_platform = var.deserialize_platform(list_plc);
             log.msg(this, "### start AutoHome GUI " + tool_version + " ###");
-            ListLogMsg.Add("start");
+            ListLogMsg.Add("### start AutoHome GUI " + tool_version + " ###");
         }
 
         private void safe_projekt_data()
@@ -324,7 +324,15 @@ namespace AutoHome
                 iODataToolStripMenuItem.Text = "Update Gui [on]";
             }
         }
+        private void onToolStripMenuItem_Click(object sender, EventArgs e)
+        {
 
+        }
+
+        private void offToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
 
         #region cmd ETA
         /**
@@ -1332,8 +1340,9 @@ namespace AutoHome
             ListLogMsg.Add(DateTime.Now.ToString("mm:ss:ms") + " -- " + s);
         }
 
+
         #endregion
 
-      
+       
     }
 }

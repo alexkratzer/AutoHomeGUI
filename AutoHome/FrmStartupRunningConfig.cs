@@ -87,6 +87,10 @@ namespace AutoHome
             DGVtbcPrio.ReadOnly = true;
             dataGridView_aktuators.Columns.Add(DGVtbcPrio);
 
+            DataGridViewCheckBoxColumn DGVCB_equalConfig = new DataGridViewCheckBoxColumn();
+            DGVCB_equalConfig.DataPropertyName = "ConfigsEqual";
+            dataGridView_aktuators.Columns.Add(DGVCB_equalConfig);
+
             DataGridViewTextBoxColumn DGVtbMsg = new DataGridViewTextBoxColumn();
             DGVtbMsg.Name = "Running Config";
             DGVtbMsg.DataPropertyName = "AktuatorRunningConfig";

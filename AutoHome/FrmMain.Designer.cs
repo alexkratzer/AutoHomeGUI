@@ -83,6 +83,9 @@
             this.comboBox_aktor_type = new System.Windows.Forms.ComboBox();
             this.comboBox_aktor_cpu = new System.Windows.Forms.ComboBox();
             this.pictureBox_platform = new System.Windows.Forms.PictureBox();
+            this.notifyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.onToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.offToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip_main.SuspendLayout();
             this.panel_controls.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_platform)).BeginInit();
@@ -213,7 +216,8 @@
             this.openWorkingDirToolStripMenuItem,
             this.timerToolStripMenuItem,
             this.eTAToolStripMenuItem,
-            this.openLOGToolStripMenuItem});
+            this.openLOGToolStripMenuItem,
+            this.notifyToolStripMenuItem});
             this.expertToolStripMenuItem.Name = "expertToolStripMenuItem";
             this.expertToolStripMenuItem.Size = new System.Drawing.Size(51, 20);
             this.expertToolStripMenuItem.Text = "expert";
@@ -529,6 +533,29 @@
             this.pictureBox_platform.TabStop = false;
             this.pictureBox_platform.SizeChanged += new System.EventHandler(this.pictureBox_platform_SizeChanged);
             // 
+            // notifyToolStripMenuItem
+            // 
+            this.notifyToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.onToolStripMenuItem,
+            this.offToolStripMenuItem});
+            this.notifyToolStripMenuItem.Name = "notifyToolStripMenuItem";
+            this.notifyToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.notifyToolStripMenuItem.Text = "notify";
+            // 
+            // onToolStripMenuItem
+            // 
+            this.onToolStripMenuItem.Name = "onToolStripMenuItem";
+            this.onToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.onToolStripMenuItem.Text = "on";
+            this.onToolStripMenuItem.Click += new System.EventHandler(this.onToolStripMenuItem_Click);
+            // 
+            // offToolStripMenuItem
+            // 
+            this.offToolStripMenuItem.Name = "offToolStripMenuItem";
+            this.offToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.offToolStripMenuItem.Text = "off";
+            this.offToolStripMenuItem.Click += new System.EventHandler(this.offToolStripMenuItem_Click);
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -609,6 +636,9 @@
         private System.Windows.Forms.ToolStripMenuItem showMsgBoxToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copyStartupToRunningToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem logMsgToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem notifyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem onToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem offToolStripMenuItem;
     }
 }
 

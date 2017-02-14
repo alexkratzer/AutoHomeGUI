@@ -122,7 +122,7 @@ namespace cpsLIB
                 {
                     if (_fstack.TryAdd(f.GetKey(), f))
                     {
-                        logMsg(new log(prio.info, "-> send frame @" + f.client.RemoteIp, f));
+                        logMsg(new log(prio.info, "-> send frame ", f));
                         TotalFramesSend++;
                         f.LastSendDateTime = DateTime.Now;
                         f.client.send(f);
