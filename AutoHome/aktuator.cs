@@ -103,8 +103,12 @@ namespace AutoHome
 
         [NonSerialized]//nicht serialisieren da sonst keine referenz auf das aktuelle objekt vorhanden ist sondern mit alten kopien gearbeitet wird
         public plc _plc;
+
+
         [NonSerialized]
-        public Frame ValueFrame; //nur tämporere werte
+        public Frame ValueFrame; //nur tämporere werte -> aktuator
+        [NonSerialized]
+        public float SensorValue; //nur tämporere werte -> Sensorwert
         #endregion
 
         #region functions

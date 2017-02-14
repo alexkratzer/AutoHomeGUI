@@ -79,17 +79,25 @@ namespace AutoHome
 
         public void update_control()
         {
-            if (_PictureBox != null)
-                _PictureBox.pic_update( _aktuator.ValueFrame);
+            if (_PictureBox != null && _aktuator.ValueFrame != null)
+                    _PictureBox.pic_update(_aktuator.ValueFrame);
+            else if (_type == aktor_type.sensor && _UCsensorValue != null)
+                _UCsensorValue.updateValue(_aktuator.SensorValue);
+            //else
+            //    log.msg(this, "update_control() @invalid state [aktor_type " + ((int)_type).ToString() + "]");
+
+            /*
+            if (_type != aktor_type.sensor && _PictureBox != null )
+                if( _aktuator.ValueFrame == null)
+                    log.msg(this, "update_control() @invalid state [_aktuator.ValueFrame==null]");
+                else
+                    _PictureBox.pic_update(_aktuator.ValueFrame);
+            else if (_type == aktor_type.sensor && _UCsensorValue != null)
+                _UCsensorValue.updateValue(_aktuator.SensorValue);
+            else
+                log.msg(this, "update_control() @invalid state [aktor_type " + ((int)_type).ToString() + "]");
+                */
         }
-        public void update_SensorControl(float val)
-        {
-            if (_UCsensorValue != null)
-                _UCsensorValue.updateValue(val);
-        }
-
-
-
 
     }
 }

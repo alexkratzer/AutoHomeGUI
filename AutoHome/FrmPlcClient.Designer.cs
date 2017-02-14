@@ -37,12 +37,16 @@
             this.button_CopyStartupToRunningConfig = new System.Windows.Forms.Button();
             this.button_send_ibs = new System.Windows.Forms.Button();
             this.button_getClientStatus = new System.Windows.Forms.Button();
+            this.label_plc_time = new System.Windows.Forms.Label();
+            this.label_timeJitterDesc = new System.Windows.Forms.Label();
+            this.label_time_difference = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label_CpsStatus
             // 
             this.label_CpsStatus.AutoSize = true;
-            this.label_CpsStatus.Location = new System.Drawing.Point(12, 151);
+            this.label_CpsStatus.Location = new System.Drawing.Point(9, 207);
             this.label_CpsStatus.Name = "label_CpsStatus";
             this.label_CpsStatus.Size = new System.Drawing.Size(58, 13);
             this.label_CpsStatus.TabIndex = 0;
@@ -60,6 +64,7 @@
             // 
             // button_status
             // 
+            this.button_status.Enabled = false;
             this.button_status.Location = new System.Drawing.Point(12, 41);
             this.button_status.Name = "button_status";
             this.button_status.Size = new System.Drawing.Size(75, 23);
@@ -128,11 +133,51 @@
             this.button_getClientStatus.UseVisualStyleBackColor = true;
             this.button_getClientStatus.Click += new System.EventHandler(this.button_getClientStatus_Click);
             // 
+            // label_plc_time
+            // 
+            this.label_plc_time.AutoSize = true;
+            this.label_plc_time.Location = new System.Drawing.Point(73, 151);
+            this.label_plc_time.Name = "label_plc_time";
+            this.label_plc_time.Size = new System.Drawing.Size(43, 13);
+            this.label_plc_time.TabIndex = 9;
+            this.label_plc_time.Text = "plc time";
+            // 
+            // label_timeJitterDesc
+            // 
+            this.label_timeJitterDesc.AutoSize = true;
+            this.label_timeJitterDesc.Location = new System.Drawing.Point(13, 173);
+            this.label_timeJitterDesc.Name = "label_timeJitterDesc";
+            this.label_timeJitterDesc.Size = new System.Drawing.Size(54, 13);
+            this.label_timeJitterDesc.TabIndex = 10;
+            this.label_timeJitterDesc.Text = "difference";
+            // 
+            // label_time_difference
+            // 
+            this.label_time_difference.AutoSize = true;
+            this.label_time_difference.Location = new System.Drawing.Point(73, 173);
+            this.label_time_difference.Name = "label_time_difference";
+            this.label_time_difference.Size = new System.Drawing.Size(43, 13);
+            this.label_time_difference.TabIndex = 11;
+            this.label_time_difference.Text = "xx:xx:xx";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(13, 151);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(43, 13);
+            this.label1.TabIndex = 12;
+            this.label1.Text = "plc time";
+            // 
             // FrmPlcClient
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(479, 382);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.label_time_difference);
+            this.Controls.Add(this.label_timeJitterDesc);
+            this.Controls.Add(this.label_plc_time);
             this.Controls.Add(this.button_getClientStatus);
             this.Controls.Add(this.button_send_ibs);
             this.Controls.Add(this.button_CopyStartupToRunningConfig);
@@ -160,5 +205,9 @@
         private System.Windows.Forms.Button button_CopyStartupToRunningConfig;
         private System.Windows.Forms.Button button_send_ibs;
         private System.Windows.Forms.Button button_getClientStatus;
+        private System.Windows.Forms.Label label_plc_time;
+        private System.Windows.Forms.Label label_timeJitterDesc;
+        private System.Windows.Forms.Label label_time_difference;
+        private System.Windows.Forms.Label label1;
     }
 }

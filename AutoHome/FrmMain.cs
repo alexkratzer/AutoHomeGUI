@@ -1169,79 +1169,92 @@ namespace AutoHome
         }
 
         private void interprete_MngData(Frame f) {
+            foreach (plc p in list_plc) 
+                if (f.client.RemoteIp == p.getClient().RemoteIp) 
+                    p.interpreteDataMng(f);
             //ListLogMsg.Add("RCV: MngData {" + f.ToString() + "}");
 
             foreach (ToolStripDropDownButton p in statusStrip_bottom.Items)
             {
                 //statusStrip_bottom contains CPSstatus Label with no p.Tag
                 if (p.Tag != null && (f.client.RemoteIp == ((plc)p.Tag).getClient().RemoteIp)) {
-                    //try
-                    //{
-                        if (f.getPayload(0) == (Int16)DataMngType.GetPlcTime)
-                        {
-                            DateTime clockPlc = new DateTime(f.getPayload(1), f.getPayload(2), f.getPayload(3), f.getPayload(4), f.getPayload(5), f.getPayload(6));
 
-                            if(var.FooterShowPlcTime)
-                                p.Text = p.Name + " [" + clockPlc.ToString("HH:mm:ss") + "]";
-                            //p.BackColor = Color.Transparent;
-                            if (DateTime.Now.Subtract(new TimeSpan(0, 0, var.MngData_AcceptedClockDelay)) > clockPlc)
-                            {
-                                TimeSpan ts = DateTime.Now - clockPlc;
-                                p.Text = p.Name + " > " + ts.ToString(TSFormat(ts));
-                                p.BackColor = Color.Yellow;
-                            }
-                            else if (DateTime.Now.Add(new TimeSpan(0, 0, var.MngData_AcceptedClockDelay)) < clockPlc)
-                            {
-                                TimeSpan dt = clockPlc - DateTime.Now;
-                                p.Text = p.Name + " < " + dt.ToString(TSFormat(dt));
-                                p.BackColor = Color.Yellow;
-                            }
+                    if (f.getPayload(0) == (Int16)DataMngType.GetPlcTime)
+                    {
+                        DateTime clockPlc = new DateTime(f.getPayload(1), f.getPayload(2), f.getPayload(3), f.getPayload(4), f.getPayload(5), f.getPayload(6));
+
+                        if (var.FooterShowPlcTime)
+                            p.Text = p.Name + " [" + clockPlc.ToString("HH:mm:ss") + "]";
                     }
-                        else if (f.getPayload(0) == (Int16)DataMngType.SetPlcTime) {
-                            Int16 retval = f.getPayload(1);
-                            if(retval>0)
-                                MessageBox.Show("retval: " + f.getPayload(1) + Environment.NewLine + " see TIA Help [WR_SYS_T: Set time-of-day]", "SetPlcTime: ERROR");
-                        }
-                        else if (f.getPayload(0) == (Int16)DataMngType.GetPlcSensorValues)
-                        {
-                            if (pictureBox_platform.Visible)
-                            {
-                                platform p_selected = (platform)comboBox_platform.SelectedItem;
-                                if (p_selected != null)
-                                {
-                                    //FrmLog.AddLog("SensorVal: " + f.ShowPayloadInt());
+                        #region archive
 
-                                    //Dictionary<Int16, float> dicSensorVal = new Dictionary<short, float>();
-                                    ////dicSensorVal.Clear();
-                                    ////komplettes frame durchgehen und auspacken. für jeden sensorwert entsprechendes controll befüllen
-                                    //float SensorValue;
-                                    //for (int i = 3; i < (f.getPaloadIntLengt()); i = i + 3)
-                                    //{
-                                    //    if (f.getPayload(i + 2) != 0)
-                                    //        SensorValue = (float) f.getPayload(i + 1) / (float)f.getPayload(i + 2);
-                                    //    else
-                                    //        SensorValue = f.getPayload(i + 1);
+                        //try
+                        //{
+                        //    if (f.getPayload(0) == (Int16)DataMngType.GetPlcTime)
+                        //    {
+                        //        DateTime clockPlc = new DateTime(f.getPayload(1), f.getPayload(2), f.getPayload(3), f.getPayload(4), f.getPayload(5), f.getPayload(6));
 
-                                    //    dicSensorVal.Add(f.getPayload(i), SensorValue);
-                                    //}
+                        //        if(var.FooterShowPlcTime)
+                        //            p.Text = p.Name + " [" + clockPlc.ToString("HH:mm:ss") + "]";
+                        //        //p.BackColor = Color.Transparent;
+                        //        if (DateTime.Now.Subtract(new TimeSpan(0, 0, var.MngData_AcceptedClockDelay)) > clockPlc)
+                        //        {
+                        //            TimeSpan ts = DateTime.Now - clockPlc;
+                        //            p.Text = p.Name + " > " + ts.ToString(TSFormat(ts));
+                        //            p.BackColor = Color.Yellow;
+                        //        }
+                        //        else if (DateTime.Now.Add(new TimeSpan(0, 0, var.MngData_AcceptedClockDelay)) < clockPlc)
+                        //        {
+                        //            TimeSpan dt = clockPlc - DateTime.Now;
+                        //            p.Text = p.Name + " < " + dt.ToString(TSFormat(dt));
+                        //            p.BackColor = Color.Yellow;
+                        //        }
+                        //}
+                        //    else if (f.getPayload(0) == (Int16)DataMngType.SetPlcTime) {
+                        //        Int16 retval = f.getPayload(1);
+                        //        if(retval>0)
+                        //            MessageBox.Show("retval: " + f.getPayload(1) + Environment.NewLine + " see TIA Help [WR_SYS_T: Set time-of-day]", "SetPlcTime: ERROR");
+                        //    }
+                        //    else if (f.getPayload(0) == (Int16)DataMngType.GetPlcSensorValues)
+                        //    {
+                        //        if (pictureBox_platform.Visible)
+                        //        {
+                        //            platform p_selected = (platform)comboBox_platform.SelectedItem;
+                        //            if (p_selected != null)
+                        //            {
+                        //                //FrmLog.AddLog("SensorVal: " + f.ShowPayloadInt());
 
-                                    p_selected.update_SensorControl(f);
+                        //                //Dictionary<Int16, float> dicSensorVal = new Dictionary<short, float>();
+                        //                ////dicSensorVal.Clear();
+                        //                ////komplettes frame durchgehen und auspacken. für jeden sensorwert entsprechendes controll befüllen
+                        //                //float SensorValue;
+                        //                //for (int i = 3; i < (f.getPaloadIntLengt()); i = i + 3)
+                        //                //{
+                        //                //    if (f.getPayload(i + 2) != 0)
+                        //                //        SensorValue = (float) f.getPayload(i + 1) / (float)f.getPayload(i + 2);
+                        //                //    else
+                        //                //        SensorValue = f.getPayload(i + 1);
+
+                        //                //    dicSensorVal.Add(f.getPayload(i), SensorValue);
+                        //                //}
+
+                        //                p_selected.update_SensorControl(f);
 
 
-                                    //p_selected.update_control(f);
-                                    //FrmLog.AddLog("SensorVal_dic: " + f.ShowPayloadInt());
-                                }
-                            }
-                        }
-                    //}
-                    //catch (Exception e) {
-                    //    //TODO: globalen error log mit notify in GUI einrichten
-                    //    //MessageBox.Show(e.Message, "exception")
-                    //        FrmLog.AddLog("Exception interprete_MngData: " + e.Message);
-                    //    ;
-                    //}
-
-                    break; //da richtige plc zu ToolStripDropDownButton bearbeitet wurde schleife beenden
+                        //                //p_selected.update_control(f);
+                        //                //FrmLog.AddLog("SensorVal_dic: " + f.ShowPayloadInt());
+                        //            }
+                        //        }
+                        //    }
+                        //}
+                        //catch (Exception e) {
+                        //    //TODO: globalen error log mit notify in GUI einrichten
+                        //    //MessageBox.Show(e.Message, "exception")
+                        //        FrmLog.AddLog("Exception interprete_MngData: " + e.Message);
+                        //    ;
+                        //}
+                        #endregion
+                        break; //da richtige plc zu ToolStripDropDownButton bearbeitet wurde schleife beenden
                 }   
             }
         }

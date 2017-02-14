@@ -79,7 +79,7 @@ namespace AutoHome
             //    return;
             //}
             foreach (platform_control pc in _list_platform_control)
-                if (pc._aktuator != null && pc._aktuator.ValueFrame != null)
+                if (pc._aktuator != null )
                     //if(pc._aktuator.RcvFrame.isIOIndex)
                     //f.isIOIndex(pc._aktuator.Index))
                     pc.update_control();
@@ -93,40 +93,28 @@ namespace AutoHome
         //        //FrmLog.AddLog("SensorVal_dic: " + kvp.ToString());
         //}
 
-        public void update_SensorControl(Frame f)
-        {
-            
-            //Dictionary<Int16, float> dicSensorVal = new Dictionary<short, float>();
-            
-            //komplettes frame durchgehen und auspacken. für jeden sensorwert entsprechendes controll befüllen
-            float SensorValue;
-            for (int i = 3; i < (f.getPaloadIntLengt()); i = i + 3)
-            {
-                if (f.getPayload(i + 2) != 0)
-                    SensorValue = (float)f.getPayload(i + 1) / (float)f.getPayload(i + 2);
-                else
-                    SensorValue = f.getPayload(i + 1);
+        //public void update_SensorControl(Frame f)
+        //{
+        //    //TODO    : nicht aus Frame updaten sondern aus plc tmp daten; evtl update_SensorControl() über timer aufrufen und nicht via event
+        //    //komplettes frame durchgehen und auspacken. für jeden sensorwert entsprechendes controll befüllen
+        //    float SensorValue;
+        //    for (int i = 3; i < (f.getPaloadIntLengt()); i = i + 3)
+        //    {
+        //        if (f.getPayload(i + 2) != 0)
+        //            SensorValue = (float)f.getPayload(i + 1) / (float)f.getPayload(i + 2);
+        //        else
+        //            SensorValue = f.getPayload(i + 1);
 
-                foreach (platform_control pc in _list_platform_control)
-                    if (pc._aktuator != null && pc._aktuator._plc.getClient().RemoteIp == f.client.RemoteIp )
-                        if (pc._aktuator.Index == f.getPayload(i))
-                            if (pc._aktuator.AktorType == aktor_type.sensor)
-                                {
-                                    pc.update_SensorControl(SensorValue);
-                                    break;
-                                }
-            }
-
-
-
-            //foreach (KeyValuePair<Int16, float> kvp in dicSensorVal)
-            //{
-            //    foreach (platform_control pc in _list_platform_control)
-            //        if (pc._aktuator != null && kvp.Key == pc._aktuator.Index)
-            //            pc.update_SensorControl(kvp.Value);
-            //}
-            //FrmLog.AddLog("SensorVal_dic: " + kvp.ToString());
-        }
+        //        foreach (platform_control pc in _list_platform_control)
+        //            if (pc._aktuator != null && pc._aktuator._plc.getClient().RemoteIp == f.client.RemoteIp )
+        //                if (pc._aktuator.Index == f.getPayload(i))
+        //                    if (pc._aktuator.AktorType == aktor_type.sensor)
+        //                        {
+        //                            pc.update_SensorControl(SensorValue);
+        //                            break;
+        //                        }
+        //    }
+        //}
     }
 
 

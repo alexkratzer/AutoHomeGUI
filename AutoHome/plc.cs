@@ -66,17 +66,25 @@ namespace AutoHome
 
         public List<aktuator> ListAktuator;
 
+        #region tmp vars [NonSerialized]
         [NonSerialized]
         private cpsLIB.CpsNet cpsNet = null;
         [NonSerialized]
         private cpsLIB.Client client_udp = null;
 
-        [NonSerialized]
-        System.Windows.Forms.ToolStripDropDownButton _TSSDDB_Status = null;
-
         //wird als temporäre variable in FrmMain benötigt
+        [NonSerialized]
         public List<Int16> ListSensorIDs;
+        [NonSerialized]
         public DateTime clockPlc;
+        [NonSerialized]
+        public DateTime clockLocal;
+        [NonSerialized]
+        public TimeSpan clockPlcJitter;
+        [NonSerialized]
+        //public Frame DataMngType_GetPlcSensorValues;
+        Dictionary<Int16, float> DicSensorVal;
+        #endregion
 
 
         #region construktor / init / connect
@@ -88,15 +96,12 @@ namespace AutoHome
             client_udp = new Client(_ip, port.ToString());
             ListAktuator = new List<aktuator>();
         }
-
-        public void init_TSDDB(System.Windows.Forms.ToolStripDropDownButton TSSDDB_Status)
-        {
-            _TSSDDB_Status = TSSDDB_Status;
-        }
-
+        
         public void connect(CpsNet _cpsNet)
         {
             cpsNet = _cpsNet;
+            DicSensorVal = new Dictionary<short, float>();
+
             if (client_udp != null)
             {
                 if (client_udp.RemoteIp != _ip)
@@ -155,6 +160,63 @@ namespace AutoHome
                 }
             }
         }
+        #endregion
+
+        #region interprete data
+
+        public void interpreteDataMng(Frame f)
+        {
+            if (f.getPayload(0) == (Int16)DataMngType.GetPlcTime)
+            {
+                clockPlc = new DateTime(f.getPayload(1), f.getPayload(2), f.getPayload(3), f.getPayload(4), f.getPayload(5), f.getPayload(6));
+                clockLocal = DateTime.Now;
+                clockPlcJitter = clockLocal - clockPlc;
+                //if (DateTime.Now.Subtract(new TimeSpan(0, 0, var.MngData_AcceptedClockDelay)) > clockPlc)
+                //    clockPlcJitter = DateTime.Now - clockPlc;
+                //else if (DateTime.Now.Add(new TimeSpan(0, 0, var.MngData_AcceptedClockDelay)) < clockPlc)
+                //    clockPlcJitter = clockPlc - DateTime.Now;
+            }
+            else if (f.getPayload(0) == (Int16)DataMngType.SetPlcTime)
+            {
+                Int16 retval = f.getPayload(1);
+                if (retval > 0)
+                    log.msg(this, "++ ERROR ++ interpreteDataMng() DataMngType.SetPlcTime -> see TIA Help [WR_SYS_T: Set time-of-day]: " + retval.ToString());
+                //MessageBox.Show("retval: " + f.getPayload(1) + Environment.NewLine + " see TIA Help [WR_SYS_T: Set time-of-day]", "SetPlcTime: ERROR");
+            }
+            else if (f.getPayload(0) == (Int16)DataMngType.GetPlcSensorValues)
+            {
+                //TODO    : nicht aus Frame updaten sondern aus plc tmp daten; evtl update_SensorControl() über timer aufrufen und nicht via event
+                //komplettes frame durchgehen und auspacken. für jeden sensorwert entsprechendes controll befüllen
+
+
+                for (int i = 3; i < (f.getPaloadIntLengt()); i = i + 3)
+                {
+                    float SensorValue;
+                    if (f.getPayload(i + 2) != 0)
+                        SensorValue = (float)f.getPayload(i + 1) / (float)f.getPayload(i + 2);
+                    else
+                        SensorValue = f.getPayload(i + 1);
+
+                    if (DicSensorVal.ContainsKey(f.getPayload(i)))
+                        DicSensorVal[f.getPayload(i)] = SensorValue;
+                    else
+                        DicSensorVal.Add(f.getPayload(i), SensorValue);
+                }
+
+                //sensor value in entsprechenden aktuator ablegen
+                foreach (aktuator a in ListAktuator) 
+                    if (DicSensorVal.ContainsKey(a.Index))
+                        a.SensorValue = DicSensorVal[a.Index];
+                
+
+            }
+
+            //platform p_selected = (platform)comboBox_platform.SelectedItem;
+            //if (p_selected != null)
+            //    p_selected.update_SensorControl(f);
+
+        }
+
         #endregion
 
         #region running startup config

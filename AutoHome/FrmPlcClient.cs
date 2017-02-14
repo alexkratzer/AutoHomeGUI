@@ -20,8 +20,15 @@ namespace AutoHome
             _plc = (plc)plc;
             _cpsNet = (CpsNet)cpsNet;
             this.Text = _plc.NamePlc;
-            label_CpsStatus.Text = _plc.getClient().GetStatus();
+            UpdateGui();
+            
+        }
 
+        private void UpdateGui() {
+            
+            label_CpsStatus.Text = _plc.getClient().GetStatus();
+            label_plc_time.Text = _plc.clockPlc.ToString();
+            label_time_difference.Text = _plc.clockPlcJitter.ToString();
         }
 
         private void button_connect_Click(object sender, EventArgs e)
@@ -69,7 +76,8 @@ namespace AutoHome
 
         private void button_getClientStatus_Click(object sender, EventArgs e)
         {
-            label_CpsStatus.Text = _plc.getClient().GetStatus();
+            UpdateGui();
+            
         }
     }
     
