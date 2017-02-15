@@ -17,6 +17,7 @@ namespace cpsLIB
         public volatile udp_state state;
         public List<Frame> LFrame; //log all frames send over this udp connection
         public Int16 CountSendFrames = 0;
+        //private object CallPlc;//plc 
 
         Thread _clientThread;
 
@@ -102,9 +103,6 @@ namespace cpsLIB
             catch (Exception e)
             {
                 state = udp_state.SendError;
-                
-                //f.frameState = FrameState.ERROR;
-                //f.ChangeState(FrameWorkingState.error, "Exception send Frame: " + e.Message);
                 return false;
             }
             return true;
@@ -114,18 +112,8 @@ namespace cpsLIB
         private void send_fkt(Frame f)
         {
             UdpClient udpClient = new UdpClient();
-            //try
-            //{
-                //############################################################################################################
-                //TODO: hier ist f.client nicht mehr notwendig. evtl ist referen von cpsClient in Frame nicht mehr notwendig
-                
-                udpClient.Send(f.GetByteArray(), f.GetByteArray().Length, RemoteIp, RemotePort);
-                udpClient.Close();
-            //}
-            //catch (Exception e)
-            //{
-            //    //TODO: //f.ChangeState(FrameWorkingState.error, "Exception send Frame: " + e.Message);
-            //}
+            udpClient.Send(f.GetByteArray(), f.GetByteArray().Length, RemoteIp, RemotePort);
+            udpClient.Close();
         }
         #endregion
     }

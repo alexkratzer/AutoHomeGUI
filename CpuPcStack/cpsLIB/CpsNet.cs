@@ -12,7 +12,6 @@ namespace cpsLIB
     //als key für den datensatz die Remote IP verwenden
     
     public enum udp_state { connected, disconnected, SendError }
-    //public enum msg_type { undef, info, warning, error }
     public class CpsNet
     {
         //flags to control all connections
@@ -22,7 +21,7 @@ namespace cpsLIB
         public bool SendOnlyIfConnected = true; //TRUE => ohne Verbindungsaufbau über SYNC werden keine Frames gesendet
 
         //private vars
-        private static IcpsLIB _FrmMain;
+        private IcpsLIB QueueRcvFrameToApp;
         private Server _udp_server;
         private FrmStatusLog LogFSL;
         //System.Collections.Concurrent.ConcurrentQueue<Frame> _fstack = null;
@@ -32,23 +31,29 @@ namespace cpsLIB
 
         private System.Collections.Concurrent.ConcurrentDictionary<string, Frame> LFrameRcv = null; //Log of all received frames
         private List<Client> ListClients = new List<Client>();
-
-        //TODO: alle frames in liste speichern
-        //System.Collections.Concurrent.ConcurrentQueue<Frame> _fstackLog = null;
+        //private List<Client> ListClientsExternal = new List<Client>();
 
         //connection parameter
-                                                //Frames die auf eine anfrage hin empfangen wurden und verarbeitet werden können
+        //Frames die auf eine anfrage hin empfangen wurden und verarbeitet werden können
         private int TotalFramesFinished = 0;    //TODO: bisher nicht verwendet da receive counter ausgewertet wird
                                              
         public int TotalFramesSend = 0; //send frame count
         public TimeSpan TimeRcvAnswerMin = TimeSpan.MaxValue;
         private TimeSpan TimeRcvAnswerMax = TimeSpan.MinValue;
         //private TimeSpan TimeRcvAvg = TimeSpan.Zero;
- 
+
         //Constructor
-        public CpsNet(IcpsLIB FrmMain, bool ModeDbg = false)
+        //public CpsNet(List<Client> _ListClientsExternal, bool ModeDbg = false)
+        //object Listener;
+        public CpsNet(IcpsLIB listener, bool ModeDbg = false)
         {
-            _FrmMain = FrmMain;
+            
+            // if (listener.GetType() == typeof(IcpsLIB))
+            QueueRcvFrameToApp =  listener;
+            //else
+            //    logMsg(new log(prio.warning, "CpsNet konstruktor done"));
+            //_FrmMain = FrmMain;
+            //ListClientsExternal = _ListClientsExternal;
             _fstack = new System.Collections.Concurrent.ConcurrentDictionary<string, Frame>();
             LFrameRcv = new System.Collections.Concurrent.ConcurrentDictionary<string, Frame>();
             
@@ -82,6 +87,8 @@ namespace cpsLIB
                 LogFSL = new FrmStatusLog();
             LogFSL.Visible = visible;
         }
+
+
     
         #region client
         public Client newClient(string ip, string port)
@@ -111,8 +118,8 @@ namespace cpsLIB
 
             if (CheckIfConnected(f)){
                 //der App wird mitgeteilt das dieses frame verschickt wurde
-                if (SendFramesCallback)
-                    _FrmMain.interprete_frame(f);
+                //if (SendFramesCallback)
+                //    _FrmMain.interprete_frame(f);
 
                 //check if frame is allready on stack
                 if (_fstack.ContainsKey(f.GetKey())) ;
@@ -202,19 +209,7 @@ namespace cpsLIB
         public void receive(Frame f)
         {
             logMsg(new log(prio.info,"<- receive frame", f));
-
-            /*
-            foreach (Client cs in ListClients)
-                if (cs.RemoteIp == f.client.RemoteIp) //hier wichtig das nur die ip verglichen wird. port ist unterschiedlich
-                {
-                    cs.state = udp_state.connected;
-                }
-
-            //wenn keine connection zu dem frame gefunden wurde wird fehler gemeldet
-            f.ChangeState(FrameWorkingState.warning, "no connection found to: " + f.client + " make new one!");
-            logMsg(new log(prio.warning, "no connection found to: " + f.client + " make new one!", f));
-             * */
-
+            
             //remove frame from "InWork Jobs" 
             if (!_fstack.IsEmpty)
             {
@@ -222,8 +217,13 @@ namespace cpsLIB
                 if (_fstack.TryGetValue(f.GetKey(), out frameStack))
                 {
                     foreach (Client cs in ListClients)
-                        if (cs.RemoteIp == f.client.RemoteIp) //hier wichtig das nur die ip verglichen wird. port ist unterschiedlich
+                        if (cs.RemoteIp == f.client.RemoteIp)
+                        { //hier wichtig das nur die ip verglichen wird. port ist unterschiedlich
                             cs.state = udp_state.connected;
+                            
+                            QueueRcvFrameToApp.interprete_frame(f);
+                            //Listener.
+                        }
 
                     TotalFramesFinished++;
 
@@ -252,7 +252,9 @@ namespace cpsLIB
             //logMsg(new log(prio.info, "f.TimeRcvAnswer" + f.TimeRcvAnswer, f));
 
             //received frame will be passed to the main application
-            _FrmMain.interprete_frame(f);
+            //################# EDIT -> change from frm to plc
+            //_FrmMain.interprete_frame(f);
+
         }
 
 

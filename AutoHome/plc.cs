@@ -163,7 +163,40 @@ namespace AutoHome
         #endregion
 
         #region interprete data
+        /// <summary>
+        /// API für QueueRcvFromCps.cs
+        /// </summary>
+        /// <param name="f"></param>
+        public bool interpreteFrame(Frame f) {
+            if (f.client.RemoteIp == _ip)
+            {
+                try
+                {
+                    Frame _f = (Frame)f;
 
+                    if (_f.GetHeaderFlag(FrameHeaderFlag.SYNC))
+                    {
+                        log.msg(this, "interpreteFrame(), plc.cs: rcv FrameHeaderFlag.SYNC");
+                    }
+                    else if (_f.GetHeaderFlag(FrameHeaderFlag.MngData))
+                        log.msg(this, "interpreteFrame(), plc.cs: rcv FrameHeaderFlag.MngData");
+                    else if (_f.GetHeaderFlag(FrameHeaderFlag.ACKN))
+                        log.msg(this, "interpreteFrame(), plc.cs: rcv FrameHeaderFlag.ACKN");
+                    else if (_f.GetHeaderFlag(FrameHeaderFlag.PdataIO))
+                        ;//log.msg(this, "interpreteFrame(), plc.cs: rcv FrameHeaderFlag.PdataIO");
+                    else
+                        log.msg(this, "interpreteFrame(), plc.cs: rcv with UNKNOWN FrameHeaderFlag");
+                }
+                catch (Exception e)
+                {
+                    log.exception(this, "interprete_frame_fkt()", e);
+                }
+                return true;
+            }
+            else
+                return false;
+
+        }
         public void interpreteDataMng(Frame f)
         {
             if (f.getPayload(0) == (Int16)DataMngType.GetPlcTime)

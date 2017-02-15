@@ -10,5 +10,6 @@ namespace cpsLIB
         void interprete_frame(object o);  //o == Frame
         //void logSendRcv(object o); //o == Frame
         void logMsg(string msg);
+
     }
 }

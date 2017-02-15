@@ -29,8 +29,9 @@ namespace AutoHome
         List<platform> list_platform = new List<platform>();
         List<floor_plan> list_floor_plan = new List<floor_plan>();
         List<aktuator_control> list_aktuator_controls = new List<aktuator_control>(); //list to store userControls of aktuator
-        List<string> ListLogMsg = new List<string>();
+        public List<string> ListLogMsg = new List<string>();
 
+        QueueRcvFromCps rcvQueue;
         cpsLIB.CpsNet CpsNet;
 
         #region init / connect / close
@@ -41,7 +42,7 @@ namespace AutoHome
 
             init_gui();
             make_status_bar();
-            
+
             initCps();
             init_timer();
 
@@ -64,8 +65,10 @@ namespace AutoHome
         }
         private void initCps()
         {
-            CpsNet = new cpsLIB.CpsNet(this, var.CpsNet_FrmStatusLog);
+            rcvQueue = new QueueRcvFromCps(this, list_plc);
+            CpsNet = new cpsLIB.CpsNet(rcvQueue, var.CpsNet_FrmStatusLog);
             CpsNet.serverSTART(var.CpsServerPort);
+            
 
             if (var.connect_to_plc_at_start)
             {

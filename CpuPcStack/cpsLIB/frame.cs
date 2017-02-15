@@ -70,14 +70,10 @@ namespace cpsLIB
                 _allFrameCounter++;
                 _allFrameCounterTotal++;
                 
-                this.client = _client; //client evtl überflüssig wenn nur wegen counter (***) verwendet
+                this.client = _client; //darüber kann ein Frame Objekt sich selbst versenden
                 TimeCreated = DateTime.Now;
                 LastSendDateTime = DateTime.Now;
                 frameSender = FS;
-                //RemoteIp = ip;
-
-                //if (int.TryParse(port, out RemotePort))
-                //{
 
                 ///#### "make new frame to send it later on" ####
                 if (frameSender.Equals(FrameSender.SEND))
