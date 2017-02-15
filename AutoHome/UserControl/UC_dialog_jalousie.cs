@@ -35,33 +35,36 @@ namespace AutoHome
                 if (value.Length > 1)
                 {
                     textBox_wind_go_up.Text = (Convert.ToDouble(value[2]) / 100).ToString("0.0");
-                    checkBox_initJalousie.Checked = Convert.ToBoolean(value[3]);
-
-                    this.BackColor = Control.DefaultBackColor;
-                    textBox_position.Text = value[4].ToString();
-                    textBox_angle.Text = value[5].ToString();
-
-                    if (value.Length < 79)
+                    if (value.Length > 2) //TODO: sporadisch kurze frames (length[3])
                     {
-                        log.msg(this, "UC_dialog_jalousie LoadData() with no event data; Length: " + value.Length.ToString());
-                        return;
-                    }
-                    //log.msg(this, "value length: " + value.Length.ToString());
+                        checkBox_initJalousie.Checked = Convert.ToBoolean(value[3]);
 
-                    for (int i = 0; i < EVENT_COUNT; i++)
-                    {
-                        Int16[] extractValue = new Int16[7];
-                        for (int x = 0; x < 7; x++)
+                        this.BackColor = Control.DefaultBackColor;
+                        textBox_position.Text = value[4].ToString();
+                        textBox_angle.Text = value[5].ToString();
+
+                        if (value.Length < 79)
                         {
-                            int index = 7 * i + x + 6;
-                            //log.msg(this, "index: " + index.ToString() + " value:" + value[index]);
-                            extractValue[x] = value[index];
+                            log.msg(this, "UC_dialog_jalousie LoadData() with no event data; Length: " + value.Length.ToString());
+                            return;
                         }
-                        //string tmp = "";
-                        //foreach (Int16 y in extractValue)
-                        //    tmp += y.ToString() + ", ";
-                        //log.msg(this, "extractValue: " + tmp);
-                        list_UC_jalousie[i].print_data(extractValue);
+                        //log.msg(this, "value length: " + value.Length.ToString());
+
+                        for (int i = 0; i < EVENT_COUNT; i++)
+                        {
+                            Int16[] extractValue = new Int16[7];
+                            for (int x = 0; x < 7; x++)
+                            {
+                                int index = 7 * i + x + 6;
+                                //log.msg(this, "index: " + index.ToString() + " value:" + value[index]);
+                                extractValue[x] = value[index];
+                            }
+                            //string tmp = "";
+                            //foreach (Int16 y in extractValue)
+                            //    tmp += y.ToString() + ", ";
+                            //log.msg(this, "extractValue: " + tmp);
+                            list_UC_jalousie[i].print_data(extractValue);
+                        }
                     }
                 }
                 else

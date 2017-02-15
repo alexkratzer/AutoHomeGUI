@@ -78,6 +78,7 @@ namespace AutoHome
             DataGridViewTextBoxColumn DGVtbtimestamp = new DataGridViewTextBoxColumn();
             DGVtbtimestamp.Name = "akt Name";
             DGVtbtimestamp.DataPropertyName = "Name";
+            DGVtbtimestamp.DefaultCellStyle.BackColor = Color.Green;
             DGVtbtimestamp.ReadOnly = true;
             dataGridView_aktuators.Columns.Add(DGVtbtimestamp);
 
@@ -89,6 +90,7 @@ namespace AutoHome
 
             DataGridViewCheckBoxColumn DGVCB_equalConfig = new DataGridViewCheckBoxColumn();
             DGVCB_equalConfig.DataPropertyName = "ConfigsEqual";
+            DGVCB_equalConfig.DefaultCellStyle.BackColor = ((Color)ConfigsEqualColor);
             dataGridView_aktuators.Columns.Add(DGVCB_equalConfig);
 
             DataGridViewTextBoxColumn DGVtbMsg = new DataGridViewTextBoxColumn();
@@ -120,6 +122,8 @@ namespace AutoHome
             updateDataGridView_aktuators();
         }
         private UserControl ucdialog = null;
+
+        public Color ConfigsEqualColor { get; private set; }
 
         private void dataGridView_aktuators_CellClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -177,6 +181,14 @@ namespace AutoHome
                 _akt.copyRunningToStartConfig();
             
             
+        }
+
+        private void dataGridView_aktuators_CellStateChanged(object sender, DataGridViewCellStateChangedEventArgs e)
+        {
+            if (e.Cell is DataGridViewCheckBoxCell)
+                e.Cell.Style.BackColor = Color.Red;
+            else
+                e.Cell.Style.BackColor = Color.Green;
         }
     }
 }

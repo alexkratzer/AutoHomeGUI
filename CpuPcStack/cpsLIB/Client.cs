@@ -14,7 +14,7 @@ namespace cpsLIB
         public string RemoteIp = "";
         public int RemotePort;
         public string RemotePortStr;
-        public udp_state state;
+        public volatile udp_state state;
         public List<Frame> LFrame; //log all frames send over this udp connection
         public Int16 CountSendFrames = 0;
 
@@ -41,7 +41,8 @@ namespace cpsLIB
 
         public string GetStatus()
         {
-            return RemoteIp + ":" + RemotePortStr + " {" + state.ToString() + " / SendFrames: " + LFrame.Count.ToString() + "/" + CountSendFrames.ToString() + " } ";
+            return RemoteIp + ":" + RemotePortStr + " state:" + state.ToString() + " SendFrames: " + LFrame.Count.ToString() + "/" + 
+                CountSendFrames.ToString() + " " ;
         }
         public string GetSendFrames()
         {
@@ -100,6 +101,7 @@ namespace cpsLIB
             }
             catch (Exception e)
             {
+                state = udp_state.SendError;
                 
                 //f.frameState = FrameState.ERROR;
                 //f.ChangeState(FrameWorkingState.error, "Exception send Frame: " + e.Message);

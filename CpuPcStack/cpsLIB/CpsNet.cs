@@ -11,7 +11,7 @@ namespace cpsLIB
     //TODO: für jede neue client anfrage eine liste mit status der verbindung verwalten.
     //als key für den datensatz die Remote IP verwenden
     
-    public enum udp_state { connected, disconnected }
+    public enum udp_state { connected, disconnected, SendError }
     //public enum msg_type { undef, info, warning, error }
     public class CpsNet
     {

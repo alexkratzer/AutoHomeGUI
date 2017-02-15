@@ -7,6 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Collections;
 using cpsLIB; //frames
+using System.Drawing;
 
 namespace AutoHome
 {
@@ -112,6 +113,21 @@ namespace AutoHome
                         return false;
                 }
                 return false;
+            }
+        }
+
+        public Color ConfigsEqualColor
+        {
+            get
+            {
+                if ((_ConfigAktuatorValuesRunning != null && _ConfigAktuatorValuesRunning.Any()) && (_ConfigAktuatorValuesStartup != null && _ConfigAktuatorValuesStartup.Any()))
+                {
+                    if (_ConfigAktuatorValuesStartup == _ConfigAktuatorValuesRunning)
+                        return Color.LightGreen;
+                    else
+                        return Color.OrangeRed;
+                }
+                return Color.Yellow;
             }
         }
 

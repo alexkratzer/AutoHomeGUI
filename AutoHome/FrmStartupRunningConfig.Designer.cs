@@ -56,6 +56,7 @@
             this.dataGridView_aktuators.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_aktuators_CellClick);
             this.dataGridView_aktuators.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView_aktuators_CellMouseClick);
             this.dataGridView_aktuators.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView_aktuators_CellMouseDoubleClick);
+            this.dataGridView_aktuators.CellStateChanged += new System.Windows.Forms.DataGridViewCellStateChangedEventHandler(this.dataGridView_aktuators_CellStateChanged);
             // 
             // panel_control
             // 

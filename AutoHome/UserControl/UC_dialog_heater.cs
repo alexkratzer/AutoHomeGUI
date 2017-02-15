@@ -39,7 +39,8 @@ namespace AutoHome
                     textBox_stop_at_degree.Text = (Convert.ToDouble(value[12]) / 100).ToString();
                     radioButton_state_on.Checked = Convert.ToBoolean(value[13]);
                     label_remaining_time.Text = value[14].ToString() + value[15].ToString();
-                    label_temp_ist.Text = "IST: " + (Convert.ToDouble(value[16]) / 100).ToString() + " °C";
+                    if(value.Length>16)
+                        label_temp_ist.Text = "IST: " + (Convert.ToDouble(value[16]) / 100).ToString() + " °C";
                     button_send.Visible = false;
                 }
                 else
