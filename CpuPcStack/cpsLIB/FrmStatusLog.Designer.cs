@@ -52,7 +52,7 @@
             // 
             this.dGV_Log.AllowUserToOrderColumns = true;
             this.dGV_Log.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dGV_Log.Dock = System.Windows.Forms.DockStyle.Top;
+            this.dGV_Log.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dGV_Log.Location = new System.Drawing.Point(0, 27);
             this.dGV_Log.Name = "dGV_Log";
             this.dGV_Log.Size = new System.Drawing.Size(1094, 557);

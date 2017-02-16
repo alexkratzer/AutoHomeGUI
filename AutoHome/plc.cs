@@ -5,6 +5,7 @@ using System.Text;
 using System.Net.Sockets;
 using System.Threading;
 using cpsLIB; //frames
+using System.Timers;
 
 namespace AutoHome
 {
@@ -12,6 +13,7 @@ namespace AutoHome
     [Serializable]
     class plc
     {
+        #region vars public
         private const string plc_default_name = "PLC not named";
 
         private string _ip;
@@ -66,6 +68,9 @@ namespace AutoHome
 
         public List<aktuator> ListAktuator;
 
+        //public int TimeRequestAktuatorStatusInterval = 1000;
+        #endregion
+
         #region tmp vars [NonSerialized]
         [NonSerialized]
         private cpsLIB.CpsNet cpsNet = null;
@@ -96,6 +101,51 @@ namespace AutoHome
             client_udp = new Client(_ip, port.ToString());
             ListAktuator = new List<aktuator>();
         }
+        /*
+        private void initRequestTimer() {
+            log.msg(this, "initRequestTimer: " + NamePlc);
+            System.Timers.Timer TimerInitRequest = new System.Timers.Timer();
+            TimerInitRequest.Elapsed += new ElapsedEventHandler(OnTimeRequest);
+            TimerInitRequest.Interval = 5000;//var.timer_GetRequestInterval;
+            TimerInitRequest.Enabled = true;
+        }
+
+        //alle aktoren und alle sensoren status abfragen
+        private void OnTimeRequest(object source, ElapsedEventArgs e) {
+
+            //********************************************************************************************************************
+            //collect all visible controll IDs and send GetRequest @PLC
+            //********************************************************************************************************************
+                ListSensorIDs = new List<short>();
+            
+            if(ListAktuator.Any())
+                foreach (aktuator a in ListAktuator)
+                        //sensor controlls sammeln und in einzelnen management frame versenden
+                        if (a.AktorType == aktor_type.sensor) //nur sensoren beachten
+                            ListSensorIDs.Add(a.Index);
+                        else
+                            //alle aktoren anfragen werden einzeln ein eigenem frame versendet
+                            a.plc_send_IO(DataIOType.GetState); //send GetRequest @PLC for all visible aktuator controll IDs
+
+
+            //********************************************************************************************************************
+            //send GetRequest @PLC
+            //********************************************************************************************************************
+            
+                if (client_udp != null && client_udp.state == udp_state.connected)
+                {
+                    //send get Time request @PLC
+                    send(Frame.MngData(client_udp, DataMngType.GetPlcTime));
+
+                    //send sensor value request @plc
+                    if (ListSensorIDs.Any())
+                    {
+                        ListSensorIDs.Insert(0, (Int16)DataMngType.GetPlcSensorValues);
+                        send(FrameHeaderFlag.MngData, ListSensorIDs.ToArray());
+                    }
+                }
+        }
+        */
         
         public void connect(CpsNet _cpsNet)
         {
@@ -115,6 +165,7 @@ namespace AutoHome
             Frame f = new Frame(client_udp);
             f.SetHeaderFlag(FrameHeaderFlag.SYNC);
             send(f);
+            //initRequestTimer();
         }
 
         #endregion
@@ -148,18 +199,6 @@ namespace AutoHome
             return client_udp;
         }
 
-        public void SetAktuatorData(Frame f) {
-            foreach (aktuator a in ListAktuator) {
-                if (f.isIOIndex(a.Index)) {
-                    if (f.getPayload(1) == (int)DataIOType.GetState)
-                        a.ValueFrame = f;
-                    else if (f.getPayload(1) == (int)DataIOType.GetParam)
-                        a.ConfigAktuatorValuesRunning = f.getPayload();
-                    else
-                        log.msg(this, "SetAktuatorData(), plc.cs: unknown DataIOType: [" + f.getPayload(2).ToString() + "]");
-                }
-            }
-        }
         #endregion
 
         #region interprete data
@@ -167,23 +206,23 @@ namespace AutoHome
         /// API für QueueRcvFromCps.cs
         /// </summary>
         /// <param name="f"></param>
-        public bool interpreteFrame(Frame f) {
-            if (f.client.RemoteIp == _ip)
+        public bool interpreteFrame(Frame _f) {
+            if (_f.client.RemoteIp == _ip)
             {
                 try
                 {
-                    Frame _f = (Frame)f;
+                    //Frame _f = (Frame)f;
 
                     if (_f.GetHeaderFlag(FrameHeaderFlag.SYNC))
-                    {
-                        log.msg(this, "interpreteFrame(), plc.cs: rcv FrameHeaderFlag.SYNC");
-                    }
+                        interpreteSYNCacknowlege(_f);
                     else if (_f.GetHeaderFlag(FrameHeaderFlag.MngData))
-                        log.msg(this, "interpreteFrame(), plc.cs: rcv FrameHeaderFlag.MngData");
+                        interpreteDataMng(_f);
+                    //log.msg(this, "interpreteFrame(), plc.cs: rcv FrameHeaderFlag.MngData");
                     else if (_f.GetHeaderFlag(FrameHeaderFlag.ACKN))
                         log.msg(this, "interpreteFrame(), plc.cs: rcv FrameHeaderFlag.ACKN");
                     else if (_f.GetHeaderFlag(FrameHeaderFlag.PdataIO))
-                        ;//log.msg(this, "interpreteFrame(), plc.cs: rcv FrameHeaderFlag.PdataIO");
+                        SetAktuatorData(_f);
+                    //log.msg(this, "interpreteFrame(), plc.cs: rcv FrameHeaderFlag.PdataIO");
                     else
                         log.msg(this, "interpreteFrame(), plc.cs: rcv with UNKNOWN FrameHeaderFlag");
                 }
@@ -195,9 +234,9 @@ namespace AutoHome
             }
             else
                 return false;
-
         }
-        public void interpreteDataMng(Frame f)
+
+        private void interpreteDataMng(Frame f)
         {
             if (f.getPayload(0) == (Int16)DataMngType.GetPlcTime)
             {
@@ -218,7 +257,7 @@ namespace AutoHome
             }
             else if (f.getPayload(0) == (Int16)DataMngType.GetPlcSensorValues)
             {
-                //TODO    : nicht aus Frame updaten sondern aus plc tmp daten; evtl update_SensorControl() über timer aufrufen und nicht via event
+                //evtl update_SensorControl() über timer aufrufen und nicht via event
                 //komplettes frame durchgehen und auspacken. für jeden sensorwert entsprechendes controll befüllen
 
 
@@ -240,16 +279,32 @@ namespace AutoHome
                 foreach (aktuator a in ListAktuator) 
                     if (DicSensorVal.ContainsKey(a.Index))
                         a.SensorValue = DicSensorVal[a.Index];
-                
-
             }
 
             //platform p_selected = (platform)comboBox_platform.SelectedItem;
             //if (p_selected != null)
-            //    p_selected.update_SensorControl(f);
-
+                //p_selected.update_SensorControl(f);
         }
 
+        private void SetAktuatorData(Frame f)
+        {
+            foreach (aktuator a in ListAktuator)
+            {
+                if (f.isIOIndex(a.Index))
+                {
+                    if (f.getPayload(1) == (int)DataIOType.GetState)
+                        a.ValueFrame = f;
+                    else if (f.getPayload(1) == (int)DataIOType.GetParam)
+                        a.ConfigAktuatorValuesRunning = f.getPayload();
+                    else
+                        log.msg(this, "SetAktuatorData(), plc.cs: unknown DataIOType: [" + f.getPayload(2).ToString() + "]");
+                }
+            }
+        }
+
+        private void interpreteSYNCacknowlege(Frame f) {
+            log.msg(this, "interpreteFrame(), plc.cs: rcv FrameHeaderFlag.SYNC -> " + f.ToString());
+        }
         #endregion
 
         #region running startup config

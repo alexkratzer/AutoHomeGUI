@@ -21,7 +21,7 @@ namespace AutoHome
     public enum aktor_type { undef, jalousie, light, heater, sensor }
     public enum msg_type { undef, info, warning, error }
 
-    public partial class FrmMain : Form, IcpsLIB
+    public partial class FrmMain : Form
     {
         public static readonly string tool_version = "V0.0.3";
 
@@ -47,6 +47,7 @@ namespace AutoHome
             init_timer();
 
             verifyDB();
+            //MessageBox.Show("tia project -> pn light stairs off erweitern für taster türe","todo");
         }
 
         private void load_projekt_data() {
@@ -1045,6 +1046,7 @@ namespace AutoHome
         {
             if (list_plc.Any())
             {
+
                 //********************************************************************************************************************
                 //collect all visible controll IDs and send GetRequest @PLC
                 //********************************************************************************************************************
@@ -1068,7 +1070,7 @@ namespace AutoHome
                 //send GetRequest @PLC
                 //********************************************************************************************************************
                 foreach (plc p in list_plc)
-                    if (p.getClient()!=null && p.getClient().state == udp_state.connected)
+                    if (p.getClient() != null && p.getClient().state == udp_state.connected)
                     {
                         //send get Time request @PLC
                         p.send(Frame.MngData(p.getClient(), DataMngType.GetPlcTime));
@@ -1088,6 +1090,21 @@ namespace AutoHome
             //this.Text = "AutoHome " + CpsNet.GetStatus();
             TSDDB_server.Text = "[server status] " + CpsNet.GetStatus();
             logMsgToolStripMenuItem.Text = "Log Msg [" + ListLogMsg.Count.ToString() + "]";
+
+            foreach (ToolStripDropDownButton p in statusStrip_bottom.Items)
+            {
+                if (((plc)p.Tag) != null) //TODO Server Button nicht beachten, dann abfrage auf !=null überflüssig
+                {
+                    udp_state state = ((plc)p.Tag).getClient().state;
+                    if (state == udp_state.connected && p.BackColor != Color.LightGreen)
+                        p.BackColor = Color.LightGreen;
+                    else if (state == udp_state.disconnected && p.BackColor != Color.Yellow)
+                        p.BackColor = Color.Yellow;
+                    else if (state == udp_state.SendError && p.BackColor != Color.Red)
+                        p.BackColor = Color.Red;
+                }
+            }
+            
         }
 
 
@@ -1128,220 +1145,220 @@ namespace AutoHome
         }
         #endregion
 
-        #region client callback (darstellung der werte in GUI)
+        #region client callback (darstellung der werte in GUI)  ==> obsulete, now handled over plc.cs
         
          /// <summary>
         /// interpretes the received Cps frame and display results @ gui
         /// </summary>
         /// <param name="f">received Cps frame</param>
-        private delegate void interprete_frameCallback(object f);
-        void IcpsLIB.interprete_frame(object o)
-        {
-            try
-            {
-                if (this.InvokeRequired)
-                    this.Invoke(new interprete_frameCallback(this.interprete_frame_fkt), new object[] { o });
-                else
-                    interprete_frame_fkt(o);
-            }
-            catch (Exception e)
-            {
-                log.exception(this, "interprete_frame(); writing to GUI failed!", e);
-            }
-        }
+        //private delegate void interprete_frameCallback(object f);
+        //void IcpsLIB.interprete_frame(object o)
+        //{
+        //    try
+        //    {
+        //        if (this.InvokeRequired)
+        //            this.Invoke(new interprete_frameCallback(this.interprete_frame_fkt), new object[] { o });
+        //        else
+        //            interprete_frame_fkt(o);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        log.exception(this, "interprete_frame(); writing to GUI failed!", e);
+        //    }
+        //}
 
-        private void interprete_frame_fkt(object f)
-        {
-            try
-            {
-                Frame _f = (Frame)f;
+        //private void interprete_frame_fkt(object f)
+        //{
+        //    try
+        //    {
+        //        Frame _f = (Frame)f;
 
-                if (_f.GetHeaderFlag(FrameHeaderFlag.SYNC))
-                {
-                    //sync frame empfangen -> statusanzeige "verbunden" in footer durch grün
-                    foreach (ToolStripDropDownButton p in statusStrip_bottom.Items)
-                        //statusStrip_bottom contains CPSstatus Label with no p.Tag
-                        if (p.Tag != null && (_f.client.RemoteIp == ((plc)p.Tag).getClient().RemoteIp))
-                            p.BackColor = Color.GreenYellow;
-                }
-                else if (_f.GetHeaderFlag(FrameHeaderFlag.MngData))
-                    interprete_MngData(_f);
-                else if (_f.GetHeaderFlag(FrameHeaderFlag.ACKN))
-                    ListLogMsg.Add("RCV: ACKN {" + _f.ToString() + "}");
-                else if (_f.GetHeaderFlag(FrameHeaderFlag.PdataIO))
-                    interprete_IOData(_f);
-                else
-                    ListLogMsg.Add("RCV: UNKNOWN {" + _f.ToString() + "}");
-            }
-            catch (Exception e)
-            {
-                log.exception(this, "interprete_frame_fkt()", e);
-            }
-        }
+        //        if (_f.GetHeaderFlag(FrameHeaderFlag.SYNC))
+        //        {
+        //            //sync frame empfangen -> statusanzeige "verbunden" in footer durch grün
+        //            foreach (ToolStripDropDownButton p in statusStrip_bottom.Items)
+        //                //statusStrip_bottom contains CPSstatus Label with no p.Tag
+        //                if (p.Tag != null && (_f.client.RemoteIp == ((plc)p.Tag).getClient().RemoteIp))
+        //                    p.BackColor = Color.GreenYellow;
+        //        }
+        //        else if (_f.GetHeaderFlag(FrameHeaderFlag.MngData))
+        //            interprete_MngData(_f);
+        //        else if (_f.GetHeaderFlag(FrameHeaderFlag.ACKN))
+        //            ListLogMsg.Add("RCV: ACKN {" + _f.ToString() + "}");
+        //        else if (_f.GetHeaderFlag(FrameHeaderFlag.PdataIO))
+        //            interprete_IOData(_f);
+        //        else
+        //            ListLogMsg.Add("RCV: UNKNOWN {" + _f.ToString() + "}");
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        log.exception(this, "interprete_frame_fkt()", e);
+        //    }
+        //}
 
-        private void interprete_MngData(Frame f) {
-            foreach (plc p in list_plc) 
-                if (f.client.RemoteIp == p.getClient().RemoteIp) 
-                    p.interpreteDataMng(f);
-            //ListLogMsg.Add("RCV: MngData {" + f.ToString() + "}");
+        //private void interprete_MngData(Frame f) {
+        //    foreach (plc p in list_plc) 
+        //        if (f.client.RemoteIp == p.getClient().RemoteIp) 
+        //            p.interpreteDataMng(f);
+        //    //ListLogMsg.Add("RCV: MngData {" + f.ToString() + "}");
 
-            foreach (ToolStripDropDownButton p in statusStrip_bottom.Items)
-            {
-                //statusStrip_bottom contains CPSstatus Label with no p.Tag
-                if (p.Tag != null && (f.client.RemoteIp == ((plc)p.Tag).getClient().RemoteIp)) {
+        //    foreach (ToolStripDropDownButton p in statusStrip_bottom.Items)
+        //    {
+        //        //statusStrip_bottom contains CPSstatus Label with no p.Tag
+        //        if (p.Tag != null && (f.client.RemoteIp == ((plc)p.Tag).getClient().RemoteIp)) {
 
-                    if (f.getPayload(0) == (Int16)DataMngType.GetPlcTime)
-                    {
-                        DateTime clockPlc = new DateTime(f.getPayload(1), f.getPayload(2), f.getPayload(3), f.getPayload(4), f.getPayload(5), f.getPayload(6));
+        //            if (f.getPayload(0) == (Int16)DataMngType.GetPlcTime)
+        //            {
+        //                DateTime clockPlc = new DateTime(f.getPayload(1), f.getPayload(2), f.getPayload(3), f.getPayload(4), f.getPayload(5), f.getPayload(6));
 
-                        if (var.FooterShowPlcTime)
-                            p.Text = p.Name + " [" + clockPlc.ToString("HH:mm:ss") + "]";
-                    }
-                        #region archive
+        //                if (var.FooterShowPlcTime)
+        //                    p.Text = p.Name + " [" + clockPlc.ToString("HH:mm:ss") + "]";
+        //            }
+        //                #region archive
 
-                        //try
-                        //{
-                        //    if (f.getPayload(0) == (Int16)DataMngType.GetPlcTime)
-                        //    {
-                        //        DateTime clockPlc = new DateTime(f.getPayload(1), f.getPayload(2), f.getPayload(3), f.getPayload(4), f.getPayload(5), f.getPayload(6));
+        //                //try
+        //                //{
+        //                //    if (f.getPayload(0) == (Int16)DataMngType.GetPlcTime)
+        //                //    {
+        //                //        DateTime clockPlc = new DateTime(f.getPayload(1), f.getPayload(2), f.getPayload(3), f.getPayload(4), f.getPayload(5), f.getPayload(6));
 
-                        //        if(var.FooterShowPlcTime)
-                        //            p.Text = p.Name + " [" + clockPlc.ToString("HH:mm:ss") + "]";
-                        //        //p.BackColor = Color.Transparent;
-                        //        if (DateTime.Now.Subtract(new TimeSpan(0, 0, var.MngData_AcceptedClockDelay)) > clockPlc)
-                        //        {
-                        //            TimeSpan ts = DateTime.Now - clockPlc;
-                        //            p.Text = p.Name + " > " + ts.ToString(TSFormat(ts));
-                        //            p.BackColor = Color.Yellow;
-                        //        }
-                        //        else if (DateTime.Now.Add(new TimeSpan(0, 0, var.MngData_AcceptedClockDelay)) < clockPlc)
-                        //        {
-                        //            TimeSpan dt = clockPlc - DateTime.Now;
-                        //            p.Text = p.Name + " < " + dt.ToString(TSFormat(dt));
-                        //            p.BackColor = Color.Yellow;
-                        //        }
-                        //}
-                        //    else if (f.getPayload(0) == (Int16)DataMngType.SetPlcTime) {
-                        //        Int16 retval = f.getPayload(1);
-                        //        if(retval>0)
-                        //            MessageBox.Show("retval: " + f.getPayload(1) + Environment.NewLine + " see TIA Help [WR_SYS_T: Set time-of-day]", "SetPlcTime: ERROR");
-                        //    }
-                        //    else if (f.getPayload(0) == (Int16)DataMngType.GetPlcSensorValues)
-                        //    {
-                        //        if (pictureBox_platform.Visible)
-                        //        {
-                        //            platform p_selected = (platform)comboBox_platform.SelectedItem;
-                        //            if (p_selected != null)
-                        //            {
-                        //                //FrmLog.AddLog("SensorVal: " + f.ShowPayloadInt());
+        //                //        if(var.FooterShowPlcTime)
+        //                //            p.Text = p.Name + " [" + clockPlc.ToString("HH:mm:ss") + "]";
+        //                //        //p.BackColor = Color.Transparent;
+        //                //        if (DateTime.Now.Subtract(new TimeSpan(0, 0, var.MngData_AcceptedClockDelay)) > clockPlc)
+        //                //        {
+        //                //            TimeSpan ts = DateTime.Now - clockPlc;
+        //                //            p.Text = p.Name + " > " + ts.ToString(TSFormat(ts));
+        //                //            p.BackColor = Color.Yellow;
+        //                //        }
+        //                //        else if (DateTime.Now.Add(new TimeSpan(0, 0, var.MngData_AcceptedClockDelay)) < clockPlc)
+        //                //        {
+        //                //            TimeSpan dt = clockPlc - DateTime.Now;
+        //                //            p.Text = p.Name + " < " + dt.ToString(TSFormat(dt));
+        //                //            p.BackColor = Color.Yellow;
+        //                //        }
+        //                //}
+        //                //    else if (f.getPayload(0) == (Int16)DataMngType.SetPlcTime) {
+        //                //        Int16 retval = f.getPayload(1);
+        //                //        if(retval>0)
+        //                //            MessageBox.Show("retval: " + f.getPayload(1) + Environment.NewLine + " see TIA Help [WR_SYS_T: Set time-of-day]", "SetPlcTime: ERROR");
+        //                //    }
+        //                //    else if (f.getPayload(0) == (Int16)DataMngType.GetPlcSensorValues)
+        //                //    {
+        //                //        if (pictureBox_platform.Visible)
+        //                //        {
+        //                //            platform p_selected = (platform)comboBox_platform.SelectedItem;
+        //                //            if (p_selected != null)
+        //                //            {
+        //                //                //FrmLog.AddLog("SensorVal: " + f.ShowPayloadInt());
 
-                        //                //Dictionary<Int16, float> dicSensorVal = new Dictionary<short, float>();
-                        //                ////dicSensorVal.Clear();
-                        //                ////komplettes frame durchgehen und auspacken. für jeden sensorwert entsprechendes controll befüllen
-                        //                //float SensorValue;
-                        //                //for (int i = 3; i < (f.getPaloadIntLengt()); i = i + 3)
-                        //                //{
-                        //                //    if (f.getPayload(i + 2) != 0)
-                        //                //        SensorValue = (float) f.getPayload(i + 1) / (float)f.getPayload(i + 2);
-                        //                //    else
-                        //                //        SensorValue = f.getPayload(i + 1);
+        //                //                //Dictionary<Int16, float> dicSensorVal = new Dictionary<short, float>();
+        //                //                ////dicSensorVal.Clear();
+        //                //                ////komplettes frame durchgehen und auspacken. für jeden sensorwert entsprechendes controll befüllen
+        //                //                //float SensorValue;
+        //                //                //for (int i = 3; i < (f.getPaloadIntLengt()); i = i + 3)
+        //                //                //{
+        //                //                //    if (f.getPayload(i + 2) != 0)
+        //                //                //        SensorValue = (float) f.getPayload(i + 1) / (float)f.getPayload(i + 2);
+        //                //                //    else
+        //                //                //        SensorValue = f.getPayload(i + 1);
 
-                        //                //    dicSensorVal.Add(f.getPayload(i), SensorValue);
-                        //                //}
+        //                //                //    dicSensorVal.Add(f.getPayload(i), SensorValue);
+        //                //                //}
 
-                        //                p_selected.update_SensorControl(f);
+        //                //                p_selected.update_SensorControl(f);
 
 
-                        //                //p_selected.update_control(f);
-                        //                //FrmLog.AddLog("SensorVal_dic: " + f.ShowPayloadInt());
-                        //            }
-                        //        }
-                        //    }
-                        //}
-                        //catch (Exception e) {
-                        //    //TODO: globalen error log mit notify in GUI einrichten
-                        //    //MessageBox.Show(e.Message, "exception")
-                        //        FrmLog.AddLog("Exception interprete_MngData: " + e.Message);
-                        //    ;
-                        //}
-                        #endregion
-                        break; //da richtige plc zu ToolStripDropDownButton bearbeitet wurde schleife beenden
-                }   
-            }
-        }
-        private string TSFormat(TimeSpan ts) {
-            string format = "";
+        //                //                //p_selected.update_control(f);
+        //                //                //FrmLog.AddLog("SensorVal_dic: " + f.ShowPayloadInt());
+        //                //            }
+        //                //        }
+        //                //    }
+        //                //}
+        //                //catch (Exception e) {
+        //                //    //TODO: globalen error log mit notify in GUI einrichten
+        //                //    //MessageBox.Show(e.Message, "exception")
+        //                //        FrmLog.AddLog("Exception interprete_MngData: " + e.Message);
+        //                //    ;
+        //                //}
+        //                #endregion
+        //                break; //da richtige plc zu ToolStripDropDownButton bearbeitet wurde schleife beenden
+        //        }   
+        //    }
+        //}
+        //private string TSFormat(TimeSpan ts) {
+        //    string format = "";
 
-            if (ts.Days != 0)
-                format = @"d\T\ hh\:mm";
-            else if (ts.Hours != 0)
-                format = @"hh\:mm\:ss";
-            else if (ts.Minutes != 0)
-                format = @"mm\:ss";
-            else if (ts.Seconds != 0)
-                format = @"ss\.fff";
-            else
-                format = @"ss\.fffff";
-            return format;
-        }
+        //    if (ts.Days != 0)
+        //        format = @"d\T\ hh\:mm";
+        //    else if (ts.Hours != 0)
+        //        format = @"hh\:mm\:ss";
+        //    else if (ts.Minutes != 0)
+        //        format = @"mm\:ss";
+        //    else if (ts.Seconds != 0)
+        //        format = @"ss\.fff";
+        //    else
+        //        format = @"ss\.fffff";
+        //    return format;
+        //}
 
-        private void interprete_IOData(Frame f) {
-            /// DBG -  display all IOData in Log Form
-            //FrmLog.AddLog("IOData {" + f.client.RemoteIp + " " + f.ToString() + "} " + f.getPayloadHex() + " / " + f.ShowPayloadInt());
+        //private void interprete_IOData(Frame f) {
+        //    /// DBG -  display all IOData in Log Form
+        //    //FrmLog.AddLog("IOData {" + f.client.RemoteIp + " " + f.ToString() + "} " + f.getPayloadHex() + " / " + f.ShowPayloadInt());
 
-            //speichere frame in zugehörigem aktuator
-            //über time_tick wird wert in gui angezeigt
-            foreach (plc p in list_plc) 
-                if (p.IPplc==f.client.RemoteIp) 
-                    p.SetAktuatorData(f);
+        //    //speichere frame in zugehörigem aktuator
+        //    //über time_tick wird wert in gui angezeigt
+        //    foreach (plc p in list_plc) 
+        //        if (p.IPplc==f.client.RemoteIp) 
+        //            p.SetAktuatorData(f);
                 
             
-            ////[view platform] fill aktuator dialog box with values
-            //if (_FrmMain_controlDialog != null)
-            //    if (f.isIOIndex(_FrmMain_controlDialog.get_aktuator_id()))
-            //        _FrmMain_controlDialog.update_with_frame(f);
+        //    ////[view platform] fill aktuator dialog box with values
+        //    //if (_FrmMain_controlDialog != null)
+        //    //    if (f.isIOIndex(_FrmMain_controlDialog.get_aktuator_id()))
+        //    //        _FrmMain_controlDialog.update_with_frame(f);
 
-            ////update [view controls]
-            //if (pictureBox_platform.Visible)
-            //{
-            //    //update [view platform] GUI with values
-            //    platform p_selected = (platform)comboBox_platform.SelectedItem;
-            //    if (p_selected != null)
-            //        p_selected.update_control(f);
-            //}
-            //else if (panel_controls.Visible)
-            //{
-            //    foreach (aktuator_control ac in list_aktuator_controls)
-            //    {
-            //        if (f.isIOIndex(ac.aktuatorIndex))
-            //            ac.interprete(f);
-            //    }
+        //    ////update [view controls]
+        //    //if (pictureBox_platform.Visible)
+        //    //{
+        //    //    //update [view platform] GUI with values
+        //    //    platform p_selected = (platform)comboBox_platform.SelectedItem;
+        //    //    if (p_selected != null)
+        //    //        p_selected.update_control(f);
+        //    //}
+        //    //else if (panel_controls.Visible)
+        //    //{
+        //    //    foreach (aktuator_control ac in list_aktuator_controls)
+        //    //    {
+        //    //        if (f.isIOIndex(ac.aktuatorIndex))
+        //    //            ac.interprete(f);
+        //    //    }
             
-        }
+        //}
 
         /// <summary>
         /// log/error messages from udp server
         /// </summary>
         /// <param name="s"></param>
-        private delegate void srv_msgCallback(string s);
-        void IcpsLIB.logMsg(string msg)
-        {
-            try
-            {
-                this.Invoke(new srv_msgCallback(this.srv_msg_funkt), new object[] { msg });
-                log.msg(this, "IcpsLIB.logMs " + msg);
-            }
-            catch (Exception e)
-            {
-                //form closing throws exeption -> TODO catch
-                log.exception(this, "srv_msgCallback: writing to GUI failed", e);
-                //MessageBox.Show("srv_msgCallback: " + e.Message, "writing to GUI failed");
-            }
-        }
-        private void srv_msg_funkt(string s)
-        {
-            ListLogMsg.Add(DateTime.Now.ToString("mm:ss:ms") + " -- " + s);
-        }
+        //private delegate void srv_msgCallback(string s);
+        //void IcpsLIB.logMsg(string msg)
+        //{
+        //    try
+        //    {
+        //        this.Invoke(new srv_msgCallback(this.srv_msg_funkt), new object[] { msg });
+        //        log.msg(this, "IcpsLIB.logMs " + msg);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        //form closing throws exeption -> TODO catch
+        //        log.exception(this, "srv_msgCallback: writing to GUI failed", e);
+        //        //MessageBox.Show("srv_msgCallback: " + e.Message, "writing to GUI failed");
+        //    }
+        //}
+        //private void srv_msg_funkt(string s)
+        //{
+        //    ListLogMsg.Add(DateTime.Now.ToString("mm:ss:ms") + " -- " + s);
+        //}
 
 
         #endregion

@@ -28,8 +28,23 @@ namespace AutoHome
             
             label_CpsStatus.Text = _plc.getClient().GetStatus();
             label_plc_time.Text = _plc.clockPlc.ToString();
-            label_time_difference.Text = _plc.clockPlcJitter.ToString();
+            label_time_difference.Text = _plc.clockPlcJitter.ToString(@"d\T\ hh\:mm\:ss\.fff");
         }
+        //private string TSFormat(TimeSpan ts) {
+        //    string format = "";
+
+        //    if (ts.Days != 0)
+        //        format = @"d\T\ hh\:mm";
+        //    else if (ts.Hours != 0)
+        //        format = @"hh\:mm\:ss";
+        //    else if (ts.Minutes != 0)
+        //        format = @"mm\:ss";
+        //    else if (ts.Seconds != 0)
+        //        format = @"ss\.fff";
+        //    else
+        //        format = @"ss\.fffff";
+        //    return format;
+        //}
 
         private void button_connect_Click(object sender, EventArgs e)
         {

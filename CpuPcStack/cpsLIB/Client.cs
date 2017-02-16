@@ -14,12 +14,15 @@ namespace cpsLIB
         public string RemoteIp = "";
         public int RemotePort;
         public string RemotePortStr;
-        public volatile udp_state state;
+        
         public List<Frame> LFrame; //log all frames send over this udp connection
         public Int16 CountSendFrames = 0;
         //private object CallPlc;//plc 
 
         Thread _clientThread;
+
+        [NonSerialized]
+        public volatile udp_state state = udp_state.disconnected;
 
         public Client(string ip, string port)
         {
@@ -97,15 +100,15 @@ namespace cpsLIB
                     _clientThread = new Thread(() => send_fkt(f));
                     _clientThread.IsBackground = true;
                     _clientThread.Start();
+                    return true;
                 } else;
                      //"Remote udp_state NOT connected - NO Frame is send");
             }
             catch (Exception e)
             {
                 state = udp_state.SendError;
-                return false;
             }
-            return true;
+            return false;
         }
         
 

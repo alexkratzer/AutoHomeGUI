@@ -131,8 +131,9 @@ namespace AutoHome
             }
         }
 
+        //TODO: wahrscheinlich kann referenz auf plc inzwischen mit serialisert werden -> testen mit vorher Roaming speichern
         [NonSerialized]//nicht serialisieren da sonst keine referenz auf das aktuelle objekt vorhanden ist sondern mit alten kopien gearbeitet wird
-        public plc _plc;
+        public plc _plc;//wird in var.deserialice gesetzt
 
 
         [NonSerialized]
