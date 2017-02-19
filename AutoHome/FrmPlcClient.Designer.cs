@@ -36,7 +36,6 @@
             this.button_CopyRunningToStartupConfig = new System.Windows.Forms.Button();
             this.button_CopyStartupToRunningConfig = new System.Windows.Forms.Button();
             this.button_send_ibs = new System.Windows.Forms.Button();
-            this.button_getClientStatus = new System.Windows.Forms.Button();
             this.label_plc_time = new System.Windows.Forms.Label();
             this.label_timeJitterDesc = new System.Windows.Forms.Label();
             this.label_time_difference = new System.Windows.Forms.Label();
@@ -123,16 +122,6 @@
             this.button_send_ibs.UseVisualStyleBackColor = true;
             this.button_send_ibs.Click += new System.EventHandler(this.button_send_ibs_Click);
             // 
-            // button_getClientStatus
-            // 
-            this.button_getClientStatus.Location = new System.Drawing.Point(12, 125);
-            this.button_getClientStatus.Name = "button_getClientStatus";
-            this.button_getClientStatus.Size = new System.Drawing.Size(75, 23);
-            this.button_getClientStatus.TabIndex = 8;
-            this.button_getClientStatus.Text = "client status";
-            this.button_getClientStatus.UseVisualStyleBackColor = true;
-            this.button_getClientStatus.Click += new System.EventHandler(this.button_getClientStatus_Click);
-            // 
             // label_plc_time
             // 
             this.label_plc_time.AutoSize = true;
@@ -178,7 +167,6 @@
             this.Controls.Add(this.label_time_difference);
             this.Controls.Add(this.label_timeJitterDesc);
             this.Controls.Add(this.label_plc_time);
-            this.Controls.Add(this.button_getClientStatus);
             this.Controls.Add(this.button_send_ibs);
             this.Controls.Add(this.button_CopyStartupToRunningConfig);
             this.Controls.Add(this.button_CopyRunningToStartupConfig);
@@ -204,7 +192,6 @@
         private System.Windows.Forms.Button button_CopyRunningToStartupConfig;
         private System.Windows.Forms.Button button_CopyStartupToRunningConfig;
         private System.Windows.Forms.Button button_send_ibs;
-        private System.Windows.Forms.Button button_getClientStatus;
         private System.Windows.Forms.Label label_plc_time;
         private System.Windows.Forms.Label label_timeJitterDesc;
         private System.Windows.Forms.Label label_time_difference;

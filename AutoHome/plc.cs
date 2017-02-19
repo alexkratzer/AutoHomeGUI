@@ -311,7 +311,7 @@ namespace AutoHome
         }
 
         private void interpreteSYNCacknowlege(Frame f) {
-            log.msg(this, "interpreteFrame(), plc.cs: rcv FrameHeaderFlag.SYNC -> " + f.ToString());
+            //log.msg(this, "interpreteFrame(), plc.cs: rcv FrameHeaderFlag.SYNC -> " + f.ToString());
         }
         #endregion
 

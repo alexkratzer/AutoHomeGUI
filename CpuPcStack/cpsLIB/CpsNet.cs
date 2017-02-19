@@ -16,12 +16,13 @@ namespace cpsLIB
     {
         //flags to control all connections
         public Int16 MaxSYNCResendTrys = 3; //Anzahl der erlaubten Wiederholungen bei SYNC Telegram
+        public Int16 MaxRcvErrorCounter = 20; //Anzahl der nicht beantworteten requests bis UDPstate auf disconnected gesetzt wird
         public Int16 WATCHDOG_WORK = 2000; //Erlaubte Zeitdauer in ms bis PLC geantwortet haben muss
         public bool SendFramesCallback = false; //es werden die "zu sendenden frames" als callback zurückgeliefert
-        public bool SendOnlyIfConnected = true; //TRUE => ohne Verbindungsaufbau über SYNC werden keine Frames gesendet
+        public bool SendOnlyIfConnected = true; //TRUE => ohne Verbindungsaufbau über SYNC werden keine Frames gesendet (oder udp_state!=connected)
 
         //private vars
-        private IcpsLIB QueueRcvFrameToApp;
+        private IcpsLIB QueueRcvFrameToApp; //API from calling main frm
         private Server _udp_server;
         private FrmStatusLog LogFSL;
         //System.Collections.Concurrent.ConcurrentQueue<Frame> _fstack = null;
@@ -30,7 +31,8 @@ namespace cpsLIB
         public System.Collections.Concurrent.ConcurrentDictionary<string, Frame> _fstack = null; //all in work frames without an answer
         // new System.Collections.Concurrent.BlockingCollection<Frame>(100);
 
-        private System.Collections.Concurrent.ConcurrentDictionary<string, Frame> LFrameRcv = null; //Log of all received frames
+        private System.Collections.Concurrent.ConcurrentDictionary<Int64, Frame> LFrameRcv = null; //Log of all received frames
+        
         private List<Client> ListClients = new List<Client>();
         //private List<Client> ListClientsExternal = new List<Client>();
 
@@ -56,7 +58,7 @@ namespace cpsLIB
             //_FrmMain = FrmMain;
             //ListClientsExternal = _ListClientsExternal;
             _fstack = new System.Collections.Concurrent.ConcurrentDictionary<string, Frame>();
-            LFrameRcv = new System.Collections.Concurrent.ConcurrentDictionary<string, Frame>();
+            LFrameRcv = new System.Collections.Concurrent.ConcurrentDictionary<Int64, Frame>();
             
             StackWorker();
 
@@ -71,6 +73,11 @@ namespace cpsLIB
         { 
             if(LogFSL!=null && LogFSL.Visible)
                 LogFSL.AddLog(_log);
+            if(_log.Prio != LogType.info)
+                if(_log.F!=null)
+                    QueueRcvFrameToApp.logMsg("[" + _log.F.client.ToString() + "] "+_log.ToString());
+            else
+                    QueueRcvFrameToApp.logMsg("[no client] " + _log.ToString());
 
             //Ausgabe der LogMsg auch in Main Frm Log Window
             /*
@@ -96,7 +103,8 @@ namespace cpsLIB
         {
             Client client = new Client(ip, port);  
             ListClients.Add(client);
-            logMsg(new log(prio.info, "make new client: " + client.ToString()));
+            logMsg(new log(LogType.info, "new client: " + ip));
+            QueueRcvFrameToApp.logMsg("[" + client.ToString() + "] make new client");
             return client;
         }
 
@@ -117,20 +125,20 @@ namespace cpsLIB
             //        }
             //    }
 
-            if (CheckIfConnected(f)){
+            if (CheckIfConnected(f)) {
                 //der App wird mitgeteilt das dieses frame verschickt wurde
                 //if (SendFramesCallback)
                 //    _FrmMain.interprete_frame(f);
 
                 //check if frame is allready on stack
-                if (_fstack.ContainsKey(f.GetKey())) ;
+                if (_fstack.ContainsKey(f.GetKey()))
                     //TODO: über controlls kommen hier viele frames rein
-                //logMsg(new log(prio.error, "send frame which is allready on stack", f));
+                    logMsg(new log(LogType.error, "send frame which is allready on stack", f));
                 else
                 {
                     if (_fstack.TryAdd(f.GetKey(), f))
                     {
-                        logMsg(new log(prio.info, "-> send frame ", f));
+                        logMsg(new log(LogType.info, "-> send frame ", f));
                         TotalFramesSend++;
                         f.LastSendDateTime = DateTime.Now;
                         f.client.send(f);
@@ -138,11 +146,11 @@ namespace cpsLIB
                     }
                     else
                         //logMsg("ERROR add frame to _fstack");
-                        logMsg(new log(prio.error, "ERROR add frame @ _fstack", f));
+                        logMsg(new log(LogType.error, "ERROR add frame @ _fstack", f));
                 }
             }
             else
-                logMsg(new log(prio.error, "Remote udp_state NOT connected - NO Frame is send", f));
+                ;// logMsg(new log(prio.error, "Remote udp_state NOT connected - NO Frame is send", f));
             return false;
 
             
@@ -209,7 +217,7 @@ namespace cpsLIB
 
         public void receive(Frame f)
         {
-            logMsg(new log(prio.info,"<- receive frame", f));
+            logMsg(new log(LogType.info,"<- receive frame", f));
             
             //remove frame from "InWork Jobs" 
             if (!_fstack.IsEmpty)
@@ -221,6 +229,7 @@ namespace cpsLIB
                         if (cs.RemoteIp == f.client.RemoteIp)
                         { //hier wichtig das nur die ip verglichen wird. port ist unterschiedlich
                             cs.state = udp_state.connected;
+                            cs.RcvErrorCounter = 0; //reset error counter
                             QueueRcvFrameToApp.interprete_frame(f);
                         }
 
@@ -236,16 +245,17 @@ namespace cpsLIB
                     takeFrameFromStack(frameStack.GetKey());
                 }
                 else
-                    logMsg(new log(prio.error, "TryGetValue() from _fstack == FALSE ", f));
+                    logMsg(new log(LogType.error, "TryGetValue() from _fstack == FALSE ", f));
             }
             else
-                logMsg(new log(prio.warning, "received udp frame without request", f));
+                logMsg(new log(LogType.warning, "received udp frame without request", f));
 
             //logMsg("[- put received frame in list: " + f.ToString());
             //put received frame in list 
             //TODO: Key wiederholt sich bei zyklischen daten -> deswegen nach einiger zeit error -> deswegen temporär auskommentiert
-            //if (!LFrameRcv.TryAdd(f.GetKey(), f))
-            //    logMsg(new log(prio.error, "ERROR add frame to LFrameRcv", f));
+            LFrameIndex++;
+            if (!LFrameRcv.TryAdd(LFrameIndex, f))
+                logMsg(new log(LogType.error, "ERROR add frame to LFrameRcv", f));
 
 
             //logMsg(new log(prio.info, "f.TimeRcvAnswer" + f.TimeRcvAnswer, f));
@@ -255,7 +265,7 @@ namespace cpsLIB
             //_FrmMain.interprete_frame(f);
 
         }
-
+        private Int64 LFrameIndex = 0;
 
         #endregion
 
@@ -266,7 +276,7 @@ namespace cpsLIB
             Int64 RcvTimeAvg = 0;
             if (LFrameRcv.Any())
             {
-                foreach (KeyValuePair<string, Frame> fList in LFrameRcv)
+                foreach (KeyValuePair<Int64, Frame> fList in LFrameRcv)
                     //foreach (Frame fList in LFrameRcv)
                     RcvTimeAvg += fList.Value.TimeRcvAnswer.Milliseconds;
                 RcvTimeAvg = RcvTimeAvg / LFrameRcv.Count;
@@ -296,39 +306,11 @@ namespace cpsLIB
             if (_fstack.TryRemove(key, out f))
                 return true;
 
-            logMsg(new log(prio.error, "ERROR dequeue frame from stack... ", f));
+            logMsg(new log(LogType.error, "ERROR dequeue frame from stack... ", f));
             return false;
 
         }
-
-        /// <summary>
-        /// neuen frame für cpu in puffer legen
-        /// wenn ein identisches frame (index wird nicht bewertet) 
-        /// bereits vorhanden ist wird dieses nicht erneut abgelegt
-        /// </summary>
-        /// <param name="f"></param>
-        //private bool putFrameToStack(Frame f)
-        //{
-        //    ///TODO: funktionalität entfernt -> wenn benötigt muss im frame header der index maskiert werden
-
-        //    //if (!_fstack.IsEmpty)
-        //    //    foreach (Frame frame in _fstack)
-        //    //    {
-        //    //        if ( (frame.getPayload() == f.getPayload()) && (f.heaheader.Equals(f.header))
-        //    //        //if (frame.isEqualExeptIndex_WASTE(f))
-        //    //        {
-        //    //            f.ChangeState(FrameWorkingState.error, "Frame already in send buffer");
-                        
-        //    //            Thread.Sleep(100);
-        //    //            return false;
-        //    //        }
-        //    //    }
-
-        //    f.ChangeState(FrameWorkingState.inWork, "Frame put to Stack");
-        //    _fstack.Enqueue(f);
-        //    return true;
-        //}
-
+        
         public int InWorkFrameCount()
         {
             if (_fstack != null)
@@ -350,9 +332,10 @@ namespace cpsLIB
         /// <summary>
         /// verifiziert alle "in arbeit" befindlichen frames und überwacht die bearbeitungszeit
         /// </summary>
+        private volatile bool StackWorkerWork = true;
         private void StackWorker_fkt()
         {
-            while (true)
+            while (StackWorkerWork)
             {
                 if (!_fstack.IsEmpty)
                 {
@@ -367,21 +350,29 @@ namespace cpsLIB
                                 {
                                     dicF.Value.SendTrys++;
                                     dicF.Value.LastSendDateTime = DateTime.Now;
-                                    logMsg(new log(prio.warning, "repeat send", dicF.Value));
+                                    logMsg(new log(LogType.warning, "repeat send", dicF.Value));
                                     dicF.Value.client.send(dicF.Value); //TODO: return bool auswerten
                                 }
                                 else
                                 {
-                                    logMsg(new log(prio.error, "stop sending at try: (" + dicF.Value.SendTrys.ToString() + ")", dicF.Value));
+                                    dicF.Value.client.RcvErrorCounter++;
+                                    logMsg(new log(LogType.error, "stop sending at try: (" + dicF.Value.SendTrys.ToString() + ")", dicF.Value));
                                     if(!takeFrameFromStack(dicF.Key))
-                                            logMsg(new log(prio.error, "ERROR: takeFrameFromStack()", dicF.Value));
+                                            logMsg(new log(LogType.error, "ERROR: takeFrameFromStack()", dicF.Value));
                                 }
                             }
                             else
                             {
-                                logMsg(new log(prio.error, "no answer to sendrequest", dicF.Value));
+                                dicF.Value.client.RcvErrorCounter++;
+                                logMsg(new log(LogType.error, "no answer to sendrequest", dicF.Value));
                                 if (!takeFrameFromStack(dicF.Key))
-                                    logMsg(new log(prio.error, "ERROR: takeFrameFromStack()", dicF.Value));
+                                    logMsg(new log(LogType.error, "ERROR: takeFrameFromStack()", dicF.Value));
+                            }
+
+                            if (dicF.Value.client.RcvErrorCounter > MaxRcvErrorCounter)
+                            {
+                                QueueRcvFrameToApp.logMsg("["+ dicF.Value.client.ToString() + "] client disconnected because no answer to request");
+                                dicF.Value.client.state = udp_state.disconnected;
                             }
                         }
                     }
@@ -393,6 +384,7 @@ namespace cpsLIB
 
         #region cleanup
         public void cleanup() {
+            StackWorkerWork = false;
             serverSTOP();
             Thread.Sleep(100);
         }

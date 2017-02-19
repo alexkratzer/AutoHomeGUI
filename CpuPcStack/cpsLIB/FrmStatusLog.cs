@@ -40,7 +40,7 @@ namespace cpsLIB
             dGV_Log.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             dGV_Log.DataSource = bindingSource;
 
-            foreach(prio p in Enum.GetValues(typeof(prio)))
+            foreach(LogType p in Enum.GetValues(typeof(LogType)))
                 cLB_msgType.Items.Add(p,true);
         }
 

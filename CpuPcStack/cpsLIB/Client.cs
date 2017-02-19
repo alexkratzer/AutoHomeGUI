@@ -19,10 +19,14 @@ namespace cpsLIB
         public Int16 CountSendFrames = 0;
         //private object CallPlc;//plc 
 
+        [NonSerialized]
         Thread _clientThread;
 
         [NonSerialized]
         public volatile udp_state state = udp_state.disconnected;
+
+        [NonSerialized]
+        public int RcvErrorCounter = 0;
 
         public Client(string ip, string port)
         {
@@ -79,6 +83,7 @@ namespace cpsLIB
         /// <returns></returns>
         public bool sendSYNC()
         {
+            RcvErrorCounter = 0;
             Frame f = new Frame(new Client(RemoteIp, RemotePortStr));
             f.SetHeaderFlag(FrameHeaderFlag.SYNC);
             return send(f);

@@ -96,10 +96,8 @@ namespace cpsLIB
                 {
                     // ++ rcv Frame from Remote ++
                     //data includes FrameHeader
-
                     header = new FrameHeader(data, out FramePayloadByte);
                 }
-                
             }
             catch (Exception) {}
         }

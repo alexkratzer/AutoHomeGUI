@@ -22,7 +22,7 @@ namespace cpsLIB
             this.listening = false;
             _sender = CpsNet;
             if(!int.TryParse(port, out _srvPort))
-                _sender.logMsg(new log(prio.error, "udp_server -> error convert Port to int: " + port));
+                _sender.logMsg(new log(LogType.error, "udp_server -> error convert Port to int: " + port));
             initSrv();
         }
         public Server(CpsNet FrmMain, int port)
@@ -62,7 +62,7 @@ namespace cpsLIB
             }
             catch (SocketException)
             {
-                _sender.logMsg(new log(prio.fatal_error, "udp_server -> Exception making UdpClient @Port: " + _srvPort));
+                _sender.logMsg(new log(LogType.fatal_error, "udp_server -> Exception making UdpClient @Port: " + _srvPort));
             }
 
             if (listener != null)
@@ -71,14 +71,14 @@ namespace cpsLIB
 
                 try
                 {
-                    _sender.logMsg(new log(prio.info, "server -> listening @port: " + _srvPort));
+                    _sender.logMsg(new log(LogType.info, "server listen @port: " + _srvPort));
                     while (this.listening)
                     {
                         byte[] bytes = listener.Receive(ref groupEP);
                         //_sender.logMsg("udp_server receive MESSAGE from: " + groupEP.Address.ToString() + ":" + groupEP.Port.ToString());
                         
                         if (bytes == null || bytes.Length == 0)
-                            _sender.logMsg(new log(prio.warning, groupEP.Address.ToString() + ":" + groupEP.Port.ToString() + 
+                            _sender.logMsg(new log(LogType.warning, groupEP.Address.ToString() + ":" + groupEP.Port.ToString() + 
                                 "udp_server receive EMPTY MESSAGE"));
 
                         Frame f = new Frame(new Client(groupEP.Address.ToString(), groupEP.Port.ToString()), bytes );
@@ -89,16 +89,16 @@ namespace cpsLIB
                 catch (System.Net.Sockets.SocketException se)
                 {
                     if(!se.ToString().Contains("Ein Blockierungsvorgang wurde durch einen Aufruf von WSACancelBlockingCall unterbrochen"))
-                        _sender.logMsg(new log(prio.fatal_error, "udp_server receive SocketException: " + se.ToString())); 
+                        _sender.logMsg(new log(LogType.fatal_error, "udp_server receive SocketException: " + se.ToString())); 
                 }
                 catch (Exception e)
                 {
-                    _sender.logMsg(new log(prio.fatal_error, "udp_server receive EXEPTION: " + e.ToString()));
+                    _sender.logMsg(new log(LogType.fatal_error, "udp_server receive EXEPTION: " + e.ToString()));
                 }
                 finally
                 {
                     listener.Close();
-                    _sender.logMsg(new log(prio.fatal_error, "STOP udp_server"));
+                    _sender.logMsg(new log(LogType.fatal_error, "STOP udp_server"));
                 }
             }
         }

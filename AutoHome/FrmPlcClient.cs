@@ -20,16 +20,25 @@ namespace AutoHome
             _plc = (plc)plc;
             _cpsNet = (CpsNet)cpsNet;
             this.Text = _plc.NamePlc;
-            UpdateGui();
+            init_timer();
             
         }
-
-        private void UpdateGui() {
+        #region update gui timer
+        System.Windows.Forms.Timer TimerUpdateGui;
+        private void init_timer()
+        {
+            TimerUpdateGui = new System.Windows.Forms.Timer();
+            TimerUpdateGui.Interval = var.timer_refresh_GUI;
+            TimerUpdateGui.Tick += new EventHandler(UpdateGui_tick);
+            TimerUpdateGui.Start();
+        }
+        private void UpdateGui_tick(object sender, EventArgs e) {
             
             label_CpsStatus.Text = _plc.getClient().GetStatus();
             label_plc_time.Text = _plc.clockPlc.ToString();
             label_time_difference.Text = _plc.clockPlcJitter.ToString(@"d\T\ hh\:mm\:ss\.fff");
         }
+        #endregion
         //private string TSFormat(TimeSpan ts) {
         //    string format = "";
 
@@ -89,11 +98,6 @@ namespace AutoHome
             _plc.send(f3);
         }
 
-        private void button_getClientStatus_Click(object sender, EventArgs e)
-        {
-            UpdateGui();
-            
-        }
     }
     
 }

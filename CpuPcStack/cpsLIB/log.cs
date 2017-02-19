@@ -5,21 +5,21 @@ using System.Text;
 using System.IO;
 
 namespace cpsLIB {
-    public enum prio {info=0, warning=1, error=2, fatal_error=3, dbg = 4 }
+    public enum LogType {info=0, warning=1, error=2, fatal_error=3, dbg = 4 }
     public class log {      
         private DateTime timestamp;
-        private prio prio;
+        private LogType prio;
         private Frame f;
         private string msg;
 
-        public log(prio _prio, string _msg)
+        public log(LogType _prio, string _msg)
         {
             this.prio = _prio;
             this.msg = _msg;
             this.timestamp = DateTime.Now;
         }
 
-        public log(prio _prio, string _msg, Frame _f)
+        public log(LogType _prio, string _msg, Frame _f)
         {
             this.prio = _prio; 
             this.f = _f;
@@ -49,7 +49,7 @@ namespace cpsLIB {
             get { return f; }
             set { f = value; }
         }
-        public prio Prio
+        public LogType Prio
         {
             get { return prio; }
             set { prio = value; }
@@ -93,6 +93,11 @@ namespace cpsLIB {
                 else
                     return "- - -";
             }
+        }
+
+        public override string ToString()
+        {
+            return timestamp.ToString() + " [" + prio.ToString() + "] " + Msg ;
         }
     }
 }
