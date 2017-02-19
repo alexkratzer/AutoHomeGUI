@@ -79,8 +79,8 @@ namespace AutoHome
 
         public void update_control()
         {
-            if (_PictureBox != null && _aktuator.ValueFrame != null)
-                    _PictureBox.pic_update(_aktuator.ValueFrame);
+            if (_PictureBox != null && _aktuator.ConfigAktuatorValuesRunning.Length != 0)
+                    _PictureBox.pic_update(_aktuator.ConfigAktuatorValuesRunning);
             else if (_type == aktor_type.sensor && _UCsensorValue != null)
                 _UCsensorValue.updateValue(_aktuator.SensorValue);
             //else

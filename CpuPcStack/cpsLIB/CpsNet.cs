@@ -27,7 +27,8 @@ namespace cpsLIB
         //System.Collections.Concurrent.ConcurrentQueue<Frame> _fstack = null;
 
         //public da CpsClient schreibt
-        public System.Collections.Concurrent.ConcurrentDictionary<string, Frame> _fstack = null;// new System.Collections.Concurrent.BlockingCollection<Frame>(100);
+        public System.Collections.Concurrent.ConcurrentDictionary<string, Frame> _fstack = null; //all in work frames without an answer
+        // new System.Collections.Concurrent.BlockingCollection<Frame>(100);
 
         private System.Collections.Concurrent.ConcurrentDictionary<string, Frame> LFrameRcv = null; //Log of all received frames
         private List<Client> ListClients = new List<Client>();
@@ -220,9 +221,7 @@ namespace cpsLIB
                         if (cs.RemoteIp == f.client.RemoteIp)
                         { //hier wichtig das nur die ip verglichen wird. port ist unterschiedlich
                             cs.state = udp_state.connected;
-                            
                             QueueRcvFrameToApp.interprete_frame(f);
-                            //Listener.
                         }
 
                     TotalFramesFinished++;
@@ -237,7 +236,7 @@ namespace cpsLIB
                     takeFrameFromStack(frameStack.GetKey());
                 }
                 else
-                    logMsg(new log(prio.error, "TryGetValue from _fstack == FALSE  ", f));
+                    logMsg(new log(prio.error, "TryGetValue() from _fstack == FALSE ", f));
             }
             else
                 logMsg(new log(prio.warning, "received udp frame without request", f));
@@ -267,11 +266,11 @@ namespace cpsLIB
             Int64 RcvTimeAvg = 0;
             if (LFrameRcv.Any())
             {
-                    foreach (KeyValuePair<string, Frame> fList in LFrameRcv)
+                foreach (KeyValuePair<string, Frame> fList in LFrameRcv)
                     //foreach (Frame fList in LFrameRcv)
-                        RcvTimeAvg += fList.Value.TimeRcvAnswer.Milliseconds;
-                    RcvTimeAvg = RcvTimeAvg / LFrameRcv.Count;
-                
+                    RcvTimeAvg += fList.Value.TimeRcvAnswer.Milliseconds;
+                RcvTimeAvg = RcvTimeAvg / LFrameRcv.Count;
+
             }
 
             return "[Frame min: " + TimeRcvAnswerMin.Milliseconds.ToString() + 
@@ -279,8 +278,8 @@ namespace cpsLIB
                 " avg: " + RcvTimeAvg.ToString() + 
                 " @work: " + InWorkFrameCount() + 
                 //" done: " + TotalFramesFinished.ToString() +
-                " send: " + TotalFramesSend + 
-                " rcv: " + LFrameRcv.Count().ToString() +
+                " send: " + TotalFramesSend +
+                " rcv: " + _udp_server.CountRcvFrames.ToString() + "/" + LFrameRcv.Count().ToString() +
                 " clients: " + ListClients.Count.ToString() + 
                 "]";
         }
@@ -357,35 +356,37 @@ namespace cpsLIB
             {
                 if (!_fstack.IsEmpty)
                 {
-                    foreach (KeyValuePair<string, Frame> f in _fstack)
+                    foreach (KeyValuePair<string, Frame> dicF in _fstack)
                     {
-                        if (f.Value.LastSendDateTime.AddMilliseconds(WATCHDOG_WORK) < DateTime.Now)
+                        if (dicF.Value.LastSendDateTime.AddMilliseconds(WATCHDOG_WORK) < DateTime.Now)
                         {
                             //hit Watchdog
-                            if (f.Value.GetHeaderFlag(FrameHeaderFlag.SYNC))
+                            if (dicF.Value.GetHeaderFlag(FrameHeaderFlag.SYNC))
                             {
-                                if (f.Value.SendTrys < MaxSYNCResendTrys)
+                                if (dicF.Value.SendTrys < MaxSYNCResendTrys)
                                 {
-                                    f.Value.SendTrys++;
-                                    f.Value.LastSendDateTime = DateTime.Now;
-                                    logMsg(new log(prio.warning, "repeat send", f.Value));
-                                    f.Value.client.send(f.Value); //TODO: return bool auswerten
+                                    dicF.Value.SendTrys++;
+                                    dicF.Value.LastSendDateTime = DateTime.Now;
+                                    logMsg(new log(prio.warning, "repeat send", dicF.Value));
+                                    dicF.Value.client.send(dicF.Value); //TODO: return bool auswerten
                                 }
                                 else
                                 {
-                                    logMsg(new log(prio.error, "stop sending at try: (" + f.Value.SendTrys.ToString() + ")", f.Value));
-                                    takeFrameFromStack(f.Key);
+                                    logMsg(new log(prio.error, "stop sending at try: (" + dicF.Value.SendTrys.ToString() + ")", dicF.Value));
+                                    if(!takeFrameFromStack(dicF.Key))
+                                            logMsg(new log(prio.error, "ERROR: takeFrameFromStack()", dicF.Value));
                                 }
                             }
                             else
                             {
-                                logMsg(new log(prio.error, "no answer to sendrequest", f.Value));
-                                takeFrameFromStack(f.Key);
+                                logMsg(new log(prio.error, "no answer to sendrequest", dicF.Value));
+                                if (!takeFrameFromStack(dicF.Key))
+                                    logMsg(new log(prio.error, "ERROR: takeFrameFromStack()", dicF.Value));
                             }
                         }
                     }
                 }
-                Thread.Sleep(10);
+                Thread.Sleep(200);
             }
         }
         #endregion

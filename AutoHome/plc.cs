@@ -13,7 +13,9 @@ namespace AutoHome
     [Serializable]
     class plc
     {
+        
         #region vars public
+
         private const string plc_default_name = "PLC not named";
 
         private string _ip;
@@ -91,7 +93,7 @@ namespace AutoHome
         Dictionary<Int16, float> DicSensorVal;
         #endregion
 
-
+        //Thread SendMsg;
         #region construktor / init / connect
         public plc(string ip, int port, string plc_name = "not named")
         {
@@ -101,13 +103,14 @@ namespace AutoHome
             client_udp = new Client(_ip, port.ToString());
             ListAktuator = new List<aktuator>();
         }
-        /*
+       
         private void initRequestTimer() {
-            log.msg(this, "initRequestTimer: " + NamePlc);
+            //log.msg(this, "initRequestTimer: " + NamePlc);
             System.Timers.Timer TimerInitRequest = new System.Timers.Timer();
             TimerInitRequest.Elapsed += new ElapsedEventHandler(OnTimeRequest);
-            TimerInitRequest.Interval = 5000;//var.timer_GetRequestInterval;
+            TimerInitRequest.Interval = 500;//var.timer_GetRequestInterval;
             TimerInitRequest.Enabled = true;
+            
         }
 
         //alle aktoren und alle sensoren status abfragen
@@ -145,7 +148,7 @@ namespace AutoHome
                     }
                 }
         }
-        */
+        
         
         public void connect(CpsNet _cpsNet)
         {
@@ -166,6 +169,11 @@ namespace AutoHome
             f.SetHeaderFlag(FrameHeaderFlag.SYNC);
             send(f);
             //initRequestTimer();
+
+            //SendMsg = new Thread(new ThreadStart(initRequestTimer));
+            //SendMsg.IsBackground = true;
+
+            //SendMsg.Start();
         }
 
         #endregion
@@ -293,7 +301,7 @@ namespace AutoHome
                 if (f.isIOIndex(a.Index))
                 {
                     if (f.getPayload(1) == (int)DataIOType.GetState)
-                        a.ValueFrame = f;
+                        a.ValueStateRunning = f.getPayload();
                     else if (f.getPayload(1) == (int)DataIOType.GetParam)
                         a.ConfigAktuatorValuesRunning = f.getPayload();
                     else
@@ -308,7 +316,6 @@ namespace AutoHome
         #endregion
 
         #region running startup config
-
         public string ShowRunningConfig()
         {
             string s= "ShowRunningConfig @" + _PLC_Name + Environment.NewLine;
@@ -331,6 +338,8 @@ namespace AutoHome
         /// </summary>
         public void ReadRunningConfig() {
             foreach (aktuator a in ListAktuator) {
+                if (a.AktorType == aktor_type.sensor) //sensor aktuatoren haben keine running config
+                    continue;
                 Frame f = new Frame(getClient(), new Int16[] { a.Index, (int)DataIOType.GetParam });
                 f.SetHeaderFlag(FrameHeaderFlag.PdataIO);
                 send(f);

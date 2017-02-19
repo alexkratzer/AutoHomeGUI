@@ -177,7 +177,7 @@ namespace AutoHome
         {
             aktuator _akt = dataGridView_aktuators.SelectedRows[0].DataBoundItem as aktuator;
             DialogResult dr = MessageBox.Show("Copy Running to Startup Config?", _akt.Name, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
-            if (dr == DialogResult.OK) 
+            if (dr == DialogResult.Yes) 
                 _akt.copyRunningToStartConfig();
             
             
@@ -189,6 +189,11 @@ namespace AutoHome
                 e.Cell.Style.BackColor = Color.Red;
             else
                 e.Cell.Style.BackColor = Color.Green;
+        }
+
+        private void dataGridView_aktuators_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

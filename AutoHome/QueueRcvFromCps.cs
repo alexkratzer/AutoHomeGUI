@@ -20,7 +20,7 @@ namespace AutoHome
         int dbgcount = 0;
         public void interprete_frame(object o)
         {
-            if (dbgcount > 50)
+            if (dbgcount > 10)
                 return ;
 
             foreach (plc p in ListPlc)
@@ -37,5 +37,9 @@ namespace AutoHome
             FrmMain.ListLogMsg.Add(msg);
             //throw new NotImplementedException();
         }
+
+
+
+
     }
 }

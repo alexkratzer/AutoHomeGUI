@@ -79,13 +79,13 @@ namespace AutoHome
         }
 
         [NonSerialized]//aktuelle config in cpu muss immer neu ausgelesen werden
-        private Int16[] _ConfigAktuatorValuesRunning; //running config of aktuator
+        private Int16[] _ConfigAktuatorValuesRunning; //running config of aktuator     
         public Int16[] ConfigAktuatorValuesRunning
         {
             get
             {
                 if (_ConfigAktuatorValuesRunning == null)
-                    return new Int16[] { 0 };
+                    return new Int16[0];
                 else
                     return _ConfigAktuatorValuesRunning;
             }
@@ -107,7 +107,7 @@ namespace AutoHome
             {
                 if ((_ConfigAktuatorValuesRunning != null && _ConfigAktuatorValuesRunning.Any()) && (_ConfigAktuatorValuesStartup != null && _ConfigAktuatorValuesStartup.Any()))
                 {
-                    if (_ConfigAktuatorValuesStartup == _ConfigAktuatorValuesRunning)
+                    if (_ConfigAktuatorValuesStartup.SequenceEqual(_ConfigAktuatorValuesRunning))
                         return true;
                     else
                         return false;
@@ -115,7 +115,6 @@ namespace AutoHome
                 return false;
             }
         }
-
         public Color ConfigsEqualColor
         {
             get
@@ -131,13 +130,26 @@ namespace AutoHome
             }
         }
 
+        [NonSerialized]
+        private Int16[] _ValueStateRunning;
+        public Int16[] ValueStateRunning {
+            get
+            {
+                if (_ValueStateRunning == null)
+                    return new Int16[0];
+                else
+                    return _ValueStateRunning;
+            }
+            set { _ValueStateRunning = value; }
+        }
+
         //TODO: wahrscheinlich kann referenz auf plc inzwischen mit serialisert werden -> testen mit vorher Roaming speichern
         [NonSerialized]//nicht serialisieren da sonst keine referenz auf das aktuelle objekt vorhanden ist sondern mit alten kopien gearbeitet wird
         public plc _plc;//wird in var.deserialice gesetzt
 
 
-        [NonSerialized]
-        public Frame ValueFrame; //nur tämporere werte -> aktuator
+        //[NonSerialized]
+        //public Frame ValueFrame; //nur tämporere werte -> aktuator
         [NonSerialized]
         public float SensorValue; //nur tämporere werte -> Sensorwert
         #endregion

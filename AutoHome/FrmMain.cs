@@ -1041,12 +1041,21 @@ namespace AutoHome
             timer_footer_connection_status.Stop();
         }
 
-
+        int dbg_count = 10;
         void timer_GetRequestInterval_Tick(object sender, EventArgs e)
         {
+            dbg_count++; //TODO: in eigenen timer auslagern
+            if (dbg_count > 10)
+            {
+                dbg_count = 0;
+                if (list_plc.Any())
+                    foreach (plc p in list_plc)
+                        p.ReadRunningConfig();
+            }
+
+
             if (list_plc.Any())
             {
-
                 //********************************************************************************************************************
                 //collect all visible controll IDs and send GetRequest @PLC
                 //********************************************************************************************************************
@@ -1083,6 +1092,7 @@ namespace AutoHome
                         }
                     }
             }
+            
         }
 
         void footer_connection_status_Tick(object sender, EventArgs e)

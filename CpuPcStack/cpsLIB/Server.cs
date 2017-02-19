@@ -15,6 +15,7 @@ namespace cpsLIB
         UdpClient listener = null;
         int _srvPort;
         private volatile bool listening;
+        public Int32 CountRcvFrames = 0;
 
         public Server(CpsNet CpsNet, string port)
         {
@@ -81,8 +82,8 @@ namespace cpsLIB
                                 "udp_server receive EMPTY MESSAGE"));
 
                         Frame f = new Frame(new Client(groupEP.Address.ToString(), groupEP.Port.ToString()), bytes );
-                        
                         _sender.receive(f);
+
                     }
                 }
                 catch (System.Net.Sockets.SocketException se)

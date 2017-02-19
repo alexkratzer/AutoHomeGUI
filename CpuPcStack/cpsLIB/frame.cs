@@ -57,8 +57,8 @@ namespace cpsLIB
         // static meta data
         public static bool _RemoteIsBigEndian = true; //PC = Little-Endian, CPU = Big-Endian
 
-        public static Int16 _allFrameCounter = 0; //frame index -> at >255 restart @0
-        public static Int64 _allFrameCounterTotal = 0; //all frames in total since tool start
+        //public static Int16 _allFrameCounterStatic = 0; //frame index -> at > ca 65000 restart @0
+        //public static Int64 _allFrameCounterTotal = 0; //all frames in total since tool start
         #endregion
 
         #region construktor
@@ -67,8 +67,8 @@ namespace cpsLIB
             //TODO: catch ursache beheben(client == null)
             try
             {
-                _allFrameCounter++;
-                _allFrameCounterTotal++;
+                //_allFrameCounterStatic++;
+                //_allFrameCounterTotal++;
                 
                 this.client = _client; //darüber kann ein Frame Objekt sich selbst versenden
                 TimeCreated = DateTime.Now;
@@ -80,8 +80,9 @@ namespace cpsLIB
                 {
                     // ++ send Frame to Remote ++
                     //data is only payload, no FrameHeader
-                    Index_tmp = _allFrameCounter;
-                    
+                    //Index_tmp = _allFrameCounterStatic;
+                    Index_tmp = client.CountSendFrames;
+
                     //header = new FrameHeader(client.CountSendFrames); (***)
                     header = new FrameHeader(Index_tmp);
                     FramePayloadByte = data;
@@ -108,7 +109,7 @@ namespace cpsLIB
         public override string ToString()
         {
             //return "[" + frameSender.ToString() + " / " + client.RemoteIp + " / " + header.ToString() + "] ";
-            return _allFrameCounterTotal.ToString() + " " + frameSender.ToString() + " / " + header.ToString();
+            return Index_tmp.ToString() + " " + frameSender.ToString() + " / " + header.ToString();
         }
 
         private byte[] changeEndian(byte[] data)
@@ -300,7 +301,7 @@ namespace cpsLIB
             /// Telegram Structure:
             /// 1 byte StructVersion; 1 byte ByteHeaderFlag; 2 byte reserviert; int16 FrameIndex; byte[x] payload
             //public static Int16 SendFramesCount = 0;
-            public static Int16 RcvFramesCount = 0;
+            //public static Int16 RcvFramesCount = 0;
             byte StructVersion = 1; //Versionskennung dieser Frame Struktur. Damit wäre es später möglich die Struktur zu verändern      
             byte ByteHeaderFlag = 0x00; //Sammelbyte das den Zustand der folgenden flags entspricht
             /*
@@ -354,8 +355,7 @@ namespace cpsLIB
             //the payload from the frame is extractet
             public FrameHeader(byte[] ByteArray, out byte[] extractet_payload)
             {
-                RcvFramesCount++;
-
+                //RcvFramesCount++;
                 if (ByteArray.Length >= FrameHeaderByteLength)
                 {
                     StructVersion = ByteArray[0];

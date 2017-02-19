@@ -18,7 +18,7 @@ namespace AutoHome
     {
         public platform_control _platform_control;
         Label l;
-        private Frame lastFrame = null;
+        private Int16[] lastValue;
 
         //neues element wird erstellt
         public PBplatformControl(aktor_type t, platform_control platform_control)
@@ -72,22 +72,22 @@ namespace AutoHome
         /// <summary>
         /// aktuell dargestelltes bild wird je nach aktualdaten aus cpu angepasst
         /// </summary>
-        public void pic_update(cpsLIB.Frame f)
+        public void pic_update(Int16[] value)
         {
             //no content changed to last request
-            if (lastFrame != null && lastFrame.IsEqualPayload(f))
+            if (lastValue != null && value.SequenceEqual(lastValue))
                 return;
-
+            
             this.BackColor = Color.Transparent;
             this.Controls.Remove(l);
 
-            if (!f.isJob(DataIOType.GetState))
-                log.msg(this, "pic_update() with != DataIOType.GetState");
+            //if (!f.isJob(DataIOType.GetState))
+            //    log.msg(this, "pic_update() with != DataIOType.GetState");
             
             switch (_platform_control._aktuator.AktorType)
             {
                 case aktor_type.light:
-                    if (Convert.ToBoolean(f.getPayload(2)))
+                    if (Convert.ToBoolean(value[2]))
                         Image = new Bitmap(AutoHome.Properties.Resources.img_candle_on);
                     //Image = System.Drawing.Bitmap.FromFile(var.img_candle_on);
                     else
@@ -95,19 +95,19 @@ namespace AutoHome
                     break;
                 case aktor_type.jalousie:
                     
-                        if (f.getPayload(2) >= 0 && f.getPayload(2) < 33)
+                        if (value[2] >= 0 && value[2] < 33)
                             Image = new Bitmap(Properties.Resources.img_jalousie_up);
-                        else if (f.getPayload(2) < 66)
+                        else if (value[2] < 66)
                             Image = new Bitmap(Properties.Resources.img_jalousie_middle);
-                        else if (f.getPayload(2) <= 100)
+                        else if (value[2] <= 100)
                             Image = new Bitmap(Properties.Resources.img_jalousie_down);
                         //PictureBox pbu = new PictureBox();
                         //pbu.Image = System.Drawing.Bitmap.FromFile(var.workingdir + "\\img_arrow_up.png");
                         //this.Controls.Add(pbu);
                     break;
                 case aktor_type.heater:
-                        bool state_on = Convert.ToBoolean(f.getPayload(2));
-                        bool ctrl_manual = Convert.ToBoolean(f.getPayload(3));
+                        bool state_on = Convert.ToBoolean(value[2]);
+                        bool ctrl_manual = Convert.ToBoolean(value[3]);
 
                         if (state_on && !ctrl_manual) //an und automatic
                             Image = new Bitmap(Properties.Resources.img_heater_on);
@@ -126,7 +126,8 @@ namespace AutoHome
                     //    break;
             }
 
-            lastFrame = f;
+            lastValue = value;
+            //lastFrame = f;
         }
 
 

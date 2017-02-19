@@ -35,7 +35,7 @@ namespace AutoHome
                 if (value.Length > 1)
                 {
                     textBox_wind_go_up.Text = (Convert.ToDouble(value[2]) / 100).ToString("0.0");
-                    if (value.Length > 2) //TODO: sporadisch kurze frames (length[3])
+                    if (value.Length > 3) //TODO: sporadisch kurze frames (length[3])
                     {
                         checkBox_initJalousie.Checked = Convert.ToBoolean(value[3]);
 
