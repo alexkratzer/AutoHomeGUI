@@ -21,7 +21,8 @@ namespace AutoHome
             _cpsNet = (CpsNet)cpsNet;
             this.Text = _plc.NamePlc;
             init_timer();
-            
+
+            comboBox_headerFlag.DataSource = Enum.GetValues(typeof(FrameHeaderFlag));
         }
         #region update gui timer
         System.Windows.Forms.Timer TimerUpdateGui;
@@ -93,11 +94,33 @@ namespace AutoHome
 
         private void button_send_ibs_Click(object sender, EventArgs e)
         {
-            Frame f3 = new Frame(_plc.getClient(), new Int16[] { 1 });
-            f3.SetHeaderFlag(FrameHeaderFlag.MngData);
-            _plc.send(f3);
+            List<string> strPayload = new List<string>();
+            strPayload.AddRange(textBox_payload.Text.Split(new char[] { ',', ' ', ';', '|', '.'}));
+            if ((FrameHeaderFlag)comboBox_headerFlag.SelectedItem == FrameHeaderFlag.PdataIO)
+                strPayload.Insert(0, textBox_aktuatorID.Text);
+
+            Int16 []IntPayload = new Int16[strPayload.Count];
+
+            for(int i = 0; i < strPayload.Count; i++)
+            {
+                Int16 IntConv;
+                if (Int16.TryParse(strPayload[i], out IntConv))
+                    IntPayload[i] = IntConv;
+                else
+                    log.msg(this, "button_send_ibs: Int16.TryParse ERROR (" + textBox_payload.Text + ")");
+            }
+            Frame frm = new Frame(_plc.getClient(), IntPayload);
+            frm.SetHeaderFlag((FrameHeaderFlag)comboBox_headerFlag.SelectedItem);
+            _plc.send(frm);
         }
 
+        private void comboBox_headerFlag_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if ((FrameHeaderFlag)comboBox_headerFlag.SelectedItem == FrameHeaderFlag.PdataIO)
+                panel_IOdata.Visible = true;
+            else
+                panel_IOdata.Visible = false;
+        }
     }
     
 }

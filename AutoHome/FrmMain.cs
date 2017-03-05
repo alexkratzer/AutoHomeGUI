@@ -330,12 +330,12 @@ namespace AutoHome
         }
         private void onToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            var.Notify = true;
         }
 
         private void offToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            var.Notify = false;
         }
 
         #region cmd ETA
@@ -1026,6 +1026,8 @@ namespace AutoHome
             timer_GetRequestInterval.Tick += new EventHandler(timer_GetRequestInterval_Tick);
 
             TimerUpdateGui.Start();
+            timer_footer_connection_status.Start();
+
             if (var.start_timers_at_start)
                 timer_start();
         }
@@ -1033,15 +1035,19 @@ namespace AutoHome
         private void timer_start()
         {
             timer_GetRequestInterval.Start();
-            timer_footer_connection_status.Start();
+            
         }
         private void timer_stop()
         {
             timer_GetRequestInterval.Stop();
-            timer_footer_connection_status.Stop();
         }
 
         int dbg_count = 10;
+        /// <summary>
+        /// collect all visible controll IDs and send GetRequest @PLC
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void timer_GetRequestInterval_Tick(object sender, EventArgs e)
         {
             dbg_count++; //TODO: in eigenen timer auslagern
@@ -1095,6 +1101,11 @@ namespace AutoHome
             
         }
 
+        /// <summary>
+        /// footer server status wird angezeigt
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void footer_connection_status_Tick(object sender, EventArgs e)
         {
             //this.Text = "AutoHome " + CpsNet.GetStatus();
@@ -1114,10 +1125,8 @@ namespace AutoHome
                         p.BackColor = Color.Red;
                 }
             }
-            
         }
-
-
+        
         /// <summary>
         /// alle controls in gui werden mit ihren aktual werten befüllt
         /// </summary>

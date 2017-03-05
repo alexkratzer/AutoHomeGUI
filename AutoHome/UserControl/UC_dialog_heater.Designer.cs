@@ -310,7 +310,7 @@
             this.Controls.Add(this.checkBox_EditLock);
             this.Controls.Add(this.radioButton_state_on);
             this.Name = "UC_dialog_heater";
-            this.Size = new System.Drawing.Size(175, 191);
+            this.Size = new System.Drawing.Size(175, 196);
             this.panel_ctrl_auto.ResumeLayout(false);
             this.panel_ctrl_auto.PerformLayout();
             this.panel_edit.ResumeLayout(false);

@@ -24,7 +24,6 @@ namespace AutoHome
         {
             if (!checkBox_EditLock.Checked)
             {
-
                 Int16[] value = (Int16[])_value;
                 if (value.Length > 1)
                 {

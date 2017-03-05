@@ -74,6 +74,7 @@ namespace AutoHome
         /// </summary>
         public void pic_update(Int16[] value)
         {
+            //TODO hier bild anpassen
             //no content changed to last request
             if (lastValue != null && value.SequenceEqual(lastValue))
                 return;
@@ -106,17 +107,19 @@ namespace AutoHome
                         //this.Controls.Add(pbu);
                     break;
                 case aktor_type.heater:
-                        bool state_on = Convert.ToBoolean(value[2]);
-                        bool ctrl_manual = Convert.ToBoolean(value[3]);
+                        bool state_on = Convert.ToBoolean(value[13]);
+                        bool ctrl_manual = Convert.ToBoolean(value[2]);
 
-                        if (state_on && !ctrl_manual) //an und automatic
-                            Image = new Bitmap(Properties.Resources.img_heater_on);
-                        else if (state_on && ctrl_manual) //an und manuell
-                            Image = new Bitmap(Properties.Resources.img_heater_on_manual);
-                        else if (!state_on && !ctrl_manual) //aus und automatic
-                            Image = new Bitmap(Properties.Resources.img_heater_off);
-                        else if (!state_on && ctrl_manual) //aus und manuell
-                            Image = new Bitmap(Properties.Resources.img_heater_off_manual);
+                    if (state_on && !ctrl_manual) //an und automatic
+                        Image = new Bitmap(Properties.Resources.img_heater_on);
+                    else if (state_on && ctrl_manual) //an und manuell
+                        Image = new Bitmap(Properties.Resources.img_heater_on_manual);
+                    else if (!state_on && !ctrl_manual) //aus und automatic
+                        Image = new Bitmap(Properties.Resources.img_heater_off);
+                    else if (!state_on && ctrl_manual) //aus und manuell
+                        Image = new Bitmap(Properties.Resources.img_heater_off_manual);
+                    else
+                        Image = null;
                     break;
                 case aktor_type.sensor:
                     throw new Exception("pic_update() in FrmConfigPlatform for aktor_type.sensor (should be handled at UC_SensorValue)");

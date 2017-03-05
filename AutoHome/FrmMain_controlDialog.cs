@@ -93,6 +93,7 @@ namespace AutoHome
                 {
                     dynamic d = ucdialog;
                     d.LoadData(_akt.ConfigAktuatorValuesRunning);
+                    this.Text = _akt.Name + " [" + _akt.lastUpdateTimestamp.ToString("HH:mm:ss") + "]";
                 }
                 else
                     log.msg(this, "timer_refresh_control_Tick() with LoadData < 1");

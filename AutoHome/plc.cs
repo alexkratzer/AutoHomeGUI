@@ -108,7 +108,7 @@ namespace AutoHome
             //log.msg(this, "initRequestTimer: " + NamePlc);
             System.Timers.Timer TimerInitRequest = new System.Timers.Timer();
             TimerInitRequest.Elapsed += new ElapsedEventHandler(OnTimeRequest);
-            TimerInitRequest.Interval = 500;//var.timer_GetRequestInterval;
+            TimerInitRequest.Interval = var.timer_GetRequestInterval;
             TimerInitRequest.Enabled = true;
             
         }
@@ -229,7 +229,7 @@ namespace AutoHome
                     else if (_f.GetHeaderFlag(FrameHeaderFlag.ACKN))
                         log.msg(this, "interpreteFrame(), plc.cs: rcv FrameHeaderFlag.ACKN");
                     else if (_f.GetHeaderFlag(FrameHeaderFlag.PdataIO))
-                        SetAktuatorData(_f);
+                        interpreteAktuatorData(_f);
                     //log.msg(this, "interpreteFrame(), plc.cs: rcv FrameHeaderFlag.PdataIO");
                     else
                         log.msg(this, "interpreteFrame(), plc.cs: rcv with UNKNOWN FrameHeaderFlag");
@@ -294,12 +294,13 @@ namespace AutoHome
                 //p_selected.update_SensorControl(f);
         }
 
-        private void SetAktuatorData(Frame f)
+        private void interpreteAktuatorData(Frame f)
         {
             foreach (aktuator a in ListAktuator)
             {
                 if (f.isIOIndex(a.Index))
                 {
+                    a.lastUpdateTimestamp = DateTime.Now;
                     if (f.getPayload(1) == (int)DataIOType.GetState)
                         a.ValueStateRunning = f.getPayload();
                     else if (f.getPayload(1) == (int)DataIOType.GetParam)

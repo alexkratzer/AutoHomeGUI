@@ -61,6 +61,7 @@ namespace AutoHome
         //GUI vars
         public static bool FooterShowPlcTime = false;
         public static int LastPlatformView = 0;
+        public static bool Notify = false;
         //public static bool LastShowFormFrameLog = false;
 
 

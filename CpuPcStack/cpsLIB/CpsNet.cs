@@ -73,11 +73,11 @@ namespace cpsLIB
         { 
             if(LogFSL!=null && LogFSL.Visible)
                 LogFSL.AddLog(_log);
-            if(_log.Prio != LogType.info)
-                if(_log.F!=null)
-                    QueueRcvFrameToApp.logMsg("[" + _log.F.client.ToString() + "] "+_log.ToString());
-            else
-                    QueueRcvFrameToApp.logMsg("[no client] " + _log.ToString());
+            //if(_log.Prio != LogType.info)
+            //    if(_log.F!=null)
+            //        QueueRcvFrameToApp.logMsg("[" + _log.F.client.ToString() + "] "+_log.ToString());
+            //else
+            //        QueueRcvFrameToApp.logMsg("[no client] " + _log.ToString());
 
             //Ausgabe der LogMsg auch in Main Frm Log Window
             /*
@@ -243,6 +243,8 @@ namespace cpsLIB
                         TimeRcvAnswerMin = f.TimeRcvAnswer;
 
                     takeFrameFromStack(frameStack.GetKey());
+                    //if (_fstack.TryRemove(key, out f))
+                    //    return true;
                 }
                 else
                     logMsg(new log(LogType.error, "TryGetValue() from _fstack == FALSE ", f));
@@ -310,7 +312,7 @@ namespace cpsLIB
             return false;
 
         }
-        
+
         public int InWorkFrameCount()
         {
             if (_fstack != null)

@@ -152,6 +152,8 @@ namespace AutoHome
         //public Frame ValueFrame; //nur tämporere werte -> aktuator
         [NonSerialized]
         public float SensorValue; //nur tämporere werte -> Sensorwert
+        [NonSerialized]
+        public DateTime lastUpdateTimestamp; //nur tämporere werte
         #endregion
 
         #region functions

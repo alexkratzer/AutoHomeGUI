@@ -22,14 +22,13 @@ namespace AutoHome
         {
             if (dbgcount > 10)
                 return ;
-
             foreach (plc p in ListPlc)
+
                 if (p.interpreteFrame((Frame)o))
                     return ;
                 dbgcount++;
                 //TODO: keine plc hat frame verarbeitet
                 logMsg("QueueRcvFromCps: keine plc hat frame verarbeitet");
-            //return false;
         }
 
         public void logMsg(string msg)

@@ -268,7 +268,11 @@ namespace cpsLIB
         /// </summary>
         /// <returns></returns>
         public string GetKey() {
-            return client.RemoteIp + ":" + header.FrameIndex.ToString();
+            if (header.FrameIndex != 0)
+                return client.RemoteIp + ":" + header.FrameIndex.ToString();
+            else
+                
+                return "Index 0";
         }
 
         /// <summary>
