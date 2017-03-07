@@ -268,7 +268,7 @@ namespace cpsLIB
         /// </summary>
         /// <returns></returns>
         public string GetKey() {
-            if (header.FrameIndex != 0)
+            if (header.FrameIndex >= 0) //TO: Abfrage evtl nicht mehr notwendig
                 return client.RemoteIp + ":" + header.FrameIndex.ToString();
             else
                 
