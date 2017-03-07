@@ -9,6 +9,7 @@ namespace AutoHome
     /// <summary>
     /// user control to show aktuators in list
     /// </summary>
+    /// 
     class aktuator_control
     {
         public aktuator aktuator;

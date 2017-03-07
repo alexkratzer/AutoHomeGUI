@@ -11,10 +11,7 @@ using System.Runtime.InteropServices;
 
 //**************************************************************************************
 //#################################### TODO ###########################################
-//rcv Frames nicht an gui sondern direkt an plc zurückgeben
-//GUI update von PLC ListAktuator -> bereits umgesetzt
-//
-//**************************************************************************************
+
 
 namespace AutoHome
 {
@@ -47,7 +44,6 @@ namespace AutoHome
             init_timer();
 
             verifyDB();
-            //MessageBox.Show("tia project -> pn light stairs off erweitern für taster türe","todo");
         }
 
         private void load_projekt_data() {
@@ -68,9 +64,8 @@ namespace AutoHome
         {
             rcvQueue = new QueueRcvFromCps(this, list_plc);
             CpsNet = new cpsLIB.CpsNet(rcvQueue, var.CpsNet_FrmStatusLog);
-            CpsNet.serverSTART(var.CpsServerPort);
-            
-
+            CpsNet.serverSTART(var.CpsServerPort); 
+             
             if (var.connect_to_plc_at_start)
             {
                 //try to connect (send SYNC frame) with all projected plc´s
