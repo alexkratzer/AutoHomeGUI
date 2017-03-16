@@ -51,6 +51,7 @@ namespace AutoHome
         public static int MngData_AcceptedClockDelay = 5;//tollerierte Uhrzeitabweichung in sekunden zwischen pc und plc bis wann die differenz angezeigt wird
         public static bool ClientSendOnlyIfConnected = false;
         public static bool CpsNet_FrmStatusLog = false;
+        public static int WatchdagTime_PLCtoPC = 2000; //erlaubte zeitdauer (in ms) bis antwort zu request kommen muss
 
         //Datenbank Verbindung
         public static string DBServerIP;

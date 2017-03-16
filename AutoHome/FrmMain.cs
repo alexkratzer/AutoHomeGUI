@@ -1002,6 +1002,8 @@ namespace AutoHome
         #endregion
 
         #region TIMER send/receive/refresh
+
+        #region init_start
         System.Windows.Forms.Timer timer_GetRequestInterval;
         System.Windows.Forms.Timer TimerUpdateGui;
         System.Windows.Forms.Timer timer_footer_connection_status;
@@ -1036,7 +1038,9 @@ namespace AutoHome
         {
             timer_GetRequestInterval.Stop();
         }
+        #endregion
 
+        //TODO: in eigenen timer auslagern
         int dbg_count = 10;
         /// <summary>
         /// collect all visible controll IDs and send GetRequest @PLC
@@ -1045,7 +1049,10 @@ namespace AutoHome
         /// <param name="e"></param>
         void timer_GetRequestInterval_Tick(object sender, EventArgs e)
         {
-            dbg_count++; //TODO: in eigenen timer auslagern
+            //********************************************************************************************************************
+            //ReadRunningConfig from all aktuators -> send GetRequest (Get_Param) @PLC
+            //********************************************************************************************************************
+            dbg_count++;
             if (dbg_count > 10)
             {
                 dbg_count = 0;
@@ -1058,7 +1065,7 @@ namespace AutoHome
             if (list_plc.Any())
             {
                 //********************************************************************************************************************
-                //collect all visible controll IDs and send GetRequest @PLC
+                //collect all visible controll (NOT aktor_type.sensor) IDs and send GetRequest (Get_State) @PLC
                 //********************************************************************************************************************
                 foreach (plc p in list_plc)
                     p.ListSensorIDs = new List<short>();
@@ -1077,7 +1084,7 @@ namespace AutoHome
 
 
                 //********************************************************************************************************************
-                //send GetRequest @PLC
+                //send GetRequest @PLC (ONLY aktor_type.sensor)
                 //********************************************************************************************************************
                 foreach (plc p in list_plc)
                     if (p.getClient() != null && p.getClient().state == udp_state.connected)

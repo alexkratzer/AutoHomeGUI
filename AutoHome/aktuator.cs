@@ -97,7 +97,8 @@ namespace AutoHome
             {
                 string s = "";
                 foreach (int i in ConfigAktuatorValuesRunning)
-                    s += i.ToString() + ", ";
+                    s += i.ToString() + "-";
+                s = s.TrimEnd('-', ' ');
                 return s;
             }
         }

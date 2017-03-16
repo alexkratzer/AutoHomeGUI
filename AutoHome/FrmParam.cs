@@ -39,6 +39,8 @@ namespace AutoHome
 
             listBox_aktors_refresh();
             listBox_plc_refresh();
+
+            button_save_changes.Visible = false;
         }
 
         private void init_controlls() {
@@ -67,6 +69,7 @@ namespace AutoHome
             textBox_cpsServerPort.Text = var.CpsServerPort.ToString();
             textBox_MngData_AcceptedClockDelay.Text = var.MngData_AcceptedClockDelay.ToString();
             checkBox_CpsNet_FrmStatusLog.Checked = var.CpsNet_FrmStatusLog;
+            textBox_WatchdagTime.Text = var.WatchdagTime_PLCtoPC.ToString();
 
             checkBoxFooterShowPlcTime.Checked = var.FooterShowPlcTime;
         }
@@ -533,6 +536,12 @@ namespace AutoHome
         private void checkBox_CpsNet_FrmStatusLog_CheckedChanged(object sender, EventArgs e)
         {
             var.CpsNet_FrmStatusLog = checkBox_CpsNet_FrmStatusLog.Checked;
+        }
+
+        private void button_save_changes_Click(object sender, EventArgs e)
+        {
+            button_save_changes.Visible = false;
+
         }
     }
 }
