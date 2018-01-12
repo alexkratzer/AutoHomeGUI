@@ -39,6 +39,8 @@ namespace AutoHome
 
             listBox_aktors_refresh();
             listBox_plc_refresh();
+
+            button_save_changes.Visible = false;
         }
 
         private void init_controlls() {
@@ -67,6 +69,7 @@ namespace AutoHome
             textBox_cpsServerPort.Text = var.CpsServerPort.ToString();
             textBox_MngData_AcceptedClockDelay.Text = var.MngData_AcceptedClockDelay.ToString();
             checkBox_CpsNet_FrmStatusLog.Checked = var.CpsNet_FrmStatusLog;
+            textBox_WatchdagTime.Text = var.WatchdagTime_PLCtoPC.ToString();
 
             checkBoxFooterShowPlcTime.Checked = var.FooterShowPlcTime;
         }
@@ -108,14 +111,7 @@ namespace AutoHome
         #endregion
 
         #region expert mode
-        private void checkBox_expert_mode_CheckedChanged(object sender, EventArgs e)
-        {
-            var.show_expert_mode = checkBox_expert_mode.Checked;
-            panel_expert.Visible = var.show_expert_mode;
-            label_change_expert_mode.Visible = true;
-        }
-        private void textBox_timer_send_intervall_TextChanged(object sender, EventArgs e)
-        {
+        private void safe_changes() {
             Int32 tmp;
             if (Int32.TryParse(textBox_timer_refresh_interval.Text, out tmp))
             {
@@ -124,10 +120,7 @@ namespace AutoHome
             }
             else
                 textBox_timer_refresh_interval.BackColor = Color.Red;
-        }
-        private void textBox_timer_log_interval_TextChanged(object sender, EventArgs e)
-        {
-            Int32 tmp;
+
             if (Int32.TryParse(textBox_timer_log_interval.Text, out tmp))
             {
                 textBox_timer_log_interval.BackColor = Color.White;
@@ -135,23 +128,15 @@ namespace AutoHome
             }
             else
                 textBox_timer_log_interval.BackColor = Color.Red;
-        }
-         
-        private void textBox_timer_refresh_controls_interval_TextChanged(object sender, EventArgs e)
-        {
-            Int32 tmp;
+
             if (Int32.TryParse(textBox_timer_refresh_controls_interval.Text, out tmp))
             {
                 textBox_timer_refresh_controls_interval.BackColor = Color.White;
                 var.timer_refresh_GUI = Convert.ToInt32(textBox_timer_refresh_controls_interval.Text);
             }
             else
-                textBox_timer_refresh_controls_interval.BackColor = Color.Red;  
-        }
+                textBox_timer_refresh_controls_interval.BackColor = Color.Red;
 
-        private void textBox_connect_error_retrys_TextChanged(object sender, EventArgs e)
-        {
-            Int32 tmp;
             if (Int32.TryParse(textBox_connect_error_retrys.Text, out tmp))
             {
                 textBox_connect_error_retrys.BackColor = Color.White;
@@ -159,20 +144,49 @@ namespace AutoHome
             }
             else
                 textBox_connect_error_retrys.BackColor = Color.Red;
+
+            var.display_exception = checkBox_display_exception.Checked;
+            var.start_timers_at_start = checkBox_start_timers_at_startup.Checked;
+
+            if (Int32.TryParse(textBox_WatchdagTime.Text, out tmp))
+            {
+                textBox_WatchdagTime.BackColor = Color.White;
+                var.WatchdagTime_PLCtoPC = Convert.ToInt16(textBox_WatchdagTime.Text);
+            }
+            else
+                textBox_WatchdagTime.BackColor = Color.Red;
+        }
+        private void checkBox_expert_mode_CheckedChanged(object sender, EventArgs e)
+        {
+            var.show_expert_mode = checkBox_expert_mode.Checked;
+            panel_expert.Visible = var.show_expert_mode;
+        }
+        private void textBox_timer_send_intervall_TextChanged(object sender, EventArgs e)
+        {
+            button_save_changes.Visible = true;
+        }
+        private void textBox_timer_log_interval_TextChanged(object sender, EventArgs e)
+        {
+            button_save_changes.Visible = true;
+        }
+         
+        private void textBox_timer_refresh_controls_interval_TextChanged(object sender, EventArgs e)
+        {
+            button_save_changes.Visible = true;
+        }
+
+        private void textBox_connect_error_retrys_TextChanged(object sender, EventArgs e)
+        {
+            button_save_changes.Visible = true; 
         }
         private void checkBox_display_exception_CheckedChanged(object sender, EventArgs e)
         {
-            var.display_exception = checkBox_display_exception.Checked;
+            button_save_changes.Visible = true;
         }
 
-        private void checkBox_display_hash_CheckedChanged(object sender, EventArgs e)
-        {
-           
-        }
-        
         private void checkBox_start_timers_at_startup_CheckedChanged(object sender, EventArgs e)
         {
-            var.start_timers_at_start = checkBox_start_timers_at_startup.Checked;
+            button_save_changes.Visible = true;
         }
 
         private void checkBox_plc_mode_hold_connection_CheckedChanged(object sender, EventArgs e)
@@ -180,11 +194,12 @@ namespace AutoHome
             MessageBox.Show("TODO");
         }
 
+        private void textBox_WatchdagTime_TextChanged(object sender, EventArgs e)
+        {
+            button_save_changes.Visible = true;
+        }
 
 
-
-
-       
         private void linkLabel_startup_config_path_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             FolderBrowserDialog FBD = new FolderBrowserDialog();
@@ -195,6 +210,7 @@ namespace AutoHome
 
             linkLabel_default_project_path.Text = var.default_project_data_path;
         }
+
         #endregion
         
 
@@ -534,5 +550,13 @@ namespace AutoHome
         {
             var.CpsNet_FrmStatusLog = checkBox_CpsNet_FrmStatusLog.Checked;
         }
+
+        private void button_save_changes_Click(object sender, EventArgs e)
+        {
+            button_save_changes.Visible = false;
+            safe_changes();
+        }
+
+      
     }
 }

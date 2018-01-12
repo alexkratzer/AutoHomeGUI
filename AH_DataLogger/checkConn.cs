@@ -8,7 +8,6 @@ namespace AH_DataLogger
 {
     public class checkConn
     {
-        //string conn_string;
         public static bool connection_valid = true;
         public static MySqlConnection con;
         public static string connection_status = null;

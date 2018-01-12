@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 
 //**************************************************************************************
 //#################################### TODO ###########################################
-
+//**************************************************************************************
 
 namespace AutoHome
 {
@@ -467,14 +467,13 @@ namespace AutoHome
         #region menue data logger
         private void openToolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            //string conn_string = "Server=192.168.1.200;Database=auto_home;Uid=auto_home;Pwd=XuY98zjMce8VuWZP";
             AH_DataLogger.FrmDataLogger fm = new AH_DataLogger.FrmDataLogger( var.DBServerIP, var.DBName, var.DBUid, var.DBPwd);
             fm.Show();
         }
 
         private void tableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AH_DataLogger.FrmTables ft = new AH_DataLogger.FrmTables();
+            AH_DataLogger.FrmTables ft = new AH_DataLogger.FrmTables(var.DBServerIP, var.DBName, var.DBUid, var.DBPwd);
             ft.Show();
         }
 
@@ -823,6 +822,12 @@ namespace AutoHome
             comboBox_platform.DataSource = list_platform;
             comboBox_platform.SelectedIndex = var.LastPlatformView;
             paint_platform();
+            if (CpsNet != null)
+            {
+                CpsNet.WATCHDOG_WORK = var.WatchdagTime_PLCtoPC;
+                label_WatchdogWork.Text = "Watchdog Work: " + CpsNet.WATCHDOG_WORK.ToString();
+                label_WatchdogWork.Visible = true;
+            }
         }
 
         #region userControl
@@ -1002,6 +1007,8 @@ namespace AutoHome
         #endregion
 
         #region TIMER send/receive/refresh
+
+        #region init_start
         System.Windows.Forms.Timer timer_GetRequestInterval;
         System.Windows.Forms.Timer TimerUpdateGui;
         System.Windows.Forms.Timer timer_footer_connection_status;
@@ -1036,7 +1043,9 @@ namespace AutoHome
         {
             timer_GetRequestInterval.Stop();
         }
+        #endregion
 
+        //TODO: in eigenen timer auslagern
         int dbg_count = 10;
         /// <summary>
         /// collect all visible controll IDs and send GetRequest @PLC
@@ -1045,7 +1054,10 @@ namespace AutoHome
         /// <param name="e"></param>
         void timer_GetRequestInterval_Tick(object sender, EventArgs e)
         {
-            dbg_count++; //TODO: in eigenen timer auslagern
+            //********************************************************************************************************************
+            //ReadRunningConfig from all aktuators -> send GetRequest (Get_Param) @PLC
+            //********************************************************************************************************************
+            dbg_count++;
             if (dbg_count > 10)
             {
                 dbg_count = 0;
@@ -1058,7 +1070,7 @@ namespace AutoHome
             if (list_plc.Any())
             {
                 //********************************************************************************************************************
-                //collect all visible controll IDs and send GetRequest @PLC
+                //collect all visible controll (NOT aktor_type.sensor) IDs and send GetRequest (Get_State) @PLC
                 //********************************************************************************************************************
                 foreach (plc p in list_plc)
                     p.ListSensorIDs = new List<short>();
@@ -1077,7 +1089,7 @@ namespace AutoHome
 
 
                 //********************************************************************************************************************
-                //send GetRequest @PLC
+                //send GetRequest @PLC (ONLY aktor_type.sensor)
                 //********************************************************************************************************************
                 foreach (plc p in list_plc)
                     if (p.getClient() != null && p.getClient().state == udp_state.connected)

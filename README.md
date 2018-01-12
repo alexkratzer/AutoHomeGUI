@@ -1,6 +1,6 @@
 # AutoHomeGUI
-homeautomation dotNet frontend for simatic PLC
+dotNet frontend to monitor and control the home automation (mainly the simatic plcs)
 
-Beschreibung siehe hier: 
+for more information see here:
 <a href="http://alexkratzer.de/">alexkratzer.de</a>
 

@@ -28,11 +28,11 @@ namespace AutoHome
         public static string file_aktuator_control = "data_control.ah";
 
         //IBS vars
-        public static Int32 PLCport = 8810;
+        public static Int32 PLCport = 23456;
         public static int max_rcv_bytes = 2048;
-        public static string PLCip = "192.168.1.203";
-        public static string tmp_PLC_EG_IP = "192.168.1.202"; //CPU EG
-        public static int PLC_PORT = 2500;
+        public static string PLCip = "192.xxx.xxx.xxx";
+        public static string tmp_PLC_EG_IP = "192.xxx.xxx.xxx"; //CPU EG
+        public static int PLC_PORT = 12345;
         //public static bool AutoUpdateControlTimer = true;
         
         //settings
@@ -51,6 +51,7 @@ namespace AutoHome
         public static int MngData_AcceptedClockDelay = 5;//tollerierte Uhrzeitabweichung in sekunden zwischen pc und plc bis wann die differenz angezeigt wird
         public static bool ClientSendOnlyIfConnected = false;
         public static bool CpsNet_FrmStatusLog = false;
+        public static Int16 WatchdagTime_PLCtoPC = 2000; //erlaubte zeitdauer (in ms) bis antwort zu request kommen muss
 
         //Datenbank Verbindung
         public static string DBServerIP;
@@ -64,10 +65,7 @@ namespace AutoHome
         public static bool Notify = false;
         //public static bool LastShowFormFrameLog = false;
 
-
-        //string conn_string = "Server=192.168.1.200;Database=auto_home;Uid=auto_home;Pwd=XuY98zjMce8VuWZP";
-
-
+            
         //======================== image files =============================
         //sind jetzt als resourcen direkt im projekt eingebunden
         //public static string img_candle = workingdir + "\\img_candle_default.png";
@@ -117,6 +115,8 @@ namespace AutoHome
                                     field.SetValue(null, Convert.ToBoolean(row[1]));
                                 else if (field.FieldType.Name.Equals("Int32"))
                                     field.SetValue(null, Convert.ToInt32(row[1]));
+                                else if (field.FieldType.Name.Equals("Int16"))
+                                    field.SetValue(null, Convert.ToInt16(row[1]));
                                 //else
                                 //dbg.log("var", "value type not available: " + field.FieldType.Name, true);
                             }

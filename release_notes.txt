@@ -1,3 +1,9 @@
+############################### AutoHome V0.0.3 ###############################
+# Datum:				180112
+# Path:					\\SYN\homes\git_repos\ahGUI
+# 
+# upload auto home software to gitlab
+
 
 ############################### AutoHome V0.0.2 ###############################
 # Datum:				16xxxx

@@ -258,9 +258,10 @@ namespace cpsLIB
 
             for (int i = 0; i < FramePayloadByte.Length / 2; i++)
                 s += getPayload(i) + "-";
-            s.TrimEnd('-', ' ');
+            s = s.TrimEnd('-', ' ');
             return s;
         }
+
 
         /// <summary>
         /// cat of remote IP adress and frame index number

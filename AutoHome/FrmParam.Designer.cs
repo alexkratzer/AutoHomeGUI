@@ -49,11 +49,12 @@
             this.label_timer_log = new System.Windows.Forms.Label();
             this.checkBox_expert_mode = new System.Windows.Forms.CheckBox();
             this.panel_expert = new System.Windows.Forms.Panel();
-            this.checkBox_display_hash = new System.Windows.Forms.CheckBox();
+            this.button_save_changes = new System.Windows.Forms.Button();
+            this.label_WatchdagTime = new System.Windows.Forms.Label();
+            this.textBox_WatchdagTime = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox_timer_refresh_controls_interval = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.label_change_expert_mode = new System.Windows.Forms.Label();
             this.checkBox_start_timers_at_startup = new System.Windows.Forms.CheckBox();
             this.textBox_connect_error_retrys = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -88,12 +89,12 @@
             this.label_DBName = new System.Windows.Forms.Label();
             this.label_DBServerIP = new System.Windows.Forms.Label();
             this.groupBox_cps_settings = new System.Windows.Forms.GroupBox();
+            this.checkBox_CpsNet_FrmStatusLog = new System.Windows.Forms.CheckBox();
             this.textBox_MngData_AcceptedClockDelay = new System.Windows.Forms.TextBox();
             this.label_MngData_AcceptedClockDelay = new System.Windows.Forms.Label();
             this.label_cps_server_port = new System.Windows.Forms.Label();
             this.textBox_cpsServerPort = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.checkBox_CpsNet_FrmStatusLog = new System.Windows.Forms.CheckBox();
             this.panel_edit_plc.SuspendLayout();
             this.panel_expert.SuspendLayout();
             this.panel_edit_aktuator.SuspendLayout();
@@ -297,11 +298,12 @@
             // 
             // panel_expert
             // 
-            this.panel_expert.Controls.Add(this.checkBox_display_hash);
+            this.panel_expert.Controls.Add(this.button_save_changes);
+            this.panel_expert.Controls.Add(this.label_WatchdagTime);
+            this.panel_expert.Controls.Add(this.textBox_WatchdagTime);
             this.panel_expert.Controls.Add(this.label1);
             this.panel_expert.Controls.Add(this.textBox_timer_refresh_controls_interval);
             this.panel_expert.Controls.Add(this.label4);
-            this.panel_expert.Controls.Add(this.label_change_expert_mode);
             this.panel_expert.Controls.Add(this.checkBox_start_timers_at_startup);
             this.panel_expert.Controls.Add(this.textBox_connect_error_retrys);
             this.panel_expert.Controls.Add(this.label3);
@@ -319,16 +321,33 @@
             this.panel_expert.Size = new System.Drawing.Size(334, 217);
             this.panel_expert.TabIndex = 15;
             // 
-            // checkBox_display_hash
+            // button_save_changes
             // 
-            this.checkBox_display_hash.AutoSize = true;
-            this.checkBox_display_hash.Location = new System.Drawing.Point(178, 87);
-            this.checkBox_display_hash.Name = "checkBox_display_hash";
-            this.checkBox_display_hash.Size = new System.Drawing.Size(84, 17);
-            this.checkBox_display_hash.TabIndex = 29;
-            this.checkBox_display_hash.Text = "display hash";
-            this.checkBox_display_hash.UseVisualStyleBackColor = true;
-            this.checkBox_display_hash.CheckedChanged += new System.EventHandler(this.checkBox_display_hash_CheckedChanged);
+            this.button_save_changes.Location = new System.Drawing.Point(201, 191);
+            this.button_save_changes.Name = "button_save_changes";
+            this.button_save_changes.Size = new System.Drawing.Size(126, 23);
+            this.button_save_changes.TabIndex = 32;
+            this.button_save_changes.Text = "save changes";
+            this.button_save_changes.UseVisualStyleBackColor = true;
+            this.button_save_changes.Visible = false;
+            this.button_save_changes.Click += new System.EventHandler(this.button_save_changes_Click);
+            // 
+            // label_WatchdagTime
+            // 
+            this.label_WatchdagTime.AutoSize = true;
+            this.label_WatchdagTime.Location = new System.Drawing.Point(166, 156);
+            this.label_WatchdagTime.Name = "label_WatchdagTime";
+            this.label_WatchdagTime.Size = new System.Drawing.Size(83, 13);
+            this.label_WatchdagTime.TabIndex = 31;
+            this.label_WatchdagTime.Text = "WatchdagTime:";
+            // 
+            // textBox_WatchdagTime
+            // 
+            this.textBox_WatchdagTime.Location = new System.Drawing.Point(255, 153);
+            this.textBox_WatchdagTime.Name = "textBox_WatchdagTime";
+            this.textBox_WatchdagTime.Size = new System.Drawing.Size(53, 20);
+            this.textBox_WatchdagTime.TabIndex = 30;
+            this.textBox_WatchdagTime.TextChanged += new System.EventHandler(this.textBox_WatchdagTime_TextChanged);
             // 
             // label1
             // 
@@ -355,18 +374,6 @@
             this.label4.Size = new System.Drawing.Size(101, 13);
             this.label4.TabIndex = 26;
             this.label4.Text = "refresh GUI interval:";
-            // 
-            // label_change_expert_mode
-            // 
-            this.label_change_expert_mode.AutoSize = true;
-            this.label_change_expert_mode.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_change_expert_mode.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.label_change_expert_mode.Location = new System.Drawing.Point(7, 195);
-            this.label_change_expert_mode.Name = "label_change_expert_mode";
-            this.label_change_expert_mode.Size = new System.Drawing.Size(241, 13);
-            this.label_change_expert_mode.TabIndex = 16;
-            this.label_change_expert_mode.Text = "restart AutoHome to take effect the mode change";
-            this.label_change_expert_mode.Visible = false;
             // 
             // checkBox_start_timers_at_startup
             // 
@@ -716,6 +723,17 @@
             this.groupBox_cps_settings.TabStop = false;
             this.groupBox_cps_settings.Text = "cps settings";
             // 
+            // checkBox_CpsNet_FrmStatusLog
+            // 
+            this.checkBox_CpsNet_FrmStatusLog.AutoSize = true;
+            this.checkBox_CpsNet_FrmStatusLog.Location = new System.Drawing.Point(9, 87);
+            this.checkBox_CpsNet_FrmStatusLog.Name = "checkBox_CpsNet_FrmStatusLog";
+            this.checkBox_CpsNet_FrmStatusLog.Size = new System.Drawing.Size(96, 17);
+            this.checkBox_CpsNet_FrmStatusLog.TabIndex = 4;
+            this.checkBox_CpsNet_FrmStatusLog.Text = "Show Log GUI";
+            this.checkBox_CpsNet_FrmStatusLog.UseVisualStyleBackColor = true;
+            this.checkBox_CpsNet_FrmStatusLog.CheckedChanged += new System.EventHandler(this.checkBox_CpsNet_FrmStatusLog_CheckedChanged);
+            // 
             // textBox_MngData_AcceptedClockDelay
             // 
             this.textBox_MngData_AcceptedClockDelay.Location = new System.Drawing.Point(9, 58);
@@ -761,17 +779,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(368, 583);
             this.panel1.TabIndex = 27;
-            // 
-            // checkBox_CpsNet_FrmStatusLog
-            // 
-            this.checkBox_CpsNet_FrmStatusLog.AutoSize = true;
-            this.checkBox_CpsNet_FrmStatusLog.Location = new System.Drawing.Point(9, 87);
-            this.checkBox_CpsNet_FrmStatusLog.Name = "checkBox_CpsNet_FrmStatusLog";
-            this.checkBox_CpsNet_FrmStatusLog.Size = new System.Drawing.Size(96, 17);
-            this.checkBox_CpsNet_FrmStatusLog.TabIndex = 4;
-            this.checkBox_CpsNet_FrmStatusLog.Text = "Show Log GUI";
-            this.checkBox_CpsNet_FrmStatusLog.UseVisualStyleBackColor = true;
-            this.checkBox_CpsNet_FrmStatusLog.CheckedChanged += new System.EventHandler(this.checkBox_CpsNet_FrmStatusLog_CheckedChanged);
             // 
             // FrmParam
             // 
@@ -846,11 +853,9 @@
         private System.Windows.Forms.Button button_save_actuator;
         private System.Windows.Forms.Button button_save_plc;
         private System.Windows.Forms.CheckBox checkBox_start_timers_at_startup;
-        private System.Windows.Forms.Label label_change_expert_mode;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox_timer_refresh_controls_interval;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.CheckBox checkBox_display_hash;
         private System.Windows.Forms.Label label_DBServerIP;
         private System.Windows.Forms.GroupBox groupBox_DB;
         private System.Windows.Forms.TextBox textBox_DBPwd;
@@ -873,5 +878,8 @@
         private System.Windows.Forms.CheckBox checkBox_plc;
         private System.Windows.Forms.CheckBox checkBox_aktorType;
         private System.Windows.Forms.CheckBox checkBox_CpsNet_FrmStatusLog;
+        private System.Windows.Forms.Label label_WatchdagTime;
+        private System.Windows.Forms.TextBox textBox_WatchdagTime;
+        private System.Windows.Forms.Button button_save_changes;
     }
 }

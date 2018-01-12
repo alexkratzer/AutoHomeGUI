@@ -59,6 +59,9 @@
             this.openLOGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.notifyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.onToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.offToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cMDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lightEgToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.onToolStripMenuItem_light_eg = new System.Windows.Forms.ToolStripMenuItem();
@@ -83,9 +86,7 @@
             this.comboBox_aktor_type = new System.Windows.Forms.ComboBox();
             this.comboBox_aktor_cpu = new System.Windows.Forms.ComboBox();
             this.pictureBox_platform = new System.Windows.Forms.PictureBox();
-            this.notifyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.onToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.offToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label_WatchdogWork = new System.Windows.Forms.Label();
             this.menuStrip_main.SuspendLayout();
             this.panel_controls.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_platform)).BeginInit();
@@ -338,6 +339,29 @@
             this.resetToolStripMenuItem.Text = "reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
+            // notifyToolStripMenuItem
+            // 
+            this.notifyToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.onToolStripMenuItem,
+            this.offToolStripMenuItem});
+            this.notifyToolStripMenuItem.Name = "notifyToolStripMenuItem";
+            this.notifyToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.notifyToolStripMenuItem.Text = "notify";
+            // 
+            // onToolStripMenuItem
+            // 
+            this.onToolStripMenuItem.Name = "onToolStripMenuItem";
+            this.onToolStripMenuItem.Size = new System.Drawing.Size(89, 22);
+            this.onToolStripMenuItem.Text = "on";
+            this.onToolStripMenuItem.Click += new System.EventHandler(this.onToolStripMenuItem_Click);
+            // 
+            // offToolStripMenuItem
+            // 
+            this.offToolStripMenuItem.Name = "offToolStripMenuItem";
+            this.offToolStripMenuItem.Size = new System.Drawing.Size(89, 22);
+            this.offToolStripMenuItem.Text = "off";
+            this.offToolStripMenuItem.Click += new System.EventHandler(this.offToolStripMenuItem_Click);
+            // 
             // cMDToolStripMenuItem
             // 
             this.cMDToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -533,34 +557,22 @@
             this.pictureBox_platform.TabStop = false;
             this.pictureBox_platform.SizeChanged += new System.EventHandler(this.pictureBox_platform_SizeChanged);
             // 
-            // notifyToolStripMenuItem
+            // label_WatchdogWork
             // 
-            this.notifyToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.onToolStripMenuItem,
-            this.offToolStripMenuItem});
-            this.notifyToolStripMenuItem.Name = "notifyToolStripMenuItem";
-            this.notifyToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
-            this.notifyToolStripMenuItem.Text = "notify";
-            // 
-            // onToolStripMenuItem
-            // 
-            this.onToolStripMenuItem.Name = "onToolStripMenuItem";
-            this.onToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.onToolStripMenuItem.Text = "on";
-            this.onToolStripMenuItem.Click += new System.EventHandler(this.onToolStripMenuItem_Click);
-            // 
-            // offToolStripMenuItem
-            // 
-            this.offToolStripMenuItem.Name = "offToolStripMenuItem";
-            this.offToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.offToolStripMenuItem.Text = "off";
-            this.offToolStripMenuItem.Click += new System.EventHandler(this.offToolStripMenuItem_Click);
+            this.label_WatchdogWork.AutoSize = true;
+            this.label_WatchdogWork.Location = new System.Drawing.Point(215, 30);
+            this.label_WatchdogWork.Name = "label_WatchdogWork";
+            this.label_WatchdogWork.Size = new System.Drawing.Size(60, 13);
+            this.label_WatchdogWork.TabIndex = 38;
+            this.label_WatchdogWork.Text = "Watchdog:";
+            this.label_WatchdogWork.Visible = false;
             // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(964, 792);
+            this.Controls.Add(this.label_WatchdogWork);
             this.Controls.Add(this.comboBox_platform);
             this.Controls.Add(this.panel_controls);
             this.Controls.Add(this.menuStrip_main);
@@ -639,6 +651,7 @@
         private System.Windows.Forms.ToolStripMenuItem notifyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem onToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem offToolStripMenuItem;
+        private System.Windows.Forms.Label label_WatchdogWork;
     }
 }
 

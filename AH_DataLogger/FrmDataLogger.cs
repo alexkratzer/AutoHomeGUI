@@ -13,13 +13,13 @@ namespace AH_DataLogger
 {
     public partial class FrmDataLogger : Form
     {
-      //string conn_string = "Server=192.168.1.200;Database=auto_home;Uid=auto_home;Pwd=XuY98zjMce8VuWZP";
-        string conn_string;
+        string con_string;
         bool connection_valid = true;
-      public FrmDataLogger(string DBServerIp, string DBName, string DBUid, string DBPwd)
+
+        public FrmDataLogger(string DBServerIp, string DBName, string DBUid, string DBPwd)
         {
             InitializeComponent();
-            conn_string = "Server=" + DBServerIp + ";Database=" + DBName + ";Uid=" + DBUid + ";Pwd=" + DBPwd;
+            con_string = "Server=" + DBServerIp + ";Database=" + DBName + ";Uid=" + DBUid + ";Pwd=" + DBPwd;
             monthCalendar_start.SelectionStart = DateTime.Now.AddDays(-7);
             monthCalendar_end.SelectionStart = DateTime.Now;
             //update(); -> update ist bei monthCalender implizit mit dabei
@@ -56,7 +56,7 @@ namespace AH_DataLogger
 
             try
             {
-                con = new MySqlConnection(conn_string);
+                con = new MySqlConnection(con_string);
                 con.Open();
 
                 MySqlCommand cmd = new MySqlCommand("SELECT VERSION()", con);
